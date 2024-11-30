@@ -5,12 +5,14 @@ import com.ReciGuard.entity.Enum.Cuisine;
 import com.ReciGuard.entity.Enum.FoodType;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor
 public class Recipe {
     @Id @GeneratedValue
     @Column(name = "recipe_id")
@@ -25,9 +27,6 @@ public class Recipe {
 
     @Column(name = "recipe_name")
     private String recipeName;
-
-    @Column(name = "cooking_time")
-    private int cookingTime;
 
     private int serving;
 

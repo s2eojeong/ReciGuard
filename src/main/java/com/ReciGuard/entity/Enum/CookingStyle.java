@@ -5,7 +5,8 @@ public enum CookingStyle {
     STEAMED("찜"),
     ROAST("볶음"),
     FRIED("튀김"),
-    STEW("국/찌개");
+    SOUP("국"),
+    STEW("찌개");
 
     private final String name;
 
