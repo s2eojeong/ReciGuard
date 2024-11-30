@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")
+    private Long userid;
 
     @Column(length = 20, nullable = false, unique = true)
     private String username;
@@ -26,16 +27,16 @@ public class User {
     @Column(precision = 4, scale = 1)
     private Double weight;
 
-    @Column(length = 20, nullable = false)
-    private String userPassword;
+    @Column(name ="user_pw", length = 20, nullable = false)
+    private String Password;
 
     @Column(length = 50, nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at" ,nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    @Column(name = "updated_at",nullable = false)
     private LocalDateTime updatedAt;
 
 
