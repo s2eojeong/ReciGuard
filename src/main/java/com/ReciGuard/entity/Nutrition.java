@@ -1,0 +1,23 @@
+package com.ReciGuard.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Getter @Setter
+public class Nutrition {
+    @Id @GeneratedValue
+    @Column(name = "nutrition_id")
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
+    private int calories;
+    private int sodium;
+    private int carbohydrate;
+    private int fat;
+    private int protein;
+}
