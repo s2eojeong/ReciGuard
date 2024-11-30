@@ -16,6 +16,10 @@ public class Recipe {
     @Column(name = "recipe_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    //private User user;
+
     @Column(name = "image_path")
     private String imagePath;
 

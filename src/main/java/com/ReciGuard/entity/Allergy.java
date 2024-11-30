@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter @Setter
 public class Allergy {
@@ -11,9 +13,9 @@ public class Allergy {
     @Column(name = "allergy_id")
     private Long id;
 
-    @OneToOne(mappedBy = "allergy", fetch = FetchType.LAZY)
-    private Ingredient ingredient;
-
     @Column(name = "allergy_name")
     private String allergyName;
+
+    @OneToMany(mappedBy = "allergy")
+    private List<Ingredient> ingredients;
 }
