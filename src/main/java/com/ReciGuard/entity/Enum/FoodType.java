@@ -3,7 +3,7 @@ package com.ReciGuard.entity.Enum;
 public enum FoodType {
     RICE("밥"),
     NOODLE("면"),
-    BREAD("빵"),
+    BREAD("반찬"),
     RICECAKE("떡"),
     PORRIDGE("죽");
 
