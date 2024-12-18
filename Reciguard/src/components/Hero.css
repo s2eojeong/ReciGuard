@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+/* Hero 컴포넌트 전체 스타일 */
+.hero-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: #3E5944; /* 배경색 */
+    color: #EBDCDD; /* 텍스트 색상 */
+    height: 100vh; /* 화면 전체 높이 */
+    padding: 0px;
+}
+
+/* 큰 타이틀 스타일 */
+.hero-title {
+    color: #EDBCBE;
+    font-family: 'Lalezar', cursive;
+    font-size: 8rem;
+    font-weight: bold;
+    margin-top: -20px;
+    margin-bottom: 5px;
+}
+
+/* 서브 타이틀 스타일 */
+.hero-subtitle {
+    font-size: 1.2rem;
+    margin-top: -50px;
+    margin-bottom: 50px;
+    font-weight: bold;
+}
+
+/* 버튼 스타일 */
+.hero-button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #3E5944; /* 버튼 글자 색 */
+    background-color: #EBDCDD; /* 버튼 배경색 */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.hero-button:hover {
+    background-color: #3E5944; /* 버튼 호버 시 배경색 */
+    color: #EBDCDD; /* 버튼 글자색 */
+    border: 1px solid #EBDCDD;
+}

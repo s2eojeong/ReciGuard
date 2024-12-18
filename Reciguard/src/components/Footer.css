@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+/* 전체 푸터 스타일 */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #ffffff;
+    color: #333333;
+    border-top: 2px solid #ddd;
+    font-size: 0.6rem;
+    position: relative;
+}
+
+/* 왼쪽 텍스트 스타일 */
+.footer-left {
+    color: #555555;
+}
+
+/* 중앙 로고 스타일 */
+.footer-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Lalezar', cursive;
+}
+
+/* 오른쪽 링크와 아이콘 스타일 */
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-link {
+    text-decoration: none;
+    color: #333333;
+}
+
+.footer-icon {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.footer-icon i {
+    font-size: 0.8rem;
+    color: #000;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .footer {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+}
