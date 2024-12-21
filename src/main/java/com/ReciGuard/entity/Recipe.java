@@ -37,12 +37,15 @@ public class Recipe {
     @Enumerated(EnumType.STRING)
     private CookingStyle cookingStyle;
 
-    @OneToOne(mappedBy = "recipe", fetch = FetchType.LAZY)
-    private Instruction instruction;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<Instruction> instructions;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeIngredient> recipeIngredients;
 
     @OneToOne(mappedBy = "recipe", fetch = FetchType.LAZY)
     private Nutrition nutrition;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<RecipeStats> recipeStats;
 }
