@@ -12,8 +12,8 @@ import lombok.Setter;
 
 public class UserCuisine {
 
-    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private Long userId;
 
     @Column(name = "food_type", length = 10, nullable = false)
