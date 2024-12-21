@@ -61,6 +61,10 @@
     outline: none;
 }
 
+.navbar-search::placeholder {
+    color: #3E5944;
+}
+
 .signup-btn, .login-btn {
     padding: 5px 10px;
     margin-left: 10px;
