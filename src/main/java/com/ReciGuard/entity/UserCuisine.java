@@ -8,15 +8,15 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@Table(name = "user_ingredient")
-public class UserIngredient {
+@Table(name = "user_cuisine")
 
-    @ManyToOne(fetch = FetchType.LAZY)
+public class UserCuisine {
+
     @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ingredient_id")
-    private Long ingredientId;
+    @Column(name = "food_type", length = 10, nullable = false)
+    private String foodType;
 
 }
