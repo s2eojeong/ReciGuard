@@ -16,9 +16,5 @@ public class Ingredient {
     @OneToMany(mappedBy = "ingredient", fetch = FetchType.LAZY)
     private RecipeIngredient recipeIngredient;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "allergy_id")
-    private Allergy allergy;
-
     private String ingredient;
 }
