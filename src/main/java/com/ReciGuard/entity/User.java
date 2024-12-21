@@ -3,12 +3,14 @@ package com.ReciGuard.entity;
 import com.ReciGuard.entity.Enum.Gender;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +38,7 @@ public class User {
     @Column(name = "created_at" ,nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at",nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
 
