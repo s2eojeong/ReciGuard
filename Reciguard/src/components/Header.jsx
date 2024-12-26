@@ -7,7 +7,6 @@ const Header = () => {
         <div className="navbar-logo">ReciGuard</div>
         <ul className="navbar-menu">
         <li>분류</li>
-        <li>이미지 검색</li>
         <li>랭킹</li>
         <li>레시피 등록</li>
         </ul>

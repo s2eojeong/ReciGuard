@@ -1,13 +1,13 @@
 import React from "react";
 import "./Signup.css";
 import Leftpanel from '../components/Leftpanel';
-import Rightpanel from '../components/Rightpanel';
+import Rightpanel2 from '../components/Rightpanel2';
 
 function Signup() {
     return (
     <div className="login-container">
         <Leftpanel />
-        <Rightpanel />
+        <Rightpanel2 />
     </div>
     );
 }
