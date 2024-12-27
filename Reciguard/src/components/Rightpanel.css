@@ -63,7 +63,7 @@
     color: #3E5944;
 }
 
-.sign-in-btn {
+.log-in-btn {
     background-color: #3E5944;
     color: white;
     padding: 10px;
@@ -74,7 +74,7 @@
     margin-top: 20px;
 }
 
-.sign-in-btn:hover {
+.log-in-btn:hover {
     background-color: #1e3524;
 }
 

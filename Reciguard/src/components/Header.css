@@ -47,7 +47,7 @@
 }
 
 /* 우측 검색과 버튼 스타일 */
-.navbar-actions {
+.rightnav {
     display: flex;
     align-items: center;
     margin-left: auto; /* 우측 끝으로 밀기 */
@@ -58,11 +58,7 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-right: 30px;
-    outline: none;
-}
-
-.navbar-search::placeholder {
-    color: #3E5944;
+    width: 150px;
 }
 
 .signup-btn, .login-btn {

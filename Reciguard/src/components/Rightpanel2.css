@@ -52,6 +52,7 @@
     display: flex;
     margin-top: 1px;
     line-height: 2.5;
+    margin-left: 10px;
 }
 
 .checkbox-input {
@@ -75,18 +76,18 @@
     background-color: #1e3524;
 }
 
-.sign-in {
+.log-in {
     margin-top: 20px;
     font-size: 0.9rem;
     color:#757575;
 }
 
-.sign-in a {
+.log-in a {
     color: #3E5944;
     text-decoration: none;
 }
 
-.sign-in a:hover{
+.log-in a:hover{
     color: #1e3524;
     font-weight: bold;
 }

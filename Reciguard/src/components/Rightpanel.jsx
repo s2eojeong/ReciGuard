@@ -1,5 +1,6 @@
 import React from "react";
 import "./Rightpanel.css";
+import { Link } from 'react-router-dom';
 
 function Rightpanel() {
 return (
@@ -26,11 +27,14 @@ return (
             <a href="#" className="forgot-password">비밀번호 찾기</a>
             </div>
         </div>
-        <button type="submit" className="sign-in-btn">Sign In</button>
+        <button type="submit" className="log-in-btn">Log In</button>
         </form>
         <div>
         <p className="sign-up">
-        Don’t have an account? <a href="#">Sign Up</a>
+        Don’t have an account? 
+        <Link  to="/Signup">
+        <a href="#">Sign Up</a>
+        </Link>
         </p>
         </div>
     </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import "./Header.css";
+import { Link } from 'react-router-dom';
 
 const Header = () => {
     return (
@@ -10,10 +11,14 @@ const Header = () => {
         <li>랭킹</li>
         <li>레시피 등록</li>
         </ul>
-        <div className="navbar-actions">
-        <input type="text" placeholder="Search..." className="navbar-search" />
+        <div className="rightnav">
+        <input className="navbar-search" type="text" placeholder="Search..." />
+        <Link to="/Signup">
         <button className="signup-btn">Sign Up</button>
+        </Link>
+        <Link to="/Login">
         <button className="login-btn">Log In</button>
+        </Link>
         </div>
     </nav>
     );
