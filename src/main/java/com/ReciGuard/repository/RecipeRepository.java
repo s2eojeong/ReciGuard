@@ -1,6 +1,5 @@
 package com.ReciGuard.repository;
 
-import com.ReciGuard.entity.Enum.Cuisine;
 import com.ReciGuard.entity.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -34,10 +33,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     """)
     List<Recipe> findAllFilteredRecipes(@Param("userId") Long userId);
 
-    // cuisine별로 레시피 리스트 검색
-    List<Recipe> findByCuisine(Cuisine cuisine);
+    // cuisine 별로 레시피 리스트 검색
+    List<Recipe> findByCuisine(String cuisine);
 
-    // cuisine별로 레시피 리스트 검색 -> 필터링 후
+    // cuisine 별로 레시피 리스트 검색 -> 필터링 후
     @Query("""
         SELECT DISTINCT r
         FROM Recipe r
