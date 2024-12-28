@@ -11,12 +11,16 @@ import lombok.Setter;
 @Table(name = "user_ingredient")
 public class UserIngredient {
 
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_ingredient_id")
+    private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Long userId;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredient_id")
-    private Long ingredientId;
+    private Ingredient ingredient;
 
 }
