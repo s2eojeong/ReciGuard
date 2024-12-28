@@ -52,4 +52,10 @@ public class User {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void modify(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }
+
