@@ -16,6 +16,8 @@ public class JoinService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
+    @Transactional
     public void joinProcess(UserResponseDTO.Request userRequestDTO) {
 
         String username = userRequestDTO.getUsername();
@@ -34,6 +36,16 @@ public class JoinService {
                 .build();
 
         userRepository.save(user);
+    }
+
+    //회원 정보 수정
+    @Transactional
+    public void modify(UserResponseDTO.Request dto) {
+        User user = userRepository.findById(dto.toEntity().getUserid()).orElseThrow(() ->
+                new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+
+        String encPassword = bCryptPasswordEncoder.encode(dto.getPassword());
+        user.modify(dto.getUsername(), encPassword);
     }
 
 }
