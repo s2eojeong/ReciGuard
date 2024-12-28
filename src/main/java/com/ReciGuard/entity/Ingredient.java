@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter @Setter
 @NoArgsConstructor
@@ -14,7 +16,7 @@ public class Ingredient {
     private Long id;
 
     @OneToMany(mappedBy = "ingredient", fetch = FetchType.LAZY)
-    private RecipeIngredient recipeIngredient;
+    private List<RecipeIngredient> recipeIngredient;
 
     private String ingredient;
 }
