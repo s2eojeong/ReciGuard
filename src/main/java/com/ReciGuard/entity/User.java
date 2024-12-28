@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder // 빌더 패턴 추가
@@ -46,12 +47,15 @@ public class User {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
     @PreUpdate
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public User(Long userid) {
-        this.userid = userid;
+    public void modify(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 }
+
