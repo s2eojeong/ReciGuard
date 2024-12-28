@@ -18,11 +18,11 @@ public class UserScrap {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Long userId;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
-    private Long recipeId;
+    private Recipe recipe;
 
     private LocalDateTime createdAt;
 

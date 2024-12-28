@@ -17,7 +17,7 @@ public class Recipe {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    //private User user;
+    private User user;
 
     @Column(name = "image_path")
     private String imagePath;
