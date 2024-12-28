@@ -1,8 +1,5 @@
 package com.ReciGuard.dto;
 
-import com.ReciGuard.entity.Enum.CookingStyle;
-import com.ReciGuard.entity.Enum.Cuisine;
-import com.ReciGuard.entity.Enum.FoodType;
 import com.ReciGuard.entity.Ingredient;
 import com.ReciGuard.entity.Instruction;
 

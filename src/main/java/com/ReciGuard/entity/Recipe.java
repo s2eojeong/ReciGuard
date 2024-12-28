@@ -1,8 +1,5 @@
 package com.ReciGuard.entity;
 
-import com.ReciGuard.entity.Enum.CookingStyle;
-import com.ReciGuard.entity.Enum.Cuisine;
-import com.ReciGuard.entity.Enum.FoodType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,12 +27,9 @@ public class Recipe {
 
     private int serving;
 
-    @Enumerated(EnumType.STRING)
-    private Cuisine cuisine;
-    @Enumerated(EnumType.STRING)
-    private FoodType foodType;
-    @Enumerated(EnumType.STRING)
-    private CookingStyle cookingStyle;
+    private String cuisine;
+    private String foodType;
+    private String cookingStyle;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<Instruction> instructions;

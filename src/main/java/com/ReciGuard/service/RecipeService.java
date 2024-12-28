@@ -3,8 +3,6 @@ package com.ReciGuard.service;
 import com.ReciGuard.dto.RecipeDetailResponseDTO;
 import com.ReciGuard.dto.RecipeListResponseDTO;
 import com.ReciGuard.dto.RecipeRecommendResponseDTO;
-import com.ReciGuard.entity.Enum.Cuisine;
-import com.ReciGuard.entity.Instruction;
 import com.ReciGuard.entity.Nutrition;
 import com.ReciGuard.entity.Recipe;
 import com.ReciGuard.entity.RecipeStats;
@@ -52,7 +50,7 @@ public class RecipeService {
     }
 
     // cuisine 별 레시피 리스트
-    public List<RecipeListResponseDTO> getRecipesByCuisine(Cuisine cuisine){
+    public List<RecipeListResponseDTO> getRecipesByCuisine(String cuisine){
         List<Recipe> recipes = recipeRepository.findByCuisine(cuisine);
         return recipes.stream().map(recipe -> new RecipeListResponseDTO(
                                                     recipe.getRecipeName(),
@@ -95,9 +93,9 @@ public class RecipeService {
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
                 recipe.getServing(),
-                recipe.getCuisine().getName(),
-                recipe.getFoodType().getName(),
-                recipe.getCookingStyle().getName(),
+                recipe.getCuisine(),
+                recipe.getFoodType(),
+                recipe.getCookingStyle(),
                 nutrition != null ? nutrition.getCalories() : 0, // null일 경우 기본값 0으로 되게끔
                 nutrition != null ? nutrition.getSodium() : 0,
                 nutrition != null ? nutrition.getCarbohydrate() : 0,

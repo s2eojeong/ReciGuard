@@ -3,7 +3,6 @@ package com.ReciGuard.controller;
 import com.ReciGuard.dto.RecipeDetailResponseDTO;
 import com.ReciGuard.dto.RecipeListResponseDTO;
 import com.ReciGuard.dto.RecipeRecommendResponseDTO;
-import com.ReciGuard.entity.Enum.Cuisine;
 import com.ReciGuard.service.RecipeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +35,7 @@ public class RecipeController {
 
     // cuisine별 레시피 리스트
     @GetMapping(params = "cuisine")
-    public List<RecipeListResponseDTO> getRecipesByCuisine(@RequestParam Cuisine cuisine){
+    public List<RecipeListResponseDTO> getRecipesByCuisine(@RequestParam String cuisine){
         return recipeService.getRecipesByCuisine(cuisine);
     }
 
