@@ -1,19 +1,20 @@
 package com.ReciGuard.entity;
 
-import com.ReciGuard.entity.Enum.Gender;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder // 빌더 패턴 추가
 public class User {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long userid;
 
@@ -22,25 +23,24 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Gender gender;
+    private String gender;
 
     private Integer age;
 
     @Column(precision = 4, scale = 1)
     private Double weight;
 
-    @Column(name ="user_pw", length = 20, nullable = false)
-    private String Password;
+    @Column(name = "user_pw", length = 20, nullable = false)
+    private String password;
 
     @Column(length = 50, nullable = false, unique = true)
     private String email;
 
-    @Column(name = "created_at" ,nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
 
     @PrePersist
     protected void onCreate() {
