@@ -42,4 +42,8 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeStats> recipeStats;
+
+    public Recipe(Long id) {
+        this.id = id;
+    }
 }

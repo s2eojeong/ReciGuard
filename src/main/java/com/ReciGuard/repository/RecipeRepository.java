@@ -80,29 +80,4 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
         WHERE r.id = :id
     """)
     Optional<Recipe> findRecipeDetailById(@Param("id") Long id); // 리스트로 받아오기
-
-    // 유저 스크랩 존재 확인
-    @Query("""
-        SELECT COUNT(us) > 0
-        FROM UserScrap us
-        WHERE us.user.id = :userId AND us.recipe.id = :recipeId
-    """)
-    boolean existsByUserIdAndRecipeId(@Param("userId") Long userId, @Param("recipeId") Long recipeId);
-
-    // 유저 스크랩 삭제
-    @Modifying
-    @Query("""
-        DELETE FROM UserScrap us
-        WHERE us.user.id = :userId AND us.recipe.id = :recipeId
-    """)
-    void deleteByUserIdAndRecipeId(@Param("userId") Long userId, @Param("recipeId") Long recipeId);
-
-    // 레시피 스크랩 증가/감소
-    @Modifying
-    @Query("""
-        UPDATE RecipeStats rs
-        SET rs.scrapCount = rs.scrapCount + :increment
-        WHERE rs.recipe.id = :recipeId
-    """)
-    void incrementScrapCount(@Param("recipeId") Long recipeId, @Param("increment") int increment);
 }
