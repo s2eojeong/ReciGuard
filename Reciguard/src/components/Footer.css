@@ -50,12 +50,3 @@
     font-size: 0.8rem;
     color: #000;
 }
-
-/* 반응형 디자인 */
-@media (max-width: 768px) {
-    .footer {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-    }
-}
