@@ -45,20 +45,9 @@
 }
 
 .chicken {
-    width: 235px !important;
-    position: relative;
-    right: -70px;
-    top: 100%; /* 세로 중앙 정렬 */
-    transform: translateY(-50%);
-    border-radius: 8px;
-    border: 15px solid #607862;
-}
-
-
-.chicken {
-    width: 235px !important;
+    width: 260px !important;
     position: absolute;
-    right: -60px; /* 오른쪽 공간에 배치 (필요에 따라 값 조정) */
+    right: -70px; /* 오른쪽 공간에 배치 (필요에 따라 값 조정) */
     top: 100%; /* 세로 중앙 정렬 */
     transform: translateY(-50%);
     border-radius: 5px;
