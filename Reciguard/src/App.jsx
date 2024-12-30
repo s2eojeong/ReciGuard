@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup"
 import Form from './pages/Form';
 import Realmain from './pages/Realmain';
+import Register from './pages/Register';
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                 <Route path="/Signup" element={<Signup />}/>
                 <Route path="/Form" element={<Form />}/>
                 <Route path='/Realmain' element={<Realmain />}/>
+                <Route path='/Register' element={<Register />}/>
             </Routes> 
         </>
         );

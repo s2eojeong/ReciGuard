@@ -12,7 +12,9 @@ const Header2 = () => {
         <ul className="navbar-menu2">
         <li>분류</li>
         <li>랭킹</li>
+        <Link to="/Register" style={{ textDecoration: "none" }}>
         <li>레시피 등록</li>
+        </Link>
         </ul>
         <div className="rightnav2">
         <input className="navbar-search2" type="text" placeholder="Search..." />
