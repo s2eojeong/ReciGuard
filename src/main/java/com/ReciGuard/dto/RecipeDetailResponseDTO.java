@@ -21,8 +21,8 @@ public class RecipeDetailResponseDTO {
     private int fat;
     private int protein;
 
-    private List<Map<String, String>> ingredients;
-    private List<Map<String, String>> instructions;
+    private List<IngredientResponseDTO> ingredients; // 재료 리스트
+    private List<InstructionResponseDTO> instructions; // 조리 과정 리스트
 
     public RecipeDetailResponseDTO(String imagePath,
                                    String recipeName,
@@ -31,8 +31,8 @@ public class RecipeDetailResponseDTO {
                                    String foodType,
                                    String cookingStyle,
                                    int calories, int sodium, int carbohydrate, int fat, int protein,
-                                   List<Map<String, String>> ingredients,
-                                   List<Map<String, String>> instructions) {
+                                   List<IngredientResponseDTO> ingredients,
+                                   List<InstructionResponseDTO> instructions) {
         this.imagePath = imagePath;
         this.recipeName = recipeName;
         this.serving = serving;

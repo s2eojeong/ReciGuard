@@ -40,8 +40,8 @@ public class Recipe {
     @OneToOne(mappedBy = "recipe", fetch = FetchType.LAZY)
     private Nutrition nutrition;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    private List<RecipeStats> recipeStats;
+    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
+    private RecipeStats recipeStats;
 
     public Recipe(Long id) {
         this.id = id;
