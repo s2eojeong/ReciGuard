@@ -15,11 +15,9 @@ public class RecipeStats {
     @Column(name = "stats_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
-
-    private Date date;
 
     @Column(name = "view_count")
     private int viewCount;
