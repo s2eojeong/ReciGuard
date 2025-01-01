@@ -21,7 +21,7 @@
 .recipe-header {
     text-align: center;
     margin-bottom: 20px;
-    margin-right: 325px;
+    margin-right: 340px;
 }
 
 .recipe-title-container {
@@ -47,10 +47,9 @@
 .chicken {
     width: 260px !important;
     position: absolute;
-    right: -70px; /* 오른쪽 공간에 배치 (필요에 따라 값 조정) */
+    right: -100px; /* 오른쪽 공간에 배치 (필요에 따라 값 조정) */
     top: 100%; /* 세로 중앙 정렬 */
     transform: translateY(-50%);
-    border-radius: 5px;
 }
 
 .recipe-subtitle {
@@ -78,10 +77,6 @@
     background-color: #3E5944;
     color:#C9D2CB;
     border:2px solid #C9D2CB;
-}
-
-.chicken {
-    width: 300px;
 }
 
 .recipe-ingredients {

@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+.regis3-wrapper {
+    background-color: #D9E0DB;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 10px 30px 10px;
+}
+
+.regis3-container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    border: 1px solid #e0e0e0;
+}
+
+.regis3-header {
+    background-color: #3E5944;
+    color: white;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.regis3-note {
+    font-size:15px;
+    text-align: left;
+    margin: 15px 0 -10px 30px;
+    color: #858585;
+}
+
+.regis3-form {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+    align-items: center;
+}
+
+.regis3-form > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.step-description {
+    resize: none;
+    width: 400px;
+    height:80px;
+    margin-right: 40px;
+    margin-top: -5px;
+    padding: 12px;
+    background-color: #E4E3E3;
+    font-size: 14px;
+    color: #858585;
+    position: relative;
+    left: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    line-height: 1.5;
+}
+
+.step-number {
+    font-size: 50px;
+    position: relative;
+    top:5px;
+    margin-bottom:60px;
+    font-weight: bold;
+    font-family: 'Lalezar', cursive;
+    color: #3E5944;
+}
+
+.step-image {
+    width:100px;
+}
+
+.step-delete {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    position: relative;
+    left: 11px;
+    background-color: #E4E3E3;
+    border: 1px solid #8e8c8c;
+    color: #616161;
+    border-radius: 4px;
+}
+
+.step-row:hover .step-delete {
+    opacity: 1;
+    visibility: visible;
+}
+
+.step-add {
+    display: block;
+    margin: 0 auto;
+    margin-top: -23px;
+    margin-bottom: 25px;
+    padding: 4px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #3E5944;
+    background-color: white;
+    border: 2px solid #3E5944;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.step-add:hover {
+    background-color: #3E5944;
+    color: white;
+}
+
+.register-button {
+    width:220px;
+    font-size: 20px;
+    padding: 10px;
+    background-color: #3E5944;
+    color:white;
+    border-radius: 10px;
+    border: none;
+    font-weight: bolder;
+    margin-top: 30px;
+}
+
+.register-button:hover {
+    background-color: #13261A;
+}

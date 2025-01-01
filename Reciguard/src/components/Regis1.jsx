@@ -1,5 +1,5 @@
 import React from "react";
-import "./Regis.css";
+import "./Regis1.css";
 import { useState, useRef } from 'react';
 import image from "../assets/이미지업로드.png"
 

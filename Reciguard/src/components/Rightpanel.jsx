@@ -27,7 +27,9 @@ return (
             <a href="#" className="forgot-password">비밀번호 찾기</a>
             </div>
         </div>
+        <Link to='/Realmain'>
         <button type="submit" className="log-in-btn">Log In</button>
+        </Link>
         </form>
         <div>
         <p className="sign-up">
