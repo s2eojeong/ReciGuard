@@ -1,109 +1,62 @@
-.recipe-hero {
+.recommend-container {
+    background-color: #c9d2cb;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
-    margin: 0;
-    padding: 0;
-    background-color: #3E5944;
-}
-
-.green-section {
-    background-color: #3E5944;
-    padding: 60px 20px;
-    text-align: center;
-}
-
-.gray-section {
-    background-color: #F2F2F2;
-    padding:0px;
-    text-align: center;
-}
-
-.recipe-header {
-    text-align: center;
-    margin-bottom: 20px;
-    margin-right: 340px;
-}
-
-.recipe-title-container {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 10px;
-    overflow: visible;
-    position: relative;
 }
 
 .fork {
-    width:50px;
+    width:70px;
 }
 
-.recipe-title {
-    display: block !important;
-    font-size: 40px;
-    font-weight: bold;
-    color: #EDBCBE;
-}
-
-.chicken {
-    width: 260px !important;
-    position: absolute;
-    right: -100px; /* 오른쪽 공간에 배치 (필요에 따라 값 조정) */
-    top: 100%; /* 세로 중앙 정렬 */
-    transform: translateY(-50%);
-}
-
-.recipe-subtitle {
-    font-size: 30px;
-    margin-top: -10px;
+.recommend-title {
+    font-size: 45px;
+    color: #3e5944;
     margin-bottom: 20px;
-    margin-left: 100px;
-    color: #F2F2F2;
 }
 
-.recipe-button {
-    background-color: #C9D2CB;
-    color: #3E5944;
-    border: none;
-    padding: 6px 15px;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: bolder;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-left: 250px;
+.recommend-card {
+    background-color: #f2f2f2;
+    width: 700px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.recipe-button:hover {
-    background-color: #3E5944;
-    color:#C9D2CB;
-    border:2px solid #C9D2CB;
+.recommend-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
-.recipe-ingredients {
-    background-color: #C9D2CB;
-    color: #3E5944;
-    border-radius: 8px;
-    text-align: center;
-    width: 100%;
-    max-width: 800px;
-    padding: 0px 20px;
-    margin: auto;
-    margin-top: -50px;
+.recommend-content {
+    margin-left: 15px;
+    text-align: left;
 }
 
-.ingredients-header {
+.recommend-dish-name {
     font-size: 18px;
-    font-weight: bold;
-    margin-bottom: -10px;
-    margin-top: 20px;
-    padding-top: 8px;
-
+    color: #542825; /* 갈색 */
+    margin-bottom: 10px;
 }
 
-.ingredients-content {
-    font-size: 16px;
-    line-height: 1.5;
-    color: #686868;
-    font-weight: bold;
-    padding-bottom: 8px;
+.recommend-button {
+    background-color: #3e5944; /* 진한 초록색 */
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.recommend-button:hover {
+    background-color: #2f4535; /* 진한 초록색보다 더 어두운 음영 */
 }
