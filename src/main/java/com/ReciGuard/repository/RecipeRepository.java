@@ -1,6 +1,7 @@
 package com.ReciGuard.repository;
 
 import com.ReciGuard.entity.Recipe;
+import com.ReciGuard.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -67,7 +68,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
         WHERE (ui.user.id IS NULL OR ui.user.id != :userId)
           AND (r.recipeName LIKE %:query% OR i.name LIKE %:query%)
     """)
-    List<Recipe> findFilteredByQuery(@Param("userId") Long userId, @Param("query") String query);
+    List<Recipe> findQueryFilteredRecipes(@Param("userId") Long userId, @Param("query") String query);
 
     // 특정 레시피 상세 정보
     @Query("""
@@ -80,4 +81,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
         WHERE r.id = :id
     """)
     Optional<Recipe> findRecipeDetailById(@Param("id") Long id); // 리스트로 받아오기
+
+    // 특정 사용자가 등록한 레시피 조회
+    List<Recipe> findAllByUser(User user);
 }
