@@ -1,0 +1,100 @@
+.regis-wrapper {
+    background-color: #D9E0DB;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+}
+
+.regis-container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    border: 1px solid #e0e0e0;
+}
+
+.regis-header {
+    background-color: #3E5944;
+    color: white;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.regis-form {
+    display: flex;
+    padding: 16px;
+    gap: 16px;
+}
+
+.regis-left {
+    flex: 2.5;
+    display: flex;
+    flex-direction: column;
+    margin: 20px 0 20px 0;
+    position: relative;
+    right: 10px;
+    gap: 18px;
+}
+
+.regis-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    margin: 20px 35px 20px 0;
+    position: relative;
+    right: 20px;
+    align-items: center;
+}
+
+.regis-group {
+    display: flex;
+    margin-left: 150px;
+}
+
+.regis-label {
+    font-size: 16px;
+    margin-top: 8px;
+    margin-left: -30px;
+    margin-right: 60px;
+    color: #425466;
+    font-weight: bold;
+
+}
+
+.regis-input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #E4E3E3;
+    width: 300px;
+    font-size: 14px;
+}
+
+.regis-select {
+    padding: 8px;
+    width: 100px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #E4E3E3;
+    color: #757575;
+}
+
+.regis-select.small {
+    width: 100px;
+}
+
+.regis-info {
+    display: flex;
+    gap: 4%;
+}
+
+.image-upload {
+    width: 150px; 
+    height: 162px;
+    object-fit: cover; /* 이미지 비율 유지하며 자르기 */
+}

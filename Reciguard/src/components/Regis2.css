@@ -1,0 +1,98 @@
+.regis2-wrapper {
+    background-color: #D9E0DB;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 10px 30px 10px;
+}
+
+.regis2-container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    border: 1px solid #e0e0e0;
+}
+
+.regis2-header {
+    background-color: #3E5944;
+    color: white;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+
+.regis2-form {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        align-items: center;
+}
+
+.regis2-note {
+    font-size:15px;
+    text-align: left;
+    margin: 15px 0 -10px 30px;
+    color: #858585;
+}
+
+.regis2-form > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.regis2-form input[type="text"] {
+    width: 200px;
+    padding: 8px;
+    border: none;
+    border-radius: 4px; /* 모서리 둥글게 */
+    background-color: #E4E3E3;
+    font-size: 14px;
+    color: #858585;
+    box-sizing: border-box; /* 패딩 포함한 너비 계산 */
+    position: relative;
+    left: 12px;
+    border: 1px solid #ccc;
+}
+
+.regis2-form input[type="text"]::placeholder {
+    color: #858585;
+}
+
+.ingredient-delete {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    position: relative;
+    left: 11px;
+    background-color: #E4E3E3;
+    border: 1px solid #8e8c8c;
+    color: #616161;
+    border-radius: 4px;
+}
+
+
+.ingredient-row:hover .ingredient-delete {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ingredient-add {
+    margin: 0 auto;
+    margin-top: -5px;
+    margin-bottom: 25px;
+    padding: 4px 16px;
+    border: 2px solid #3E5944;
+    background-color: white;
+    color: #3E5944;
+    font-size: 14px;
+    font-weight: bolder;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
