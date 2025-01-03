@@ -19,6 +19,7 @@ public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
+    //회원가입
     @Transactional
     public void save(UserResponseDTO.Request userRequestDTO) {
 
@@ -56,10 +57,10 @@ public class UserService {
         // 회원가입 때 입력한 email로 해당 user의 정보를 가져옴
         Optional<User> byEmailUser = userRepository.findByEmail(userDTO.getEmail());
         // 입력한 email의 user 정보가 있으면
-        if(byEmailUser.isPresent()) {
+        if (byEmailUser.isPresent()) {
             User userEntity = byEmailUser.get();
             // 사용자가 입력한 password와 회원가입 때 입력한 password를 비교함
-            if(bCryptPasswordEncoder.matches(userDTO.getPassword(), userEntity.getPassword())) {
+            if (bCryptPasswordEncoder.matches(userDTO.getPassword(), userEntity.getPassword())) {
                 // 같으면 해당 user 정보를 dto로 변환하여 return
                 return UserResponseDTO.toUserDTO(userEntity);
             } else {
@@ -72,4 +73,21 @@ public class UserService {
             return null;
         }
     }
+
+    //회원 정보 조회
+    public UserResponseDTO.Response getUserInfo(Long userid) {
+        User user = userRepository.findById(userid).orElseThrow(() ->
+                new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+        //entity를 dto로 변환해서 전달
+        return new UserResponseDTO.Response(user);
+    }
+
+    //회원 탈퇴 로직
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
+         userRepository.delete(user); // 실제 삭제 예시
+    }
 }
+
