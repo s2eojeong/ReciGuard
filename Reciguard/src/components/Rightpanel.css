@@ -1,0 +1,95 @@
+.right-panel {
+    flex: 1;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.right-panel h2 {
+    color: #3E5944;
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+}
+
+.meet {
+    margin-top: -5px;
+    color:#3E5944
+}
+
+.login-form {
+    width: 100%;
+    max-width: 350px;
+    margin-top: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    color: #757575;
+}
+
+.form-group label {
+    font-size: 13px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #d3d3d3;
+    border-radius: 5px;
+}
+
+.input-container input {
+    flex: 1;
+    padding-right: 100px; /* 비밀번호 찾기 링크 여유 공간 */
+    padding: 10px;
+    border: 1px solid #d3d3d3;
+    border-radius: 5px;
+}
+
+.forgot-password {
+    text-decoration: none;
+    font-size: 0.9rem;
+    color: #757575;
+    text-align: right;
+    display: block;
+    margin-top: 7px;
+    margin-right: -16px;
+}
+
+.forgot-password:hover{
+    color: #3E5944;
+}
+
+.log-in-btn {
+    background-color: #3E5944;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.log-in-btn:hover {
+    background-color: #1e3524;
+}
+
+.sign-up {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color:#757575;
+}
+
+.sign-up a {
+    color: #3E5944;
+    text-decoration: none;
+}
+
+.sign-up a:hover{
+    color: #1e3524;
+    font-weight: bold;
+}

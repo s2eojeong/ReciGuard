@@ -1,0 +1,6 @@
+.login-container {
+    display: flex; /* Flexbox 사용 */
+    flex-direction: row; /* 가로로 배치 */
+    height: 100vh; /* 전체 화면 높이 */
+    background-color: #FCFCFD; /* 배경 색상 */
+}

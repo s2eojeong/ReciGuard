@@ -1,0 +1,62 @@
+.recommend-container {
+    background-color: #c9d2cb;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fork {
+    width:70px;
+}
+
+.recommend-title {
+    font-size: 45px;
+    color: #3e5944;
+    margin-bottom: 20px;
+}
+
+.recommend-card {
+    background-color: #f2f2f2;
+    width: 700px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.recommend-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.recommend-content {
+    margin-left: 15px;
+    text-align: left;
+}
+
+.recommend-dish-name {
+    font-size: 18px;
+    color: #542825; /* 갈색 */
+    margin-bottom: 10px;
+}
+
+.recommend-button {
+    background-color: #3e5944; /* 진한 초록색 */
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.recommend-button:hover {
+    background-color: #2f4535; /* 진한 초록색보다 더 어두운 음영 */
+}
