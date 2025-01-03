@@ -86,4 +86,19 @@ public class UserResponseDTO {
             this.updatedAt = user.getUpdatedAt();
         }
     }
+    //dto로 변경
+    public static UserResponseDTO.Request toUserDTO(User userEntity) {
+        // UserResponseDTO.Request 객체 생성
+        return UserResponseDTO.Request.builder()
+                .id(userEntity.getUserid())          // ID 설정
+                .username(userEntity.getUsername())  // 사용자 이름 설정
+                .gender(userEntity.getGender())      // 성별 설정
+                .age(userEntity.getAge())            // 나이 설정
+                .weight(userEntity.getWeight())      // 몸무게 설정
+                .password(userEntity.getPassword())  // 비밀번호 설정
+                .email(userEntity.getEmail())        // 이메일 설정
+                .build();                            // 빌더 패턴으로 객체 생성
+    }
+
 }
+

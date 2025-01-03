@@ -52,8 +52,7 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void modify(String username, String password) {
-        this.username = username;
+    public void modify(String password) {
         this.password = password;
     }
 
