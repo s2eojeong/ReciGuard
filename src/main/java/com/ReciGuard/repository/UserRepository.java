@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     /* Security - 로그인 시 사용자 검색 */
-    Optional<User> findByUsername(String username);
+    User findByUsername(String username);
     /* email로 사용자 조회 */
     Optional<User> findByEmail(String email);
 
