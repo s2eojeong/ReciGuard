@@ -1,11 +1,13 @@
 .recommend-container {
-    background-color: #c9d2cb;
+    background-color: #3e5944;
     padding: 20px;
     text-align: center;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    margin: 0 auto;
 }
 .recommend-tit {
     display: flex;
@@ -18,19 +20,19 @@
     height:42px;
     position: relative;
     top:40px;
-    right:20px;    
+    right:20px;
 }
 
 .recommend-title {
-    font-size: 45px;
-    color: #3e5944;
-    margin-bottom: 5px;
+    font-size: 43px;
+    color: #f2f2f2;
+    margin-bottom: 2px;
 }
 
 .recommend-card {
     background-color: #f2f2f2;
-    width: 580px;
-    height: 200px;
+    width: 70%;
+    height: 250px;
     border-radius: 10px;
     display: flex;
     justify-content: center;
@@ -44,8 +46,8 @@
 }
 
 .recommend-image {
-    width: 250px;
-    height: 165px;
+    width: 350px;
+    height: 220px;
     border-radius:5px;
     object-fit: cover;
 }
@@ -56,30 +58,31 @@
 }
 
 .recommend-dish-name {
-    font-size: 28px;
+    font-size: 38px;
     color: #542825; /* 갈색 */
     margin-bottom: 7px;
     margin-left: 15px;
     position: relative;
-    top: -7px;
+    top: -15px;
 }
 
 .recommend-button {
-    background-color: #c9d2cb; /* 진한 초록색 */
-    color: #3e5944;
+    background-color: #3e5944; /* 진한 초록색 */
+    color: #f2f2f2;
     border: none;
     padding: 8px 20px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bolder;
     position: relative;
-    right: 5px;
-    top:-4px;
+    right: 15px;
+    top:-10px;
 }
 
 .recommend-button:hover {
     background-color: #f2f2f2;
     border: 2px solid #3e5944;
     color:#3e5944;
+    font-weight: bolder;
 }
