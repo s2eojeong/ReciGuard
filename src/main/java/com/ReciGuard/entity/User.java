@@ -20,10 +20,10 @@ public class User {
     @Column(length = 20, nullable = false, unique = true)
     private String username;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private String gender;
 
+    @Column
     private Integer age;
 
     @Column(precision = 4, scale = 1)
@@ -34,6 +34,9 @@ public class User {
 
     @Column(length = 50, nullable = false, unique = true)
     private String email;
+
+    @Column
+    private String role;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
