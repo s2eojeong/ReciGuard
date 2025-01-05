@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder // 빌더 패턴 추가
+@Table(name = "users")
 public class User {
 
     @Id
@@ -20,20 +21,23 @@ public class User {
     @Column(length = 20, nullable = false, unique = true)
     private String username;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private String gender;
 
+    @Column
     private Integer age;
 
-    @Column(precision = 4, scale = 1)
+    @Column(precision = 4)
     private Double weight;
 
-    @Column(name = "user_pw", length = 20, nullable = false)
+    @Column(name = "user_pw", nullable = false)
     private String password;
 
     @Column(length = 50, nullable = false, unique = true)
     private String email;
+
+    @Column
+    private String role;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -52,8 +56,7 @@ public class User {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void modify(String username, String password) {
-        this.username = username;
+    public void modify(String password) {
         this.password = password;
     }
 
