@@ -40,7 +40,7 @@ public class Recipe {
     @OneToOne(mappedBy = "recipe", fetch = FetchType.LAZY)
     private Nutrition nutrition;
 
-    @OneToMany(mappedBy = "recipe", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "recipe", fetch = FetchType.LAZY)
     private RecipeStats recipeStats;
 
     public Recipe(Long id) {
