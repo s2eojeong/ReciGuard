@@ -2,6 +2,7 @@ package com.ReciGuard.controller;
 import com.ReciGuard.SecurityConfig.UserPrincipal;
 import com.ReciGuard.dto.UserIngredientDTO;
 import com.ReciGuard.dto.UserResponseDTO;
+import com.ReciGuard.entity.Ingredient;
 import com.ReciGuard.entity.UserIngredient;
 import com.ReciGuard.service.UserIngredientService;
 import com.ReciGuard.service.UserService;
@@ -61,15 +62,22 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/allergy/{userId}")
-    public ResponseEntity<String> addOrUpdateUserIngredient(@PathVariable Long userId, @RequestParam String ingredient) {
-        userIngredientService.addOrUpdateUserIngredient(userId, ingredient);
-        return ResponseEntity.ok("UserIngredient 추가 또는 갱신 완료");
-    }
+
     /*추가적으로 정해야할 것 어떤 정보를 줘서 ingredient를 수정하게 할 것인지
     예를 들어 "계란"이라는 정보만 줘서 초기화해서 추가할 건지 아니면 체크방식? 등으로 바꿀 건지
-
      */
+    @PostMapping("/allergy/{userId}")
+    public ResponseEntity<String> addOrUpdateUserIngredient(@PathVariable Long userId, @RequestBody Ingredient ingredient) {
+        // Step 1: Ingredient 객체에서 ID 추출
+        Long ingredientId = ingredient.getId(); // getId() 메서드를 통해 ID 추출
+
+        // Step 2: 서비스 메서드 호출
+        userIngredientService.addOrUpdateUserIngredient(userId, ingredientId);
+
+        // Step 3: 성공 응답 반환
+        return ResponseEntity.ok("UserIngredient 추가 또는 갱신 완료");
+    }
+
 
 }
 
