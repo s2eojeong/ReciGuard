@@ -16,11 +16,15 @@ public class UserIngredient {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ingredient_id")
-    private Ingredient ingredient;
+
+    //@ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "ingredient_id")
+    @Column
+    private String ingredient; // 나중에 ingredient로 바꾸어 주어야함
+    //List로 바꾸어도 좋을듯?
+
 
 }
