@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder // 빌더 패턴 추가
+@Table(name = "users")
 public class User {
 
     @Id
@@ -26,10 +27,10 @@ public class User {
     @Column
     private Integer age;
 
-    @Column(precision = 4, scale = 1)
+    @Column(precision = 4)
     private Double weight;
 
-    @Column(name = "user_pw", length = 20, nullable = false)
+    @Column(name = "user_pw", nullable = false)
     private String password;
 
     @Column(length = 50, nullable = false, unique = true)
