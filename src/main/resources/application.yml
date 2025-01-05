@@ -3,19 +3,19 @@ spring:
     name: ReciGuard
   jwt:
     secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
-  datasource:
-    url: jdbc:mysql://localhost:3306/reciguard?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
-    username: username  # ??? ??
-    password: password  # ????
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLDialect
-  sql:
-    init:
-      data-locations: classpath:db/data.sql
-      mode: always
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/reciguard?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+#    username: username  #
+#    password: password  #
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQLDialect
+#  sql:
+#    init:
+#      data-locations: classpath:db/data.sql
+#      mode: always
 
