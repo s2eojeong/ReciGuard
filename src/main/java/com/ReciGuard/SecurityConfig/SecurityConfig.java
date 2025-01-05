@@ -1,5 +1,7 @@
 package com.ReciGuard.SecurityConfig;
 
+import com.ReciGuard.JWT.JWTFilter;
+import com.ReciGuard.JWT.JWTUtil;
 import com.ReciGuard.JWT.LoginFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final JWTUtil jwtUtil;
 
     //AuthenticationManager Bean 등록
     @Bean
@@ -44,11 +47,15 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/register","/password").permitAll()
+                        .requestMatchers("/login", "/password", "/register").permitAll()
                         .anyRequest().authenticated());
 
+        //JWTFilter 등록
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+
         http //전에 사용하지 않는다고 지정한 필터 자리에 커스텀 로그인 필터를 만들어서 넣어줌
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration)), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration),jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http
                 .sessionManagement((session) -> session
