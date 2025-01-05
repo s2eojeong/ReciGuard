@@ -20,9 +20,9 @@ public class UserScrap {
     @JoinColumn(name = "user_id")
     private User user;
 
-    //@ManyToOne(fetch = FetchType.LAZY)
-    //@JoinColumn(name = "recipe_id")
-    //private Recipe recipe;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
 
     private LocalDateTime createdAt;
     
