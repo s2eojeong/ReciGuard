@@ -73,9 +73,6 @@ function Rightpanel() {
               value={password}
               onChange={(e) => setPassword(e.target.value)} // 상태 업데이트
             />
-            <a href="#" className="forgot-password">
-              비밀번호 찾기
-            </a>
           </div>
         </div>
         <button type="submit" className="log-in-btn">
