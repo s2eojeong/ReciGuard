@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping
 public class AuthController {
 
     private final UserService userService;
@@ -19,7 +19,7 @@ public class AuthController {
 
     // 회원가입
     @PostMapping("/register")
-    public ResponseEntity<String> save(@RequestBody UserResponseDTO.Request userDTO) {
+    public ResponseEntity<String> save(UserResponseDTO.Request userDTO) {
         try {
             // 회원가입 처리
             userService.save(userDTO);
