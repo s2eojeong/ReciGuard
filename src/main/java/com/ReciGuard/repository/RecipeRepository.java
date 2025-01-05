@@ -16,9 +16,9 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     // 오늘의 추천 레시피
     @Query("""
-        SELECT DISTINCT r 
+        SELECT r 
         FROM Recipe r
-        LEFT JOIN FETCH r.recipeStatsList rs
+        LEFT JOIN FETCH r.recipeStats
         WHERE r.id = :recipeId
     """)
     Recipe findTodayRecipe(@Param("recipeId") Long recipeId);
@@ -27,7 +27,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("""
         SELECT DISTINCT r
         FROM Recipe r
-        LEFT JOIN r.recipeIngredients ri
+        LEFT JOIN r.recipeIngredient ri
         LEFT JOIN ri.ingredient i
         LEFT JOIN UserIngredient ui ON i.id = ui.ingredient.id
         WHERE ui.user.id IS NULL OR ui.user.id != :userId
