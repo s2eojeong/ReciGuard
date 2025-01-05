@@ -19,7 +19,9 @@ const Header2 = () => {
       <div className="rightnav2">
         <input className="navbar-search2" type="text" placeholder="Search..." />
         <img className="mypage-image2" src={mypage} />
-        <h1 className="mypage-letter">마이페이지</h1>
+        <Link to="/users/{userid}" style={{ textDecoration: "none" }}>
+          <h1 className="mypage-letter">마이페이지</h1>
+        </Link>
       </div>
     </nav>
   );

@@ -8,6 +8,7 @@ import Form from "./pages/Form";
 import Realmain from "./pages/Realmain";
 import Register from "./pages/Register";
 import Recipedetail from "./pages/Recipedetail";
+import Mypage from "./pages/Mypage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/recipes" element={<Realmain />} />
         <Route path="/users/recipe-form" element={<Register />} />
         <Route path="/recipes/detail" element={<Recipedetail />} />
+        <Route path="/users/{userid}" element={<Mypage />} />
       </Routes>
     </>
   );
