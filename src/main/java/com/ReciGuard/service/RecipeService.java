@@ -217,7 +217,7 @@ public class RecipeService {
                     RecipeIngredient recipeIngredient = new RecipeIngredient();
 
                     // Ingredient 조회
-                    Ingredient ingredient = ingredientRepository.findByName(ingredientDto.getIngredient());
+                    Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
 
                     // RecipeIngredient 설정
                     recipeIngredient.setIngredient(ingredient);
@@ -298,7 +298,7 @@ public class RecipeService {
             List<RecipeIngredient> ingredients = recipeForm.getIngredients().stream()
                     .map(ingredientDto -> {
                         RecipeIngredient recipeIngredient = new RecipeIngredient();
-                        Ingredient ingredient = ingredientRepository.findByName(ingredientDto.getIngredient());
+                        Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
                         recipeIngredient.setIngredient(ingredient);
                         recipeIngredient.setQuantity(ingredientDto.getQuantity());
                         recipeIngredient.setRecipe(recipe);
