@@ -84,6 +84,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     """)
     Optional<Recipe> findRecipeDetailById(@Param("id") Long id); // 리스트로 받아오기
 
-    // 특정 사용자가 등록한 레시피 조회
-    List<Recipe> findAllByUser(User user);
+    // 특정 사용자가 등록한 레시피 조회 (userId 사용)
+    @Query("SELECT r FROM Recipe r WHERE r.user.id = :userId")
+    List<Recipe> findAllByUserId(@Param("userId") Long userId);
 }

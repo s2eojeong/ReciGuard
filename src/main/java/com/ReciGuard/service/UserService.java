@@ -89,5 +89,12 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
          userRepository.delete(user); // 실제 삭제 예시
     }
+
+    // username 기반으로 userId 조회
+    public Long findUserIdByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."))
+                .getUserid();
+    }
 }
 
