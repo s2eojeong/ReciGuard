@@ -22,6 +22,7 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final IngredientRepository ingredientRepository;
+    private final UserService userService;
 
     // 오늘의 레시피 추천
     public RecipeRecommendResponseDTO getTodayRecipe(Long id){
@@ -45,6 +46,7 @@ public class RecipeService {
 
     // 전체 레시피 리스트
     public List<RecipeListResponseDTO> getAllRecipes() {
+
         List<Recipe> recipes = recipeRepository.findAll();
 
         if (recipes.isEmpty()) {
@@ -94,7 +96,7 @@ public class RecipeService {
     }
 
     // cuisine 별 레시피 리스트 -> 필터링 후
-    public List<RecipeListResponseDTO> getCuisineFilteredRecipes(Long userId, String cuisine) {
+    public List<RecipeListResponseDTO> getFilteredRecipesByCuisine(Long userId, String cuisine) {
         // 사용자 알레르기 정보를 제외한 특정 cuisine 레시피 필터링
         List<Recipe> recipes = recipeRepository.findCuisineFilteredRecipes(userId, cuisine);
 
@@ -141,8 +143,7 @@ public class RecipeService {
                 .map(recipe -> new RecipeListResponseDTO(
                         recipe.getRecipeName(),
                         recipe.getImagePath(),
-                        recipe.getServing()
-                ))
+                        recipe.getServing()))
                 .collect(Collectors.toList());
     }
 
@@ -194,12 +195,9 @@ public class RecipeService {
 
         // 1. 현재 인증된 사용자의 username 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
 
-        // 2. username으로 User 엔티티 조회
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
-
-        // 3. Recipe 엔티티 생성 및 설정
+        // 2. Recipe 엔티티 생성 및 설정
         Recipe recipe = new Recipe();
         recipe.setRecipeName(recipeForm.getRecipeName());
         recipe.setImagePath(recipeForm.getImagePath());
@@ -208,10 +206,12 @@ public class RecipeService {
         recipe.setFoodType(recipeForm.getFoodType());
         recipe.setCookingStyle(recipeForm.getCookingStyle());
 
-        // 4. user_id로 연관관계 설정
+        // 3. userId로 User 엔티티 연관관계 설정
+        User user = new User();
+        user.setUserid(userId); // ID만 설정하여 연관관계 매핑
         recipe.setUser(user);
 
-        // 5. Ingredients 저장
+        // 4. Ingredients 저장
         List<RecipeIngredient> ingredients = recipeForm.getIngredients().stream()
                 .map(ingredientDto -> {
                     RecipeIngredient recipeIngredient = new RecipeIngredient();
@@ -228,7 +228,7 @@ public class RecipeService {
                 .collect(Collectors.toList());
         recipe.setRecipeIngredients(ingredients);
 
-        // 6. Instructions 저장
+        // 5. Instructions 저장
         List<Instruction> instructions = recipeForm.getInstructions().stream()
                 .map(instructionDto -> {
                     Instruction instruction = new Instruction();
@@ -240,14 +240,14 @@ public class RecipeService {
                 .collect(Collectors.toList());
         recipe.setInstructions(instructions);
 
-        // 7. RecipeStats 기본값 생성
+        // 6. RecipeStats 기본값 생성
         RecipeStats stats = new RecipeStats();
         stats.setScrapCount(0);
         stats.setViewCount(0);
         stats.setRecipe(recipe);
         recipe.setRecipeStats(stats);
 
-        // 8. Recipe 저장
+        // 7. Recipe 저장
         return recipeRepository.save(recipe);
     }
 
@@ -256,12 +256,11 @@ public class RecipeService {
         // 1. 현재 인증된 사용자의 username 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        // 2. username으로 User 엔티티 조회
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
+        // 2. username으로 userId 조회
+        Long userId = userService.findUserIdByUsername(username);
 
-        // 3. 해당 사용자가 등록한 레시피 조회 및 DTO로 변환
-        return recipeRepository.findAllByUser(user).stream()
+        // 3. 해당 사용자의 ID로 등록한 레시피 조회 및 DTO로 변환
+        return recipeRepository.findAllByUserId(userId).stream()
                 .map(recipe -> new RecipeListResponseDTO(
                         recipe.getRecipeName(),
                         recipe.getImagePath(),
@@ -276,16 +275,16 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("레시피를 찾을 수 없습니다."));
 
-        // 2. 사용자 소유 확인
+        // 2. 현재 인증된 사용자의 userId 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."));
+        Long userId = userService.findUserIdByUsername(username);
 
-        if (!recipe.getUser().equals(user)) {
+        // 3. 사용자 소유 확인
+        if (!recipe.getUser().getUserid().equals(userId)) {
             throw new SecurityException("자신이 등록한 레시피만 수정할 수 있습니다.");
         }
 
-        // 3. 레시피 정보 수정
+        // 4. 레시피 정보 수정
         recipe.setRecipeName(recipeForm.getRecipeName());
         recipe.setImagePath(recipeForm.getImagePath());
         recipe.setServing(recipeForm.getServing());
@@ -293,7 +292,7 @@ public class RecipeService {
         recipe.setFoodType(recipeForm.getFoodType());
         recipe.setCookingStyle(recipeForm.getCookingStyle());
 
-        // 4. 재료 수정
+        // 5. 재료 수정
         if (recipeForm.getIngredients() != null) {
             List<RecipeIngredient> ingredients = recipeForm.getIngredients().stream()
                     .map(ingredientDto -> {
