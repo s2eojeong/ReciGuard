@@ -33,10 +33,7 @@ public class UserService {
         }
 
         // User 엔티티 생성 및 저장
-        User user = User.builder()
-                .username(username)
-                .password(bCryptPasswordEncoder.encode(password))
-                .build();
+        User user = userRequestDTO.toEntity();
 
         userRepository.save(user);
     }
