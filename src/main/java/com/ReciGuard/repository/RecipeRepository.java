@@ -1,5 +1,6 @@
 package com.ReciGuard.repository;
 
+import com.ReciGuard.dto.MyRecipeForm;
 import com.ReciGuard.entity.Recipe;
 import com.ReciGuard.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -87,4 +88,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     // 특정 사용자가 등록한 레시피 조회 (userId 사용)
     @Query("SELECT r FROM Recipe r WHERE r.user.id = :userId")
     List<Recipe> findAllByUserId(@Param("userId") Long userId);
+
+    // 사용자가 작성한 나만의 레시피 조회
+    @Query("SELECT r FROM Recipe r WHERE r.id = :recipeId AND r.user.id = :userId")
+    Optional<Recipe> findRecipeByUserId(@Param("recipeId") Long recipeId, @Param("userId") Long userId);
 }
