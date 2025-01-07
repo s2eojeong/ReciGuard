@@ -54,6 +54,8 @@ public class UserResponseDTO {
                     .password(password)
                     .email(email)
                     .build();
+
+            System.out.println("Converted DTO to Entity: " + user);
             return user;
         }
     }
