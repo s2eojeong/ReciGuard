@@ -199,6 +199,7 @@ public class RecipeService {
 
         // 2. Recipe 엔티티 생성 및 설정
         Recipe recipe = new Recipe();
+
         recipe.setRecipeName(recipeForm.getRecipeName());
         recipe.setImagePath(recipeForm.getImagePath());
         recipe.setServing(recipeForm.getServing());
@@ -251,7 +252,7 @@ public class RecipeService {
         return recipeRepository.save(recipe);
     }
 
-    public List<RecipeListResponseDTO> findMyRecipes() {
+    public List<RecipeListResponseDTO> findMyRecipes() { // 리스트로 반환 (간단 조회)
 
         // 1. 현재 인증된 사용자의 username 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -267,6 +268,47 @@ public class RecipeService {
                         recipe.getServing()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    // 수정 폼 데이터 반환
+    public MyRecipeForm getRecipeFormEdit(Long recipeId) {
+        // 1. 현재 인증된 사용자 정보 가져오기
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
+
+        // 2. recipeId로 레시피 조회 (소유권 검증 포함)
+        Recipe recipe = recipeRepository.findRecipeByUserId(recipeId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
+
+        // 3. MyRecipeForm 생성 및 데이터 매핑
+        MyRecipeForm form = new MyRecipeForm();
+        form.setRecipeName(recipe.getRecipeName());
+        form.setImagePath(recipe.getImagePath());
+        form.setUserId(recipe.getUser().getUserid());
+        form.setServing(recipe.getServing());
+        form.setCuisine(recipe.getCuisine());
+        form.setFoodType(recipe.getFoodType());
+        form.setCookingStyle(recipe.getCookingStyle());
+
+        // 4. 재료 정보 매핑
+        List<IngredientResponseDTO> ingredientDTOs = recipe.getRecipeIngredients().stream()
+                .map(ingredient -> new IngredientResponseDTO(
+                        ingredient.getIngredient().getIngredient(),
+                        ingredient.getQuantity()
+                ))
+                .collect(Collectors.toList());
+        form.setIngredients(ingredientDTOs);
+
+        // 5. 조리 단계 정보 매핑
+        List<InstructionResponseDTO> instructionDTOs = recipe.getInstructions().stream()
+                .map(instruction -> new InstructionResponseDTO(
+                        instruction.getInstruction(),
+                        instruction.getInstructionImage()
+                ))
+                .collect(Collectors.toList());
+        form.setInstructions(instructionDTOs);
+
+        return form;
     }
 
     public RecipeDetailResponseDTO updateMyRecipe(Long recipeId, MyRecipeForm recipeForm) {

@@ -1,8 +1,7 @@
 package com.ReciGuard.controller;
 
-import com.ReciGuard.dto.RecipeDetailResponseDTO;
-import com.ReciGuard.dto.RecipeListResponseDTO;
-import com.ReciGuard.dto.RecipeRecommendResponseDTO;
+import com.ReciGuard.dto.*;
+import com.ReciGuard.entity.Recipe;
 import com.ReciGuard.service.RecipeService;
 import com.ReciGuard.service.RecipeStatsService;
 import com.ReciGuard.service.UserScrapService;
@@ -82,5 +81,38 @@ public class RecipeController {
 
         boolean isScrapped = userScrapService.toggleScrap(userId, recipeId);
         return ResponseEntity.ok(isScrapped);
+    }
+
+    // 나만의 레시피 조회 (간단 리스트 조회)
+    @GetMapping("/myrecipes")
+    public List<RecipeListResponseDTO> getMyRecipes() {
+        return recipeService.findMyRecipes();
+    }
+
+    // 나만의 레시피 상세 조회
+    @GetMapping("/myrecipe/{recipeId}")
+    public RecipeDetailResponseDTO getMyRecipeDetail(@PathVariable Long id){
+        // 내가 쓴 레시피를 내가 조회할 땐 viewCount 증가 x
+        return recipeService.getRecipeDetail(id);
+    }
+
+    // 나만의 레시피 저장
+    @PostMapping("/myrecipe/save")
+    public Recipe saveMyRecipe(@RequestBody MyRecipeForm recipeForm) {
+        return recipeService.saveMyRecipe(recipeForm);
+    }
+
+    // 나만의 레시피 수정 폼
+    @GetMapping("/myrecipe/{recipeId}/edit")
+    public MyRecipeForm UpdateMyRecipeForm(@PathVariable Long recipeId) {
+        return recipeService.getRecipeFormEdit(recipeId);
+    }
+
+    // 나만의 레시피 수정
+    @PostMapping("/myrecipe/{recipeId}/edit")
+    public RecipeDetailResponseDTO updateMyRecipe(
+            @PathVariable Long recipeId,
+            @RequestBody MyRecipeForm recipeForm) {
+        return recipeService.updateMyRecipe(recipeId, recipeForm);
     }
 }
