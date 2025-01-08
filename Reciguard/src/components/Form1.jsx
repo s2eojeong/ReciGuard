@@ -199,55 +199,55 @@ const Form1 = () => {
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="구이"
+                    value="찌기"
                     onChange={handleInputChange}
                   />{" "}
-                  구이
+                  찌기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="볶음"
+                    value="끓이기"
                     onChange={handleInputChange}
                   />{" "}
-                  볶음
+                  끓이기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="튀김"
+                    value="굽기"
                     onChange={handleInputChange}
                   />{" "}
-                  튀김
+                  굽기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="찜"
+                    value="볶기"
                     onChange={handleInputChange}
                   />{" "}
-                  찜
+                  볶기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="국"
+                    value="튀기기"
                     onChange={handleInputChange}
                   />{" "}
-                  국
+                  튀기기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="찌개"
+                    value="기타"
                     onChange={handleInputChange}
                   />{" "}
-                  찌개
+                  기타
                 </label>
               </div>
             </div>
