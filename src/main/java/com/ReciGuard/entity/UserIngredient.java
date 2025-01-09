@@ -23,5 +23,5 @@ public class UserIngredient {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient; // 나중에 ingredient로 바꾸어 주어야함
-    //List로 바꾸어도 좋을듯?
+
 }
