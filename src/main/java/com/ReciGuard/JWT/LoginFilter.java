@@ -1,19 +1,25 @@
 package com.ReciGuard.JWT;
 
 import com.ReciGuard.dto.CustomUserDetails;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 
 @RequiredArgsConstructor
@@ -23,13 +29,44 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //jwtutil 을 주입시킨다
     private final JWTUtil jwtUtil;
 
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        String username = obtainUsername(request);
-        String password = obtainPassword(request); // 여기서 유저 네임과 패스워드를 추출해서 authentication manager한데 정보를 줌
+        String username = null;
+        String password = null;
+
+        try {
+            // 요청 본문(JSON)에서 username과 password를 추출
+            BufferedReader reader = request.getReader();
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+
+            String body = sb.toString();
+            System.out.println("Request Body: " + body);
+
+            // JSON 파싱
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, String> jsonMap = objectMapper.readValue(body, new TypeReference<>() {});
+            username = jsonMap.get("username");
+            password = jsonMap.get("password");
+
+            System.out.println("Extracted Username: " + username);
+            System.out.println("Extracted Password: " + password);
+
+        } catch (IOException e) {
+            System.out.println("Error parsing request body: " + e.getMessage());
+            throw new AuthenticationServiceException("Invalid request format");
+        }
+
+        if (username == null || password == null) {
+            throw new AuthenticationServiceException("Username or Password is missing");
+        }
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
-        return authenticationManager.authenticate(authToken); //위의 정보를 dto에 담아서 Manager에 던져주면 정보를 확인을 해준다
+        return authenticationManager.authenticate(authToken);
     }
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
     @Override
@@ -45,7 +82,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        String token = jwtUtil.createJwt(username, role, 60*60*10L);
+        String token = jwtUtil.createJwt(username, role,60*60*10L);
 
         response.addHeader("Authorization", "Bearer " + token);
     }
