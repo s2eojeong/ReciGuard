@@ -1,6 +1,8 @@
 package com.ReciGuard.dto;
 
+import com.ReciGuard.entity.Ingredient;
 import com.ReciGuard.entity.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +10,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,6 +43,18 @@ public class UserResponseDTO {
         @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
         @NotNull(message = "이메일은 필수 입력 값입니다.")
         private String email;
+
+        @NotNull(message = "ookings Style cannot be null")
+        private String userCookingStyle;
+
+        @NotNull(message = "cuisine cannot be null")
+        private String userCuisine;
+
+        @NotNull(message = "Food type cannot be null")
+        private String userFoodType;
+
+        @JsonProperty("ingredients")
+        private List<String> ingredients;
 
         /* DTO -> Entity */
         public User toEntity() {
