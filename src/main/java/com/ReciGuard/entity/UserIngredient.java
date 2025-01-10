@@ -1,14 +1,14 @@
 package com.ReciGuard.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@Table(name = "user_ingredient")
+@Table(name = "user_ingredients")
+@Builder
+@AllArgsConstructor
 public class UserIngredient {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class UserIngredient {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ingredient_id")
+    @JoinColumn(name = "ingredient", nullable = false)
     private Ingredient ingredient; // 나중에 ingredient로 바꾸어 주어야함
 
 }
