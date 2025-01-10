@@ -1,14 +1,16 @@
 package com.ReciGuard.service;
 
 import com.ReciGuard.dto.UserResponseDTO;
-import com.ReciGuard.entity.User;
-import com.ReciGuard.repository.UserRepository;
+import com.ReciGuard.entity.*;
+import com.ReciGuard.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -16,7 +18,12 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserCookingStyleRepository userCookingStyleRepository;
+    private final UserCuisineRepository userCuisineRepository;
+    private final UserFoodTypeRepository userFoodTypeRepository;
+    private final UserIngredientRepository userIngredientRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final IngredientRepository ingredientRepository;
 
 
     //회원가입
@@ -33,9 +40,61 @@ public class UserService {
         }
 
         // User 엔티티 생성 및 저장
-        User user = userRequestDTO.toEntity();
+        User user = User.builder()
+                .username(username)
+                .password(bCryptPasswordEncoder.encode(password))
+                .age(userRequestDTO.getAge())
+                .email(userRequestDTO.getEmail())
+                .weight(userRequestDTO.getWeight())
+                .gender(userRequestDTO.getGender())
+                .build();
 
         userRepository.save(user);
+
+        //cookingstyle 저장
+        UserCookingStyle cookingStyle = UserCookingStyle.builder()
+                .cookingsStyle(userRequestDTO.getUserCookingStyle())
+                .user(user)
+                .build();
+        if (cookingStyle.getCookingsStyle() == null) {
+            throw new IllegalArgumentException("Cooking style cannot be null");
+        }
+        userCookingStyleRepository.save(cookingStyle);
+        //cuisine 저장
+        UserCuisine cuisine = UserCuisine.builder()
+                .cuisine(userRequestDTO.getUserCuisine())
+                .user(user)
+                .build();
+        userCuisineRepository.save(cuisine);
+        //foodtype 저장
+        UserFoodType foodType = UserFoodType.builder()
+                .foodType(userRequestDTO.getUserFoodType())
+                .user(user)
+                .build();
+        userFoodTypeRepository.save(foodType);
+
+
+        List<UserIngredient> userIngredients = userRequestDTO.getIngredients().stream()
+                .map(ingredientName -> {
+                    // Ingredient를 데이터베이스에서 조회 또는 생성
+                    Ingredient ingredient = ingredientRepository.findByIngredient(ingredientName);
+
+                    if (ingredient == null) {
+                        ingredient = new Ingredient();
+                        ingredient.setIngredient(ingredientName); // 이름 설정
+                        ingredient = ingredientRepository.save(ingredient); // 저장 후 반환
+                    }
+
+                    // UserIngredient 엔티티 생성 및 설정
+                    UserIngredient userIngredient = new UserIngredient();
+                    userIngredient.setUser(user);
+                    userIngredient.setIngredient(ingredient);
+                    return userIngredient;
+                })
+                .collect(Collectors.toList());
+
+        // UserIngredient 리스트를 저장
+        userIngredientRepository.saveAll(userIngredients);
     }
 
     //회원 정보 수정(비밀번호)
@@ -84,7 +143,7 @@ public class UserService {
     public void deleteUser(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 존재하지 않습니다."));
-         userRepository.delete(user); // 실제 삭제 예시
+        userRepository.delete(user); // 실제 삭제 예시
     }
 
     // username 기반으로 userId 조회

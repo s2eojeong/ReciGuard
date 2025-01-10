@@ -1,13 +1,13 @@
 package com.ReciGuard.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Table(name = "user_cuisine")
 
 public class UserCuisine {
@@ -19,7 +19,7 @@ public class UserCuisine {
     @JoinColumn
     private User user;
 
-    @Column(name = "food_type", length = 10, nullable = false)
-    private String foodType;
+    @Column(name = "cuisine", length = 10, nullable = false)
+    private String cuisine;
 
 }

@@ -30,20 +30,7 @@ public class AuthController {
 
         userService.save(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body("회원가입에 성공했습니다.");
-        /*
-        try {
-            // 회원가입 처리
-            userService.save(userDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("회원가입에 성공했습니다.");
-        } catch (IllegalArgumentException e) {
-            //중복 시 400 Bad Request 상태 코드 반환
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            // 그 외 에러 처리
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입에 실패했습니다.");
-        }
 
-         */
     }
 
     // 로그인
