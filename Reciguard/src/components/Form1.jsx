@@ -364,6 +364,7 @@ const Form1 = () => {
                 </label>
               </div>
             </div>
+
             <div className="allergy-div">
               <label className="type">육류</label>
               <div className="category">
@@ -405,6 +406,7 @@ const Form1 = () => {
                 </label>
               </div>
             </div>
+
             <div className="allergy-div">
               <label className="type">해산물</label>
               <div className="category">
