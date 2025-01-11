@@ -1,0 +1,50 @@
+.home-side-container {
+    width: 250px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+  }
+  
+  .menu-group11 {
+    margin-bottom: 20px;
+  }
+  
+  .menu-header11 {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .menu-header-icon {
+    margin-right: 10px;
+    width: 24px;
+    height: 24px;
+  }
+  
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    cursor: pointer;
+  }
+  
+  .menu-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+  }
+  
+  .menu-icon {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .menu-item:hover .menu-link {
+    color: #007bff;
+    font-weight: bold;
+  }
+  

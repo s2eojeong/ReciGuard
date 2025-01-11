@@ -1,7 +1,7 @@
 import React from "react";
-import Header2 from "../components/Header2";
-import Footer from "../components/Footer";
-import Sidebar3 from "../components/Mypage/Sidebar3";
+import Header2 from "../../components/Header2";
+import Footer from "../../components/Footer";
+import Sidebar3 from "../../components/Mypage/Sidebar3";
 
 function MypageRecipe() {
   return (
