@@ -1,15 +1,15 @@
 import React from "react";
 import "./Signup.css";
-import Leftpanel from '../components/Leftpanel';
-import Rightpanel2 from '../components/Rightpanel2';
+import Leftpanel from "../components/LoginSignup/Leftpanel";
+import Rightpanel2 from "../components/LoginSignup/Rightpanel2";
 
 function Signup() {
-    return (
+  return (
     <div className="login-container">
-        <Leftpanel />
-        <Rightpanel2 />
+      <Leftpanel />
+      <Rightpanel2 />
     </div>
-    );
+  );
 }
 
 export default Signup;
