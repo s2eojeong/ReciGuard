@@ -1,0 +1,92 @@
+.sidebar-container {
+    width: 120px;
+    background-color: #ddd;
+    height: 90vh; /* 화면 전체 높이 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+  }
+  
+  .menu-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .menu-footer {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+  }
+
+  .menu-item-hover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size:15px;
+    color: #3E5944;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bolder;
+    background-color: #ffffff;
+  }
+
+  .menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size:15px;
+    color: #666666;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-weight: bolder;
+  }
+  
+  .menu-item:hover {
+    background-color: #ffffff;
+    color:#3E5944;
+  }
+  
+  .menu-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+
+  .menu-icon2 {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
+  }
+
+  .menu-item2 {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size:13px;
+    color: #666666;
+    padding: 6px 20px;
+    cursor: pointer;
+    font-weight: bolder;
+  }
+
+  .menu-link {
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit; /* 부모 요소의 색상 상속 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    font-size: 15px;
+    font-weight: bolder;
+    padding: 8px 15px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .menu-link:hover {
+    background-color: #ffffff; /* 호버 시 배경색 변경 */
+    color: #3E5944; /* 호버 시 글자색 변경 */
+  }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import fork from "../assets/fork.png";
-import chicken from "../assets/닭도리탕.jpeg";
+import fork from "../../assets/fork.png";
+import chicken from "../../assets/닭도리탕.jpeg";
 import "./Recommend.css";
 
 const Recommend = () => {
