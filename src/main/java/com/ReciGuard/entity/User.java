@@ -4,6 +4,8 @@ import lombok.*;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -33,11 +35,15 @@ public class User {
     @Column(name = "user_pw", nullable = false)
     private String password;
 
-    @Column(length = 50, nullable = false, unique = true)
+    @Column(name = "email",length = 50, nullable = false, unique = true)
     private String email;
 
     @Column
     private String role;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserIngredient> ingredients = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

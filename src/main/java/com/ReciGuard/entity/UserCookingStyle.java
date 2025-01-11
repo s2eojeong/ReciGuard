@@ -1,14 +1,14 @@
 package com.ReciGuard.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter @Setter
 @NoArgsConstructor
 @Table(name = "user_cookingstyle")
+@Builder
+@AllArgsConstructor
 public class UserCookingStyle {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
