@@ -199,55 +199,55 @@ const Form1 = () => {
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="구이"
+                    value="찌기"
                     onChange={handleInputChange}
                   />{" "}
-                  구이
+                  찌기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="볶음"
+                    value="끓이기"
                     onChange={handleInputChange}
                   />{" "}
-                  볶음
+                  끓이기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="튀김"
+                    value="굽기"
                     onChange={handleInputChange}
                   />{" "}
-                  튀김
+                  굽기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="찜"
+                    value="볶기"
                     onChange={handleInputChange}
                   />{" "}
-                  찜
+                  볶기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="국"
+                    value="튀기기"
                     onChange={handleInputChange}
                   />{" "}
-                  국
+                  튀기기
                 </label>
                 <label className="category-label">
                   <input
                     type="checkbox"
                     name="cookingStyle"
-                    value="찌개"
+                    value="기타"
                     onChange={handleInputChange}
                   />{" "}
-                  찌개
+                  기타
                 </label>
               </div>
             </div>
@@ -262,7 +262,7 @@ const Form1 = () => {
           </legend>
           <div className="allergy-grid">
             <div className="allergy-div">
-              <label className="type">유제품 및 난류</label>
+              <label className="type">유제품</label>
               <div className="category">
                 <label className="category-label1">
                   <input
@@ -273,37 +273,28 @@ const Form1 = () => {
                   />{" "}
                   우유
                 </label>
-                <label className="category-label1">
-                  <input
-                    type="checkbox"
-                    name="dairyEgg"
-                    value="계란"
-                    onChange={handleInputChange}
-                  />{" "}
-                  계란
-                </label>
               </div>
             </div>
             <div className="allergy-div">
-              <label className="type">곡류 및 견과류</label>
+              <label className="type">견과류</label>
               <div className="category">
                 <label className="category-label1">
                   <input
                     type="checkbox"
                     name="grainNuts"
-                    value="밀"
+                    value="호두"
                     onChange={handleInputChange}
                   />{" "}
-                  밀
+                  호두
                 </label>
                 <label className="category-label1">
                   <input
                     type="checkbox"
                     name="grainNuts"
-                    value="대두"
+                    value="아몬드"
                     onChange={handleInputChange}
                   />{" "}
-                  대두
+                  아몬드
                 </label>
                 <label className="category-label1">
                   <input
@@ -318,31 +309,62 @@ const Form1 = () => {
                   <input
                     type="checkbox"
                     name="grainNuts"
-                    value="호두"
+                    value="참깨"
                     onChange={handleInputChange}
                   />{" "}
-                  호두
-                </label>
-                <label className="category-label1">
-                  <input
-                    type="checkbox"
-                    name="grainNuts"
-                    value="메밀"
-                    onChange={handleInputChange}
-                  />{" "}
-                  메밀
-                </label>
-                <label className="category-label1">
-                  <input
-                    type="checkbox"
-                    name="grainNuts"
-                    value="잣"
-                    onChange={handleInputChange}
-                  />{" "}
-                  잣
+                  참깨
                 </label>
               </div>
             </div>
+
+            <div className="allergy-div">
+              <label className="type">곡물류</label>
+              <div className="category">
+                <label className="category-label1">
+                  <input
+                    type="checkbox"
+                    name="grains"
+                    value="밀가루"
+                    onChange={handleInputChange}
+                  />{" "}
+                  밀가루
+                </label>
+                <label className="category-label1">
+                  <input
+                    type="checkbox"
+                    name="grains"
+                    value="귀리"
+                    onChange={handleInputChange}
+                  />{" "}
+                  귀리
+                </label>
+                <label className="category-label1">
+                  <input
+                    type="checkbox"
+                    name="grains"
+                    value="호밀가루"
+                    onChange={handleInputChange}
+                  />{" "}
+                  호밀가루
+                </label>
+              </div>
+            </div>
+
+            <div className="allergy-div">
+              <label className="type">콩류</label>
+              <div className="category">
+                <label className="category-label1">
+                  <input
+                    type="checkbox"
+                    name="bean"
+                    value="대두"
+                    onChange={handleInputChange}
+                  />{" "}
+                  대두
+                </label>
+              </div>
+            </div>
+
             <div className="allergy-div">
               <label className="type">육류</label>
               <div className="category">
@@ -368,34 +390,26 @@ const Form1 = () => {
                   <input
                     type="checkbox"
                     name="meat"
-                    value="쇠고기"
+                    value="소고기"
                     onChange={handleInputChange}
                   />{" "}
-                  쇠고기
+                  소고기
+                </label>
+                <label className="category-label1">
+                  <input
+                    type="checkbox"
+                    name="meat"
+                    value="계란"
+                    onChange={handleInputChange}
+                  />{" "}
+                  계란
                 </label>
               </div>
             </div>
+
             <div className="allergy-div">
               <label className="type">해산물</label>
               <div className="category">
-                <label className="category-label1">
-                  <input
-                    type="checkbox"
-                    name="seafood"
-                    value="새우"
-                    onChange={handleInputChange}
-                  />{" "}
-                  새우
-                </label>
-                <label className="category-label1">
-                  <input
-                    type="checkbox"
-                    name="seafood"
-                    value="게"
-                    onChange={handleInputChange}
-                  />{" "}
-                  게
-                </label>
                 <label className="category-label1">
                   <input
                     type="checkbox"
@@ -409,21 +423,51 @@ const Form1 = () => {
                   <input
                     type="checkbox"
                     name="seafood"
+                    value="연어"
+                    onChange={handleInputChange}
+                  />{" "}
+                  연어
+                </label>
+                <label className="category-label1">
+                  <input
+                    type="checkbox"
+                    name="seafood"
+                    value="참치"
+                    onChange={handleInputChange}
+                  />{" "}
+                  참치
+                </label>
+                <label className="category-label1">
+                  <input
+                    type="checkbox"
+                    name="seafood"
+                    value="꽃게"
+                    onChange={handleInputChange}
+                  />{" "}
+                  꽃게
+                </label>
+                <label className="category-label1">
+                  <input
+                    type="checkbox"
+                    name="seafood"
+                    value="새우"
+                    onChange={handleInputChange}
+                  />{" "}
+                  새우
+                </label>
+                <label className="category-label1">
+                  <input
+                    type="checkbox"
+                    name="seafood"
                     value="오징어"
                     onChange={handleInputChange}
                   />{" "}
                   오징어
                 </label>
-              </div>
-            </div>
-
-            <div className="allergy-div">
-              <label className="type">조개류</label>
-              <div className="category">
                 <label className="category-label1">
                   <input
                     type="checkbox"
-                    name="clam"
+                    name="seafood"
                     value="굴"
                     onChange={handleInputChange}
                   />{" "}
@@ -432,7 +476,7 @@ const Form1 = () => {
                 <label className="category-label1">
                   <input
                     type="checkbox"
-                    name="clam"
+                    name="seafood"
                     value="전복"
                     onChange={handleInputChange}
                   />{" "}
@@ -441,7 +485,7 @@ const Form1 = () => {
                 <label className="category-label1">
                   <input
                     type="checkbox"
-                    name="clam"
+                    name="seafood"
                     value="홍합"
                     onChange={handleInputChange}
                   />{" "}
@@ -450,11 +494,11 @@ const Form1 = () => {
                 <label className="category-label1">
                   <input
                     type="checkbox"
-                    name="clam"
-                    value="기타조개"
+                    name="seafood"
+                    value="조개"
                     onChange={handleInputChange}
                   />{" "}
-                  기타조개
+                  조개
                 </label>
               </div>
             </div>
@@ -475,27 +519,14 @@ const Form1 = () => {
                   <input
                     type="checkbox"
                     name="fruit"
-                    value="토마토"
+                    value="키위"
                     onChange={handleInputChange}
                   />{" "}
-                  토마토
+                  키위
                 </label>
               </div>
             </div>
-            <div className="allergy-div">
-              <label className="type">기타</label>
-              <div className="category">
-                <label className="category-label1">
-                  <input
-                    type="checkbox"
-                    name="others"
-                    value="아황산염"
-                    onChange={handleInputChange}
-                  />{" "}
-                  아황산염
-                </label>
-              </div>
-            </div>
+
             <div>
               <label className="type">해당없음</label>
               <div className="category">

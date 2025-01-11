@@ -1,7 +1,7 @@
 import React from "react";
 import "./Regis1.css";
 import { useState, useRef } from "react";
-import image from "../assets/이미지업로드.png";
+import image from "../../assets/이미지업로드.png";
 
 const Regis = () => {
   const [uploadedImage, setuploadedImage] = useState(image); // 기본 이미지 경로
@@ -66,12 +66,12 @@ const Regis = () => {
                 <option value="" disabled selected>
                   조리 방식
                 </option>
-                <option value="korean">구이</option>
-                <option value="chinese">볶음</option>
-                <option value="japanese">튀김</option>
-                <option value="western">찜</option>
-                <option value="asian">국</option>
-                <option value="asian">찌개</option>
+                <option value="korean">찌기</option>
+                <option value="chinese">끓이기</option>
+                <option value="japanese">굽기</option>
+                <option value="western">볶기</option>
+                <option value="asian">튀기기</option>
+                <option value="asian">기타</option>
               </select>
             </div>
             <div className="regis-group">
