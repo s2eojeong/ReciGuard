@@ -6,7 +6,7 @@ import lombok.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@Table(name = "user_ingredients")
+@Table(name = "user_ingredient")
 @Builder
 @AllArgsConstructor
 public class UserIngredient {
@@ -16,12 +16,12 @@ public class UserIngredient {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "user_id")
     private User user;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ingredient", nullable = false)
+    @JoinColumn(name = "ingredient_id", nullable = false)
     private Ingredient ingredient; // 나중에 ingredient로 바꾸어 주어야함
 
 }
