@@ -1,7 +1,7 @@
 import React from "react";
 import "./Regis1.css";
 import { useState, useRef } from "react";
-import image from "../assets/이미지업로드.png";
+import image from "../../assets/이미지업로드.png";
 
 const Regis = () => {
   const [uploadedImage, setuploadedImage] = useState(image); // 기본 이미지 경로
