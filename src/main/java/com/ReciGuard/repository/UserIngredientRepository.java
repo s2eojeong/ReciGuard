@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+
 public interface UserIngredientRepository extends JpaRepository<UserIngredient, Long> {
 
     //해당 user의 ingredient 정보를 모두 반환하는 코드
