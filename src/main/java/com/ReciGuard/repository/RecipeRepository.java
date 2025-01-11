@@ -1,5 +1,6 @@
 package com.ReciGuard.repository;
 
+import com.ReciGuard.dto.MyRecipeForm;
 import com.ReciGuard.entity.Recipe;
 import com.ReciGuard.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,7 +28,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("""
         SELECT DISTINCT r
         FROM Recipe r
-        LEFT JOIN r.recipeIngredient ri
+        LEFT JOIN r.recipeIngredients ri
         LEFT JOIN ri.ingredient i
         LEFT JOIN UserIngredient ui ON i.id = ui.ingredient.id
         WHERE ui.user.id IS NULL OR ui.user.id != :userId
@@ -51,12 +52,14 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     // 검색 단어 필터링해서 레시피 리스트 검색
     @Query("""
-        SELECT DISTINCT r 
+    SELECT DISTINCT r
         FROM Recipe r
-        JOIN r.ingredients i
-        WHERE r.recipeName LIKE %:query% OR i.name LIKE %:query%
+        JOIN r.recipeIngredients ri
+        JOIN ri.ingredient i
+        WHERE r.recipeName LIKE %:query% OR i.ingredient LIKE %:query%
     """)
-    List<Recipe> findByQuery(@Param("query") String query); // 리스트로 받아오기
+    List<Recipe> findByQuery(@Param("query") String query);
+
 
     // 검색 단어와 사용자 알레르기 정보를 기반으로 필터링된 레시피 리스트 검색
     @Query("""
@@ -66,7 +69,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
         LEFT JOIN ri.ingredient i
         LEFT JOIN UserIngredient ui ON i.id = ui.ingredient.id
         WHERE (ui.user.id IS NULL OR ui.user.id != :userId)
-          AND (r.recipeName LIKE %:query% OR i.name LIKE %:query%)
+          AND (r.recipeName LIKE %:query% OR i.ingredient LIKE %:query%)
     """)
     List<Recipe> findQueryFilteredRecipes(@Param("userId") Long userId, @Param("query") String query);
 
@@ -82,6 +85,11 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     """)
     Optional<Recipe> findRecipeDetailById(@Param("id") Long id); // 리스트로 받아오기
 
-    // 특정 사용자가 등록한 레시피 조회
-    List<Recipe> findAllByUser(User user);
+    // 특정 사용자가 등록한 레시피 조회 (userId 사용)
+    @Query("SELECT r FROM Recipe r WHERE r.user.id = :userId")
+    List<Recipe> findAllByUserId(@Param("userId") Long userId);
+
+    // 사용자가 작성한 나만의 레시피 조회
+    @Query("SELECT r FROM Recipe r WHERE r.id = :recipeId AND r.user.id = :userId")
+    Optional<Recipe> findRecipeByUserId(@Param("recipeId") Long recipeId, @Param("userId") Long userId);
 }
