@@ -40,6 +40,8 @@ public class SecurityConfig {
         http
                 .csrf((auth) -> auth.disable());
         http
+                .cors((cors) -> cors.disable());
+        http
                 .formLogin((auth) -> auth.disable());
 
         http
