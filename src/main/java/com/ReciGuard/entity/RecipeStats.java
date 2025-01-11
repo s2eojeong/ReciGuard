@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter @Setter
 @NoArgsConstructor
 public class RecipeStats {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stats_id")
     private Long id;
 
