@@ -85,7 +85,7 @@ function Rightpanel() {
         <p className="sign-up">
           Don’t have an account?{" "}
           <Link to="/auth/register">
-            <a href="#">Sign Up</a>
+            Sign Up
           </Link>
         </p>
       </div>
