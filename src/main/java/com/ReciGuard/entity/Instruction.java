@@ -9,9 +9,12 @@ import lombok.Setter;
 @Getter @Setter
 @NoArgsConstructor
 public class Instruction {
-    @Id @GeneratedValue
-    @Column(name = "instruction_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "recipe_instruction_id")
     private Long id;
+
+    @Column(name = "instruction_id")
+    private Long instruction_id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
