@@ -1,5 +1,6 @@
 package com.ReciGuard.dto;
 
+import com.ReciGuard.entity.Ingredient;
 import com.ReciGuard.entity.User;
 import com.ReciGuard.entity.UserIngredient;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class UserIngredientDTO {
 
     private Long userId; // User 엔티티의 ID
 
-    private String ingredient; // Ingredient의 이름 (예: "계란", "새우")
+    private Ingredient ingredient; // Ingredient의 이름 (예: "계란", "새우")
 
     /**
      * 엔티티 -> DTO 변환 메서드
