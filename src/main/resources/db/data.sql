@@ -7,7 +7,7 @@ INSERT INTO recipe (recipe_id, user_id, image_path, recipe_name, Serving, cuisin
 	(6, NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00036_2.png', '저염 된장으로 맛을 낸 황태해장국', 1, '한식', '국', '끓이기'),
 	(7, NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00037_2.png', '된장국', 1, '일식', '국', '끓이기');
 
-INSERT INTO instruction (recipe_id, instruction_id, instruction, instruction_im) VALUES
+INSERT INTO instruction (recipe_id, instruction_id, instruction, instruction_image) VALUES
 	(1, 1, '손질된 새우를 끓는 물에 데쳐 건진다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_1.png'),
 	(1, 2, '연두부, 달걀, 생크림, 설탕에 녹인 무염버터를 믹서에 곱게 간다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_2.png'),
 	(1, 3, '시금치를 잘게 다져 혼합물 그릇에 뿌리고 찜기에 넣어 익힌다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00028_3.png'),
@@ -122,6 +122,49 @@ INSERT INTO user_ingredient (user_id, ingredient_id) VALUES
     (6, 540),
     (7, 126),
     (8, 58);
+
+INSERT INTO users (user_id, username, gender, age, weight, user_pw, email, role, created_at, updated_at) VALUES
+(1, 'user1', 'M', 25, 70.5, 'Password1!', 'user1@example.com', 'USER', NOW(), NOW()),
+(2, 'user2', 'F', 28, 55.0, 'SecureP@ss2', 'user2@example.com', 'USER', NOW(), NOW()),
+(3, 'user3', 'M', 32, 80.0, 'MyP@ssword3!', 'user3@example.com', 'USER', NOW(), NOW()),
+(4, 'user4', 'F', 22, 60.3, 'BestPass4#', 'user4@example.com', 'USER', NOW(), NOW()),
+(5, 'user5', 'M', 27, 75.0, 'StrongP@ss5$', 'user5@example.com', 'USER', NOW(), NOW()),
+(6, 'user6', 'F', 30, 65.2, 'MySecuRe6*', 'user6@example.com', 'USER', NOW(), NOW()),
+(7, 'user7', 'M', 35, 85.1, 'SuperP@ss7!', 'user7@example.com', 'USER', NOW(), NOW()),
+(8, 'user8', 'F', 24, 50.4, 'TopP@ss8&', 'user8@example.com', 'USER', NOW(), NOW());
+
+INSERT INTO user_cookingstyle (user_cookingstyle_id, user_id, cooking_style) VALUES
+(1, 1, '구이'),
+(2, 1, '볶음'),
+(3, 2, '튀김'),
+(4, 2, '찌개'),
+(5, 3, '국'),
+(6, 3, '찜'),
+(7, 4, '구이'),
+(8, 4, '튀김'),
+(9, 5, '볶음'),
+
+
+INSERT INTO user_foodtype (user_foodtype_id, user_id, food_type) VALUES
+(1, 1, '밥'),
+(2, 1, '반찬'),
+(3, 2, '면'),
+(4, 2, '떡'),
+(5, 3, '죽'),
+(6, 3, '밥'),
+(7, 4, '면'),
+(8, 4, '반찬'),
+(9, 5, '떡'),
+
+INSERT INTO user_cuisine (user_cuisine_id, user_id, cuisine) VALUES
+(1, 1, '한식'),
+(2, 1, '중식'),
+(3, 2, '일식'),
+(4, 3, '양식'),
+(5, 4, '아시안'),
+(6, 5, '한식'),
+(7, 5, '중식'),
+(8, 5, '아시안');
 
 
 
