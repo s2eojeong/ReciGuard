@@ -1,4 +1,4 @@
-INSERT INTO recipe (recipe_id, user_id, image_path, recipe_name, Serving, cuisine, food_type, cooking_style) VALUES
+INSERT INTO recipe (recipe_id, user_id, image_path, recipe_name, serving, cuisine, food_type, cooking_style) VALUES
 	(1, NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00028_2.png', '새우 두부 계란찜', 1, '양식', '반찬', '찌개'),
 	(2, NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00029_2.png', '부추 콩가루 찜', 1, '중식', '반찬', '찌개'),
 	(3, NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00031_2.png', '방울토마토 소박이', 1, '한식', '반찬', '기타'),
@@ -109,7 +109,6 @@ INSERT INTO ingredient (ingredient_id, ingredient_name) VALUES
     (8, '조선부추'),
     (9, '날콩가루'),
     (10, '양념장');
-
 
 INSERT INTO user_ingredient (user_id, ingredient_id) VALUES
     (1, 29),
