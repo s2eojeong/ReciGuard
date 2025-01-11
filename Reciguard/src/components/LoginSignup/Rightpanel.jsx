@@ -3,7 +3,7 @@ import "./Rightpanel.css";
 import { Link, useNavigate } from "react-router-dom";
 
 function Rightpanel() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(""); // 에러 메시지 상태
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function Rightpanel() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: email,
+          username: username,
           password: password,
         }),
       });
@@ -42,7 +42,7 @@ function Rightpanel() {
       }
     } catch (error) {
       console.error("서버 요청 중 오류 발생:", error);
-      setErrorMessage("이메일 또는 비밀번호를 다시 확인해 주세요.");
+      setErrorMessage("이름 또는 비밀번호를 다시 확인해 주세요.");
     }
   };
 
@@ -52,18 +52,18 @@ function Rightpanel() {
       <p className="meet">Meet the good taste today</p>
       <form className="login-form" onSubmit={handleLogin}>
         <div className="form-group">
-          <label htmlFor="email">E-mail</label>
+          <label htmlFor="email">이름</label>
           <input
-            type="email"
-            id="email"
-            placeholder="Type your e-mail"
+            type="username"
+            id="username"
+            placeholder="Type your name"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} // 상태 업데이트
+            value={username}
+            onChange={(e) => setUsername(e.target.value)} // 상태 업데이트
           />
         </div>
         <div className="form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">비밀번호</label>
           <div className="input-container">
             <input
               type="password"
@@ -83,10 +83,7 @@ function Rightpanel() {
       {/* 에러 메시지 표시 */}
       <div>
         <p className="sign-up">
-          Don’t have an account?{" "}
-          <Link to="/auth/register">
-            <a href="#">Sign Up</a>
-          </Link>
+          Don’t have an account? <Link to="/auth/register">Sign Up</Link>
         </p>
       </div>
     </div>
