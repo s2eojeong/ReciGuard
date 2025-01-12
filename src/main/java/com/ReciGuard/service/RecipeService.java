@@ -4,6 +4,7 @@ import com.ReciGuard.dto.*;
 import com.ReciGuard.entity.*;
 import com.ReciGuard.repository.IngredientRepository;
 import com.ReciGuard.repository.RecipeRepository;
+import com.ReciGuard.repository.RecipeStatsRepository;
 import com.ReciGuard.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final IngredientRepository ingredientRepository;
     private final UserService userService;
+    private final RecipeStatsRepository recipeStatsRepository;
 
     // 오늘의 레시피 추천
     public RecipeRecommendResponseDTO getTodayRecipe(Long id){
@@ -156,6 +159,10 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findRecipeById(id)
                 .orElseThrow(() -> new EntityNotFoundException("요청한 데이터를 찾을 수 없습니다."));
 
+        // 2. RecipeStats 로드 (viewCount와 scrapCount)
+        RecipeStats stats = recipeStatsRepository.findByRecipeId(id)
+                .orElseThrow(() -> new EntityNotFoundException("RecipeStats 데이터를 찾을 수 없습니다."));
+
         // 2. Instructions와 RecipeIngredients 로드
         List<Instruction> instructions = recipeRepository.findInstructionsByRecipeId(id);
         List<RecipeIngredient> recipeIngredients = recipeRepository.findRecipeIngredientsByRecipeId(id);
@@ -179,7 +186,7 @@ public class RecipeService {
                 ))
                 .collect(Collectors.toList());
 
-        // 6. RecipeDetailResponseDTO 생성 및 반환
+        // 7. RecipeDetailResponseDTO 생성 및 반환
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
@@ -192,6 +199,8 @@ public class RecipeService {
                 nutrition != null ? nutrition.getCarbohydrate() : 0,
                 nutrition != null ? nutrition.getFat() : 0,
                 nutrition != null ? nutrition.getProtein() : 0,
+                stats.getScrapCount(),
+                stats.getViewCount(),
                 ingredients,
                 instructionDTOs
         );
@@ -388,19 +397,22 @@ public class RecipeService {
                 recipe.getNutrition() != null ? recipe.getNutrition().getFat() : 0,
                 recipe.getNutrition() != null ? recipe.getNutrition().getProtein() : 0,
 
-                recipe.getRecipeIngredients().stream()
-                        .map(ingredient -> new IngredientResponseDTO(
-                                ingredient.getIngredient().getIngredient(),
-                                ingredient.getQuantity()
-                        ))
-                        .collect(Collectors.toList()),
+                recipe.getRecipeStats().getViewCount(), // 조회 수 (변경하지 않음)
+                recipe.getRecipeStats().getScrapCount(), // 스크랩 수 (변경하지 않음)
 
-                recipe.getInstructions().stream()
-                        .map(instruction -> new InstructionResponseDTO(
-                                instruction.getInstruction(),
-                                instruction.getInstructionImage()
+                recipe.getRecipeIngredients() != null ? recipe.getRecipeIngredients().stream()
+                        .map(ingredient -> new IngredientResponseDTO(
+                                ingredient.getIngredient().getIngredient(), // String 타입의 재료 이름 반환
+                                ingredient.getQuantity() // String 타입의 수량 반환
                         ))
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()) : Collections.emptyList(),
+
+                recipe.getInstructions() != null ? recipe.getInstructions().stream()
+                        .map(instruction -> new InstructionResponseDTO(
+                                instruction.getInstruction(), // String 타입의 조리 단계
+                                instruction.getInstructionImage() // String 타입의 이미지 경로
+                        ))
+                        .collect(Collectors.toList()) : Collections.emptyList()
         );
     }
 }
