@@ -1,5 +1,6 @@
 package com.ReciGuard.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class Recipe {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = true)
+    @JsonIgnore
     private User user;
 
     @Column(name = "image_path")
@@ -31,7 +33,7 @@ public class Recipe {
     private String foodType;
     private String cookingStyle;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Instruction> instructions;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
@@ -40,10 +42,16 @@ public class Recipe {
     @OneToOne(mappedBy = "recipe", fetch = FetchType.LAZY)
     private Nutrition nutrition;
 
-    @OneToOne(mappedBy = "recipe", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private RecipeStats recipeStats;
 
     public Recipe(Long id) {
         this.id = id;
+    }
+
+    // 연관관계 메서드
+    public void setRecipeStats(RecipeStats stats) {
+        this.recipeStats = stats;
+        stats.setRecipe(this); // 양방향 연관관계 설정
     }
 }

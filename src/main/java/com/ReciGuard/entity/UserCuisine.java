@@ -16,7 +16,7 @@ public class UserCuisine {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "user_id")
     private User user;
 
     @Column(name = "cuisine", length = 10, nullable = false)
