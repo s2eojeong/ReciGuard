@@ -1,8 +1,12 @@
 package com.ReciGuard.repository;
 
 import com.ReciGuard.entity.User;
+import com.ReciGuard.entity.UserScrap;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -22,4 +26,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /* 로그인 검증 */
     Optional<User> findByUsernameAndPassword(String username, String password);
+
+    // 사용자 ID로 스크랩 데이터 조회
+    @Query("SELECT s FROM UserScrap s WHERE s.user.id = :userId")
+    List<UserScrap> findScrapsByUserId(@Param("userId") Long userId);
 }

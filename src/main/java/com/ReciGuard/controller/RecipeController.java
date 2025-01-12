@@ -8,11 +8,17 @@ import com.ReciGuard.service.UserScrapService;
 import com.ReciGuard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,11 +30,35 @@ public class RecipeController {
     private final RecipeStatsService recipeStatsService;
     private final UserScrapService userScrapService;
     private final UserService userService;
+    private final RestTemplate restTemplate;
+
+    @Value("${ai.model.api.url:https://example.com/recommend}") // 나중에 ai 모델 완성 후 수정
+    private String aiModelApiUrl;
 
     // 오늘의 추천 레시피
     @GetMapping("/recommend")
-    public RecipeRecommendResponseDTO getTodayRecipe(@RequestParam Long id){
-        return recipeService.getTodayRecipe(id);
+    public RecipeRecommendResponseDTO getTodayRecipe(@RequestParam Long userId){
+
+        // 1. AI 모델에 전달할 데이터 준비
+        Map<String, Object> requestPayload = recipeService.prepareAiModelInput(userId);
+
+        // 2. AI 모델 API 호출
+        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                aiModelApiUrl,
+                HttpMethod.POST,
+                new HttpEntity<>(requestPayload),
+                new ParameterizedTypeReference<Map<String, Object>>() {}
+        );
+
+        // 3. AI 모델의 추천 레시피 ID 추출
+        if (response.getStatusCode().is2xxSuccessful()) {
+            Long recipeId = Long.valueOf(response.getBody().get("recipe_id").toString());
+
+            // 4. 추천 레시피 데이터 반환
+            return recipeService.getTodayRecipe(recipeId);
+        } else {
+            throw new RuntimeException("AI 모델 API 호출 실패: " + response.getStatusCode());
+        }
     }
 
     // 전체 레시피 리스트
@@ -72,10 +102,7 @@ public class RecipeController {
     @GetMapping("/{recipeId}")
     public RecipeDetailResponseDTO getRecipeDetail(@PathVariable Long recipeId) {
         recipeStatsService.increaseViewCount(recipeId); // viewCount 증가
-        RecipeDetailResponseDTO response = recipeService.getRecipeDetail(recipeId);
-        System.out.println(response);
-        return response;
-        //return recipeService.getRecipeDetail(recipeId);
+        return recipeService.getRecipeDetail(recipeId);
     }
 
     // 하트 버튼 눌러서 레시피 스크랩 (등록/수정)
@@ -92,13 +119,6 @@ public class RecipeController {
     @GetMapping("/myrecipes")
     public List<RecipeListResponseDTO> getMyRecipes() {
         return recipeService.findMyRecipes();
-    }
-
-    // 나만의 레시피 상세 조회
-    @GetMapping("/myrecipe/{recipeId}")
-    public RecipeDetailResponseDTO getMyRecipeDetail(@PathVariable Long recipeId){
-        // 내가 쓴 레시피를 내가 조회할 땐 viewCount 증가 x
-        return recipeService.getRecipeDetail(recipeId);
     }
 
     // 나만의 레시피 저장
