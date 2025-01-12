@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 
 @Repository
 public interface RecipeStatsRepository extends JpaRepository<RecipeStats, Long> {
@@ -28,4 +30,7 @@ public interface RecipeStatsRepository extends JpaRepository<RecipeStats, Long> 
         WHERE rs.recipe.id = :recipeId AND rs.scrapCount + :increment >= 0
     """)
     void updateScrapCount(@Param("recipeId") Long recipeId, @Param("increment") int increment);
+
+    // 레시피 stats 정보 찾기
+    Optional<RecipeStats> findByRecipeId(Long recipeId);
 }
