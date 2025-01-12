@@ -10,12 +10,16 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+      show-sql: true
   logging:
     level:
       org.hibernate.SQL: DEBUG
   sql:
     init:
       data-locations: classpath:db/data.sql
-      mode: never
+      mode: always
 
