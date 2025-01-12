@@ -1,11 +1,10 @@
 package com.ReciGuard.dto;
 
-import com.ReciGuard.entity.Ingredient;
-import com.ReciGuard.entity.Instruction;
+import lombok.Getter;
 
 import java.util.List;
-import java.util.Map;
 
+@Getter
 public class RecipeDetailResponseDTO {
     private String imagePath;
     private String recipeName;
@@ -47,4 +46,5 @@ public class RecipeDetailResponseDTO {
         this.ingredients = ingredients;
         this.instructions = instructions;
     }
+
 }
