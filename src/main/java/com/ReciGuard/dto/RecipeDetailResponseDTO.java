@@ -20,6 +20,9 @@ public class RecipeDetailResponseDTO {
     private int fat;
     private int protein;
 
+    private int scrapCount;
+    private int viewCount;
+
     private List<IngredientResponseDTO> ingredients; // 재료 리스트
     private List<InstructionResponseDTO> instructions; // 조리 과정 리스트
 
@@ -30,6 +33,7 @@ public class RecipeDetailResponseDTO {
                                    String foodType,
                                    String cookingStyle,
                                    int calories, int sodium, int carbohydrate, int fat, int protein,
+                                   int scrapCount, int viewCount,
                                    List<IngredientResponseDTO> ingredients,
                                    List<InstructionResponseDTO> instructions) {
         this.imagePath = imagePath;
@@ -43,6 +47,8 @@ public class RecipeDetailResponseDTO {
         this.carbohydrate = carbohydrate;
         this.fat = fat;
         this.protein = protein;
+        this.scrapCount = scrapCount;
+        this.viewCount = viewCount;
         this.ingredients = ingredients;
         this.instructions = instructions;
     }
