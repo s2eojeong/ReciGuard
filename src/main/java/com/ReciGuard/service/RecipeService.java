@@ -7,20 +7,22 @@ import com.ReciGuard.repository.RecipeRepository;
 import com.ReciGuard.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
-    private final UserRepository userRepository;
     private final IngredientRepository ingredientRepository;
     private final UserService userService;
 
@@ -150,30 +152,34 @@ public class RecipeService {
     // 레시피 상세 검색
     public RecipeDetailResponseDTO getRecipeDetail(Long id) {
 
-        // 1. Recipe 엔티티 조회
-        Recipe recipe = recipeRepository.findRecipeDetailById(id)
+        // 1. 기본 Recipe 정보 로드
+        Recipe recipe = recipeRepository.findRecipeById(id)
                 .orElseThrow(() -> new EntityNotFoundException("요청한 데이터를 찾을 수 없습니다."));
 
-        // 2. Nutrition 정보 가져오기 (null 가능)
+        // 2. Instructions와 RecipeIngredients 로드
+        List<Instruction> instructions = recipeRepository.findInstructionsByRecipeId(id);
+        List<RecipeIngredient> recipeIngredients = recipeRepository.findRecipeIngredientsByRecipeId(id);
+
+        // 3. Nutrition 정보 가져오기 (null 가능)
         Nutrition nutrition = recipe.getNutrition();
 
-        // 3. Ingredients 변환
-        List<IngredientResponseDTO> ingredients = recipe.getRecipeIngredients().stream()
+        // 4. Ingredients 변환
+        List<IngredientResponseDTO> ingredients = recipeIngredients.stream()
                 .map(recipeIngredient -> new IngredientResponseDTO(
-                        recipeIngredient.getIngredient().getIngredient(), // 재료명
-                        recipeIngredient.getQuantity()                   // 수량
+                        recipeIngredient.getIngredient().getIngredient(),
+                        recipeIngredient.getQuantity()
                 ))
                 .collect(Collectors.toList());
 
-        // 4. Instructions 변환
-        List<InstructionResponseDTO> instructions = recipe.getInstructions().stream()
+        // 5. Instructions 변환
+        List<InstructionResponseDTO> instructionDTOs = instructions.stream()
                 .map(instruction -> new InstructionResponseDTO(
                         instruction.getInstructionImage(),
                         instruction.getInstruction()
                 ))
                 .collect(Collectors.toList());
 
-        // 5. RecipeDetailResponseDTO 생성 및 반환
+        // 6. RecipeDetailResponseDTO 생성 및 반환
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
@@ -181,13 +187,14 @@ public class RecipeService {
                 recipe.getCuisine(),
                 recipe.getFoodType(),
                 recipe.getCookingStyle(),
-                nutrition != null ? nutrition.getCalories() : 0, // null일 경우 기본값 0으로 되게끔
+                nutrition != null ? nutrition.getCalories() : 0,
                 nutrition != null ? nutrition.getSodium() : 0,
                 nutrition != null ? nutrition.getCarbohydrate() : 0,
                 nutrition != null ? nutrition.getFat() : 0,
                 nutrition != null ? nutrition.getProtein() : 0,
                 ingredients,
-                instructions);
+                instructionDTOs
+        );
     }
 
     @Transactional
@@ -230,16 +237,19 @@ public class RecipeService {
         recipe.setRecipeIngredients(ingredients);
 
         // 5. Instructions 저장
+        AtomicInteger counter = new AtomicInteger(1); // 1부터 시작하는 카운터 생성
         List<Instruction> instructions = recipeForm.getInstructions().stream()
                 .map(instructionDto -> {
                     Instruction instruction = new Instruction();
                     instruction.setInstructionImage(instructionDto.getInstructionImage());
                     instruction.setInstruction(instructionDto.getInstruction());
+                    instruction.setInstructionId(counter.getAndIncrement()); // 순차적으로 instruction_id 설정
                     instruction.setRecipe(recipe);
                     return instruction;
                 })
                 .collect(Collectors.toList());
         recipe.setInstructions(instructions);
+
 
         // 6. RecipeStats 기본값 생성
         RecipeStats stats = new RecipeStats();
@@ -284,7 +294,6 @@ public class RecipeService {
         MyRecipeForm form = new MyRecipeForm();
         form.setRecipeName(recipe.getRecipeName());
         form.setImagePath(recipe.getImagePath());
-        form.setUserId(recipe.getUser().getUserid());
         form.setServing(recipe.getServing());
         form.setCuisine(recipe.getCuisine());
         form.setFoodType(recipe.getFoodType());
@@ -311,6 +320,7 @@ public class RecipeService {
         return form;
     }
 
+    @Transactional
     public RecipeDetailResponseDTO updateMyRecipe(Long recipeId, MyRecipeForm recipeForm) {
 
         // 1. 레시피 ID로 영속 상태의 Recipe 엔티티 조회

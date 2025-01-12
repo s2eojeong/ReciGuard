@@ -1,5 +1,6 @@
 package com.ReciGuard.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ public class Ingredient {
     private Long id;
 
     @OneToMany(mappedBy = "ingredient", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<RecipeIngredient> recipeIngredient;
 
     private String ingredient;
