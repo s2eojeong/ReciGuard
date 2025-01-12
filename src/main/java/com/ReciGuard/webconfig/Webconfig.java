@@ -1,5 +1,6 @@
 package com.ReciGuard.webconfig;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -15,3 +16,4 @@ public class Webconfig implements WebMvcConfigurer {
                 .allowCredentials(true); // 쿠키 인증 허용
     }
 }
+
