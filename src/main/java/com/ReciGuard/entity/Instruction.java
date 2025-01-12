@@ -1,5 +1,6 @@
 package com.ReciGuard.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,11 @@ public class Instruction {
     private Long id;
 
     @Column(name = "instruction_id")
-    private Long instruction_id;
+    private int instructionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
+    @JsonIgnore
     private Recipe recipe;
 
     @Column(name = "instruction_image")
@@ -25,4 +27,5 @@ public class Instruction {
 
     @Lob
     private String  instruction;
+
 }
