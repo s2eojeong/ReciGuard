@@ -14,7 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,58 @@ public class RecipeService {
     private final IngredientRepository ingredientRepository;
     private final UserService userService;
     private final RecipeStatsRepository recipeStatsRepository;
+    private final UserRepository userRepository;
+
+    // ai 모델에게 넘기는 데이터
+    public Map<String, Object> prepareAiModelInput(Long userId) {
+        // 1. 사용자 정보 로드
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 2. 모든 레시피 로드
+        List<Recipe> recipes = recipeRepository.findAll();
+
+        // 3. 사용자가 스크랩한 데이터 로드
+        List<UserScrap> userScraps = userRepository.findScrapsByUserId(userId);
+
+        // 4. 레시피 통계 데이터 로드
+        List<RecipeStats> recipeStats = recipeStatsRepository.findAll();
+
+        // 5. AI 모델 입력 데이터 구성
+        Map<String, Object> inputData = new HashMap<>();
+
+        // 사용자 선호도
+        inputData.put("User_Cuisine", user.getCuisines());
+        inputData.put("User_FoodType", user.getFoodTypes());
+        inputData.put("User_CookingStyle", user.getCookingStyles());
+
+        // 레시피 데이터
+        inputData.put("Recipe", recipes.stream()
+                .map(recipe -> Map.of(
+                        "cuisine", recipe.getCuisine() != null ? recipe.getCuisine() : "NULL",
+                        "food_type", recipe.getFoodType() != null ? recipe.getFoodType() : "NULL",
+                        "cooking_style", recipe.getCookingStyle() != null ? recipe.getCookingStyle() : "NULL"
+                ))
+                .collect(Collectors.toList()));
+
+        // 사용자 스크랩 데이터
+        inputData.put("User_Scrap", userScraps.stream()
+                .map(scrap -> Map.of(
+                        "recipe_id", scrap.getRecipe().getId(),
+                        "created_at", scrap.getCreatedAt()
+                ))
+                .collect(Collectors.toList()));
+
+        // 레시피 통계 데이터
+        inputData.put("Recipe_Stats", recipeStats.stream()
+                .map(stats -> Map.of(
+                        "view_count", stats.getViewCount(),
+                        "scrap_count", stats.getScrapCount()
+                ))
+                .collect(Collectors.toList()));
+
+        return inputData;
+    }
 
     // 오늘의 레시피 추천
     public RecipeRecommendResponseDTO getTodayRecipe(Long id){
