@@ -1,7 +1,9 @@
 package com.ReciGuard.repository;
 
 import com.ReciGuard.dto.MyRecipeForm;
+import com.ReciGuard.entity.Instruction;
 import com.ReciGuard.entity.Recipe;
+import com.ReciGuard.entity.RecipeIngredient;
 import com.ReciGuard.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -75,15 +77,27 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     // 특정 레시피 상세 정보
     @Query("""
-        SELECT DISTINCT r
-        FROM Recipe r
-        LEFT JOIN FETCH r.instructions i
-        LEFT JOIN FETCH r.recipeIngredients ri
-        LEFT JOIN FETCH ri.ingredient ing
-        LEFT JOIN FETCH r.nutrition n
-        WHERE r.id = :id
-    """)
-    Optional<Recipe> findRecipeDetailById(@Param("id") Long id); // 리스트로 받아오기
+    SELECT DISTINCT r
+    FROM Recipe r
+    LEFT JOIN FETCH r.nutrition n
+    WHERE r.id = :id
+""")
+    Optional<Recipe> findRecipeById(@Param("id") Long id);
+
+    @Query("""
+    SELECT i
+    FROM Instruction i
+    WHERE i.recipe.id = :id
+""")
+    List<Instruction> findInstructionsByRecipeId(@Param("id") Long id);
+
+    @Query("""
+    SELECT ri
+    FROM RecipeIngredient ri
+    LEFT JOIN FETCH ri.ingredient ing
+    WHERE ri.recipe.id = :id
+""")
+    List<RecipeIngredient> findRecipeIngredientsByRecipeId(@Param("id") Long id);
 
     // 특정 사용자가 등록한 레시피 조회 (userId 사용)
     @Query("SELECT r FROM Recipe r WHERE r.user.id = :userId")
