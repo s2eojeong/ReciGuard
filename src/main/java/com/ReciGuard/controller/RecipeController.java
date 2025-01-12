@@ -105,14 +105,27 @@ public class RecipeController {
         return recipeService.getRecipeDetail(recipeId);
     }
 
-    // 하트 버튼 눌러서 레시피 스크랩 (등록/수정)
+//    // 하트 버튼 눌러서 레시피 스크랩 (등록/수정)
+//    @PostMapping("/scrap/{recipeId}")
+//    public ResponseEntity<Boolean> toggleScrap(@PathVariable Long recipeId){
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        Long userId = userService.findUserIdByUsername(username);
+//
+//        boolean isScrapped = userScrapService.toggleScrap(userId, recipeId);
+//        return ResponseEntity.ok(isScrapped);
+//    }
+
     @PostMapping("/scrap/{recipeId}")
-    public ResponseEntity<Boolean> toggleScrap(@PathVariable Long recipeId){
+    public ResponseEntity<String> toggleScrap(@PathVariable Long recipeId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userService.findUserIdByUsername(username);
 
         boolean isScrapped = userScrapService.toggleScrap(userId, recipeId);
-        return ResponseEntity.ok(isScrapped);
+        String message = isScrapped
+                ? "레시피가 성공적으로 스크랩되었습니다."
+                : "레시피가 스크랩 취소 되었습니다.";
+
+        return ResponseEntity.ok(message);
     }
 
     // 나만의 레시피 조회 (간단 리스트 조회)
