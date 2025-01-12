@@ -7,12 +7,14 @@ import com.ReciGuard.service.RecipeStatsService;
 import com.ReciGuard.service.UserScrapService;
 import com.ReciGuard.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/recipes")
@@ -68,9 +70,12 @@ public class RecipeController {
 
     // 레시피 상세 페이지
     @GetMapping("/{recipeId}")
-    public RecipeDetailResponseDTO getRecipeDetail(@PathVariable Long id) {
-        recipeStatsService.increaseViewCount(id); // viewCount 증가
-        return recipeService.getRecipeDetail(id);
+    public RecipeDetailResponseDTO getRecipeDetail(@PathVariable Long recipeId) {
+        recipeStatsService.increaseViewCount(recipeId); // viewCount 증가
+        RecipeDetailResponseDTO response = recipeService.getRecipeDetail(recipeId);
+        System.out.println(response);
+        return response;
+        //return recipeService.getRecipeDetail(recipeId);
     }
 
     // 하트 버튼 눌러서 레시피 스크랩 (등록/수정)
@@ -91,15 +96,18 @@ public class RecipeController {
 
     // 나만의 레시피 상세 조회
     @GetMapping("/myrecipe/{recipeId}")
-    public RecipeDetailResponseDTO getMyRecipeDetail(@PathVariable Long id){
+    public RecipeDetailResponseDTO getMyRecipeDetail(@PathVariable Long recipeId){
         // 내가 쓴 레시피를 내가 조회할 땐 viewCount 증가 x
-        return recipeService.getRecipeDetail(id);
+        return recipeService.getRecipeDetail(recipeId);
     }
 
     // 나만의 레시피 저장
     @PostMapping("/myrecipe/save")
-    public Recipe saveMyRecipe(@RequestBody MyRecipeForm recipeForm) {
-        return recipeService.saveMyRecipe(recipeForm);
+    public ResponseEntity<String> saveMyRecipe(@RequestBody MyRecipeForm recipeForm) {
+        log.info("Received recipeForm: {}", recipeForm);
+        recipeService.saveMyRecipe(recipeForm);
+
+        return ResponseEntity.ok("레시피가 성공적으로 등록되었습니다.");
     }
 
     // 나만의 레시피 수정 폼
