@@ -49,7 +49,8 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/password", "/register").permitAll()
+                        .requestMatchers("/login", "/password", "/register","/api/recipes/scraps").permitAll()
+                        .requestMatchers("/api/users/**").authenticated()
                         .anyRequest().authenticated());
 
         //JWTFilter 등록

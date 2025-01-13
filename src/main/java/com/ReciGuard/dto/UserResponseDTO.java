@@ -41,10 +41,9 @@ public class UserResponseDTO {
         private String password;
 
         @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
-        @NotNull(message = "이메일은 필수 입력 값입니다.")
         private String email;
 
-        @NotNull(message = "ookings Style cannot be null")
+        @NotNull(message = "cookingStyle cannot be null")
         private String userCookingStyle;
 
         @NotNull(message = "cuisine cannot be null")
