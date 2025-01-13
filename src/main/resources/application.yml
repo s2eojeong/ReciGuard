@@ -4,9 +4,9 @@ spring:
   jwt:
     secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
   datasource:
-    url: jdbc:mysql://localhost:3306/RECIGUARD?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/RECIGUARD?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root
-    password: danchoo12
+    password: kmj030523
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: true
@@ -23,6 +23,5 @@ spring:
   sql:
     init:
       data-locations: classpath:db/data.sql
-      mode: never
+      mode: always
       platform: sql
-
