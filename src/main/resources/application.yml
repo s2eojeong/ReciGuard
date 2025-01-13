@@ -11,7 +11,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -23,5 +23,5 @@ spring:
   sql:
     init:
       data-locations: classpath:db/data.sql
-      mode: always
+      mode: never
       platform: sql

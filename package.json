@@ -1,8 +1,0 @@
-{
-  "devDependencies": {
-    "axios": "^1.7.9"
-  },
-  "dependencies": {
-    "react-router-dom": "^7.1.1"
-  }
-}

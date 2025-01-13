@@ -1,5 +1,6 @@
 package com.ReciGuard.SecurityConfig;
 
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,12 @@ import com.ReciGuard.JWT.JWTUtil;
 import com.ReciGuard.JWT.LoginFilter;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -43,7 +50,7 @@ public class SecurityConfig {
         http
                 .csrf((auth) -> auth.disable());
         http
-                .cors((cors) -> cors.disable());
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
         http
                 .formLogin((auth) -> auth.disable());
 
@@ -68,5 +75,19 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);  // 인증 정보 포함 허용
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));  // 허용할 프론트엔드 URL
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // 허용할 HTTP 메서드
+        configuration.setAllowedHeaders(List.of("*"));  // 모든 헤더 허용
+        configuration.setExposedHeaders(List.of("Authorization"));  // 클라이언트가 응답에서 `Authorization` 헤더 확인 가능
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);  // 모든 경로에 대해 CORS 설정 적용
+        return source;
     }
 }
