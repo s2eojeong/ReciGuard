@@ -12,6 +12,7 @@ import MypageRecipe from "./pages/Mypage/MypageRecipe";
 import MypageScrap from "./pages/Mypage/MypageScrap";
 import InfoUpdate from "./pages/Mypage/InfoUpdate";
 import AllergyUpdate from "./pages/Mypage/AllergyUpdate";
+import AllRecipes from "./pages/AllRecipes";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/users/allergy" element={<AllergyUpdate />} />
         <Route path="/users/myrecipes" element={<MypageRecipe />} />
         <Route path="/users/scraps" element={<MypageScrap />} />
+        <Route path="/recipes/all" element={<AllRecipes />} />
       </Routes>
     </>
   );
