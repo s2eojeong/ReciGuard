@@ -21,4 +21,6 @@ public interface UserIngredientRepository extends JpaRepository<UserIngredient, 
     //해당 유저의 ingredient 정보가 있는지 확인하는 코드
     @Query("SELECT ui FROM UserIngredient ui WHERE ui.user.id = :userId AND ui.ingredient.id = :ingredientId")
     Optional<UserIngredient> findByUserIdAndIngredientId(@Param("userId") Long userId, @Param("ingredientId") Long ingredientId);
+
+
 }
