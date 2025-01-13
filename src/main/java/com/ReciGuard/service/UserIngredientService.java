@@ -1,5 +1,7 @@
 package com.ReciGuard.service;
 
+import com.ReciGuard.dto.UserIngredientDTO;
+import com.ReciGuard.dto.UserIngredientListDTO;
 import com.ReciGuard.entity.Ingredient;
 import com.ReciGuard.entity.User;
 import com.ReciGuard.entity.UserIngredient;
@@ -28,27 +30,39 @@ public class UserIngredientService {
     }
 
     @Transactional
-    public void addOrUpdateUserIngredient(Long userId, Long ingredientId) {
-        // Step 1: User 확인
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
-        Ingredient ingredient = ingredientRepository.findById(ingredientId).orElseThrow(() ->
-                new IllegalArgumentException("해당 재료가 존재하지 않습니다."));
+    public void addOrUpdateUserIngredients(Long userId, UserIngredientListDTO userIngredientDTO) {
+        for (String ingredientName : userIngredientDTO.getIngredients()) {
+            // Step 2: Ingredient가 없으면 새로 추가
+            Ingredient ingredient = ingredientRepository.findByIngredient(ingredientName);
+            if (ingredient == null) {
+                // Ingredient가 존재하지 않을 경우 새로 생성하여 저장
+                ingredient = new Ingredient();
+                ingredient.setIngredient(ingredientName);
+                ingredientRepository.save(ingredient);
+            }
 
-        // Step 3: UserIngredient 확인
-        Optional<UserIngredient> existingUserIngredient = userIngredientRepository.findByUserIdAndIngredientId(userId, ingredientId);
+            // Step 3: UserIngredient가 있는지 확인
+            Optional<UserIngredient> optionalUserIngredient = userIngredientRepository
+                    .findByUserIdAndIngredientId(userId, ingredient.getId());
 
-        if (existingUserIngredient.isPresent()) {
-            // 이미 존재하면 아무 작업도 하지 않음 (필요시 수정 가능)
-            return;
+
+            // Step 4: UserIngredient가 없으면 추가, 있으면 업데이트
+            UserIngredient userIngredient;
+            if (optionalUserIngredient.isPresent()) {
+                // 기존 UserIngredient가 존재할 경우
+                userIngredient = optionalUserIngredient.get();
+                userIngredient.setIngredient(ingredient); // 필요한 경우 ingredient 업데이트
+            } else {
+                // 새 UserIngredient를 생성
+                User user = userRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+                userIngredient = new UserIngredient(null, user, ingredient);
+            }
+
+// 저장 또는 갱신
+            userIngredientRepository.save(userIngredient);
+
         }
-
-        // Step 4: 존재하지 않으면 새로운 UserIngredient 추가
-        UserIngredient newUserIngredient = new UserIngredient();
-        newUserIngredient.setUser(user);
-        newUserIngredient.setIngredient(ingredient);
-
-        userIngredientRepository.save(newUserIngredient);
     }
 
 }

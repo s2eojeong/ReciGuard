@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserScrapRepository extends JpaRepository<UserScrap, Long> {
 
@@ -25,4 +27,6 @@ public interface UserScrapRepository extends JpaRepository<UserScrap, Long> {
         WHERE us.user.id = :userId AND us.recipe.id = :recipeId
     """)
     void deleteUserScrap(@Param("userId") Long userId, @Param("recipeId") Long recipeId);
+
+    List<UserScrap> findAllByUser_Userid(Long userId); // 특정 user_id의 모든 스크랩 조회
 }
