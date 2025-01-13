@@ -132,16 +132,6 @@ INSERT INTO user_ingredient (user_id, ingredient_id) VALUES
     (7, 6),
     (8, 7);
 
---    (1, 29),
---    (1, 58),
---     (2, 29),
---        (3, 983),
---        (4, 25),
---        (5, 101),
---        (6, 29),
---        (6, 540),
---        (7, 126),
---        (8, 58);
 
 INSERT INTO user_cookingstyle (user_id, cooking_style) VALUES
     (1, '구이'),
@@ -165,7 +155,7 @@ INSERT INTO user_foodtype (user_id, food_type) VALUES
     (4, '반찬'),
     (5, '떡');
 
-    INSERT INTO user_cuisine (user_id, cuisine) VALUES
+INSERT INTO user_cuisine (user_id, cuisine) VALUES
     (1, '한식'),
     (1, '중식'),
     (2, '일식'),
@@ -174,6 +164,16 @@ INSERT INTO user_foodtype (user_id, food_type) VALUES
     (5, '한식'),
     (5, '중식'),
     (5, '아시안');
+
+INSERT INTO user_scrap (user_id, recipe_id, created_at) VALUES
+    (1, 1, NOW()),
+    (1, 2, NOW()),
+    (2, 3, NOW()),
+    (2, 4, NOW()),
+    (3, 5, NOW()),
+    (3, 6, NOW()),
+    (4, 7, NOW()),
+    (4, 1, NOW());
 
 
 
