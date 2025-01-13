@@ -1,5 +1,6 @@
 package com.ReciGuard.service;
 
+import com.ReciGuard.dto.ScrapRecipeDTO;
 import com.ReciGuard.entity.Recipe;
 import com.ReciGuard.entity.User;
 import com.ReciGuard.entity.UserScrap;
@@ -7,6 +8,9 @@ import com.ReciGuard.repository.UserScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -35,5 +39,17 @@ public class UserScrapService {
             recipeStatsService.updateScrapCount(recipeId, 1); // ScrapCount 증가
             return true; // 스크랩 추가
         }
+    }
+    public List<ScrapRecipeDTO> getScrappedRecipesByUser(Long userId) {
+        // UserScrap 리스트 조회
+        List<UserScrap> userScraps = userScrapRepository.findAllByUser_Userid(userId);
+
+        // DTO로 변환하여 반환
+        return userScraps.stream()
+                .map(scrap -> new ScrapRecipeDTO(
+                        scrap.getRecipe().getId(),
+                        scrap.getRecipe().getRecipeName(), // Recipe 엔티티의 이름 필드
+                        scrap.getCreatedAt()))
+                .collect(Collectors.toList());
     }
 }
