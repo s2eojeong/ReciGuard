@@ -10,7 +10,9 @@ const Header2 = () => {
         <div className="navbar-logo2">ReciGuard</div>
       </Link>
       <ul className="navbar-menu2">
-        <li>분류</li>
+        <Link to="/recipes/all" style={{ textDecoration: "none" }}>
+          <li>분류</li>
+        </Link>
         <li>랭킹</li>
         <Link to="/users/recipe-form" style={{ textDecoration: "none" }}>
           <li>레시피 등록</li>
