@@ -1,10 +1,12 @@
 package com.ReciGuard.service;
 
+import com.ReciGuard.dto.UserPasswordDTO;
 import com.ReciGuard.dto.UserResponseDTO;
 import com.ReciGuard.entity.*;
 import com.ReciGuard.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +26,7 @@ public class UserService {
     private final UserIngredientRepository userIngredientRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final IngredientRepository ingredientRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     //회원가입
     @Transactional
@@ -152,5 +154,26 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."))
                 .getUserid();
     }
+
+    public void changePassword(UserPasswordDTO passwordDTO) {
+        // 사용자 조회
+        Optional<User> optionalUser = userRepository.findByUsername(passwordDTO.getUsername());
+
+        if (optionalUser.isEmpty()) {
+            throw new IllegalArgumentException("User not found with username: " + passwordDTO.getUsername());
+        }
+
+        User user = optionalUser.get();
+
+        // 현재 비밀번호 검증
+        if (!passwordEncoder.matches(passwordDTO.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect.");
+        }
+
+        // 새 비밀번호 저장
+        user.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
+        userRepository.save(user);
+    }
 }
+
 

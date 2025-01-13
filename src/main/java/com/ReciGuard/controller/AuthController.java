@@ -2,8 +2,10 @@ package com.ReciGuard.controller;
 
 import java.util.Map;
 
+import com.ReciGuard.dto.UserPasswordDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,14 +45,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserResponseDTO.Request userDTO) {
         // 로그인 성공하면 user 정보를, 실패하면 null을 가져옴
-        System.out.println("Email: " + userDTO.getEmail());
+        System.out.println("username: " + userDTO.getUsername());
 
-        if (userDTO.getEmail() == null || userDTO.getEmail().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일을 입력해주세요.");
+        if (userDTO.getUsername() == null || userDTO.getUsername().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("아이디를 입력해주세요.");
         }
         UserResponseDTO.Request loginResult = userService.login(userDTO);
         if (loginResult != null) {
-            String token = jwtUtil.createJwt(userDTO.getEmail(), "ROLE_USER", 60 * 60 * 1000L); // 토큰 생성
+            String token = jwtUtil.createJwt(userDTO.getUsername(), "ROLE_USER", 60 * 60 * 1000L); // 토큰 생성
             Map<String, String> responseBody = Map.of(
                     "message", "로그인 성공",
                     "token", token
@@ -63,6 +65,7 @@ public class AuthController {
     }
 
     // 비밀번호 변경
+    /*
     @PostMapping("/password")
     public ResponseEntity<?> changePasswordByEmail(@RequestBody UserResponseDTO.Request userDTO) {
         try {
@@ -70,6 +73,18 @@ public class AuthController {
             return ResponseEntity.ok().body("비밀번호가 성공적으로 변경되었습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+     */
+
+    @PostMapping("/password")
+    public ResponseEntity<String> changePassword(@RequestBody UserPasswordDTO passwordDTO) {
+        try {
+            userService.changePassword(passwordDTO);
+            return ResponseEntity.ok("Password successfully changed.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
