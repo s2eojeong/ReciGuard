@@ -23,7 +23,6 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/recipes")
 public class RecipeController {
 
@@ -38,7 +37,7 @@ public class RecipeController {
 
     // 오늘의 추천 레시피
     @GetMapping("/recommend")
-    public RecipeRecommendResponseDTO getTodayRecipe(@RequestParam Long userId){
+    public RecipeRecommendResponseDTO getTodayRecipe(@RequestParam Long userId) {
 
         // 1. AI 모델에 전달할 데이터 준비
         Map<String, Object> requestPayload = recipeService.prepareAiModelInput(userId);
@@ -48,7 +47,8 @@ public class RecipeController {
                 aiModelApiUrl,
                 HttpMethod.POST,
                 new HttpEntity<>(requestPayload),
-                new ParameterizedTypeReference<Map<String, Object>>() {}
+                new ParameterizedTypeReference<Map<String, Object>>() {
+        }
         );
 
         // 3. AI 모델의 추천 레시피 ID 추출
@@ -115,7 +115,6 @@ public class RecipeController {
 //        boolean isScrapped = userScrapService.toggleScrap(userId, recipeId);
 //        return ResponseEntity.ok(isScrapped);
 //    }
-
     @PostMapping("/scrap/{recipeId}")
     public ResponseEntity<String> toggleScrap(@PathVariable Long recipeId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
