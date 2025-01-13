@@ -88,7 +88,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
     //로그인 실패시 실행하는 매소드
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        System.out.println("로그인 실패: " + failed.getMessage()); // 디버그용 로그 추가
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드
+        response.setContentType("application/json"); // 응답 타입 JSON 설정
+        response.getWriter().write("{\"error\": \"Invalid username or password\"}"); // JSON 응답 본문 작성
     }
+
 }
