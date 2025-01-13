@@ -151,9 +151,10 @@ public class RecipeController {
 
     // 나만의 레시피 수정
     @PostMapping("/myrecipe/{recipeId}/edit")
-    public RecipeDetailResponseDTO updateMyRecipe(
+    public ResponseEntity<String> updateMyRecipe(
             @PathVariable Long recipeId,
             @RequestBody MyRecipeForm recipeForm) {
-        return recipeService.updateMyRecipe(recipeId, recipeForm);
+        recipeService.updateMyRecipe(recipeId, recipeForm);
+        return ResponseEntity.ok("레시피가 수정되었습니다.");
     }
 }
