@@ -132,7 +132,6 @@ INSERT INTO user_ingredient (user_id, ingredient_id) VALUES
     (7, 6),
     (8, 7);
 
-
 INSERT INTO user_cookingstyle (user_id, cooking_style) VALUES
     (1, '구이'),
     (1, '볶음'),

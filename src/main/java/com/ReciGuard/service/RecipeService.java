@@ -6,9 +6,15 @@ import com.ReciGuard.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,72 +30,39 @@ public class RecipeService {
     private final IngredientRepository ingredientRepository;
     private final UserService userService;
     private final RecipeStatsRepository recipeStatsRepository;
-    private final UserRepository userRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RestTemplate restTemplate;
 
-    // ai 모델에게 넘기는 데이터
-    public Map<String, Object> prepareAiModelInput(Long userId) {
-        // 1. 사용자 정보 로드
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    @Value("${ai.model.api.url:https://example.com/recommend}") // 나중에 ai 모델 완성 후 수정
+    private String aiModelApiUrl;
 
-        // 2. 모든 레시피 로드
-        List<Recipe> recipes = recipeRepository.findAll();
+    public RecipeRecommendResponseDTO getTodayRecipe(Long userId) {
+        // AI 모델에 전달할 데이터 준비
+        Map<String, Object> requestPayload = Map.of("userId", userId);
 
-        // 3. 사용자가 스크랩한 데이터 로드
-        List<UserScrap> userScraps = userRepository.findScrapsByUserId(userId);
+        try {
+            // AI 모델 API 호출
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                    aiModelApiUrl,
+                    HttpMethod.POST,
+                    new HttpEntity<>(requestPayload),
+                    new ParameterizedTypeReference<Map<String, Object>>() {}
+            );
 
-        // 4. 레시피 통계 데이터 로드
-        List<RecipeStats> recipeStats = recipeStatsRepository.findAll();
+            // 응답 처리
+            if (response.getStatusCode().is2xxSuccessful()) {
+                Map<String, Object> responseBody = response.getBody();
+                String imagePath = responseBody.get("imagePath").toString();
+                String recipeName = responseBody.get("recipeName").toString();
 
-        // 5. AI 모델 입력 데이터 구성
-        Map<String, Object> inputData = new HashMap<>();
-
-        // 사용자 선호도
-        inputData.put("User_Cuisine", user.getCuisines());
-        inputData.put("User_FoodType", user.getFoodTypes());
-        inputData.put("User_CookingStyle", user.getCookingStyles());
-
-        // 레시피 데이터
-        inputData.put("Recipe", recipes.stream()
-                .map(recipe -> Map.of(
-                        "cuisine", recipe.getCuisine() != null ? recipe.getCuisine() : "NULL",
-                        "food_type", recipe.getFoodType() != null ? recipe.getFoodType() : "NULL",
-                        "cooking_style", recipe.getCookingStyle() != null ? recipe.getCookingStyle() : "NULL"
-                ))
-                .collect(Collectors.toList()));
-
-        // 사용자 스크랩 데이터
-        inputData.put("User_Scrap", userScraps.stream()
-                .map(scrap -> Map.of(
-                        "recipe_id", scrap.getRecipe().getId(),
-                        "created_at", scrap.getCreatedAt()
-                ))
-                .collect(Collectors.toList()));
-
-        // 레시피 통계 데이터
-        inputData.put("Recipe_Stats", recipeStats.stream()
-                .map(stats -> Map.of(
-                        "view_count", stats.getViewCount(),
-                        "scrap_count", stats.getScrapCount()
-                ))
-                .collect(Collectors.toList()));
-
-        return inputData;
-    }
-
-    // 오늘의 레시피 추천
-    public RecipeRecommendResponseDTO getTodayRecipe(Long id){
-
-        Recipe recipe = recipeRepository.findTodayRecipe(id);
-
-        if (recipe == null) {
-            throw new IllegalArgumentException("레시피를 찾을 수 없습니다.");
+                // 추천 레시피 반환
+                return new RecipeRecommendResponseDTO(imagePath, recipeName);
+            } else {
+                throw new RuntimeException("AI 모델 API 호출 실패: " + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("AI 모델 호출 중 오류 발생", e);
         }
-        return new RecipeRecommendResponseDTO(
-                recipe.getImagePath(),
-                recipe.getRecipeName()
-        );
     }
 
     // 전체 레시피 리스트
