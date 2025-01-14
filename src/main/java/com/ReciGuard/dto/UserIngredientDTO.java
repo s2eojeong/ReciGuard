@@ -18,7 +18,7 @@ public class UserIngredientDTO {
 
     private Long userId; // User 엔티티의 ID
 
-    private Ingredient ingredient; // Ingredient의 이름 (예: "계란", "새우")
+    private String ingredientName; // Ingredient의 이름 (예: "계란", "새우")
 
     /**
      * 엔티티 -> DTO 변환 메서드
@@ -27,19 +27,8 @@ public class UserIngredientDTO {
         return UserIngredientDTO.builder()
                 .id(userIngredient.getId())
                 .userId(userIngredient.getUser().getUserid())
-                .ingredient(userIngredient.getIngredient()) // Ingredient의 이름을 포함
+                .ingredientName(userIngredient.getIngredient().getIngredient()) // Ingredient의 이름을 포함
                 .build();
-    }
-
-    /**
-     * DTO -> 엔티티 변환 메서드
-     */
-    public UserIngredient toEntity(User user) {
-        UserIngredient userIngredient = new UserIngredient();
-        userIngredient.setId(this.id);
-        userIngredient.setUser(user);
-        userIngredient.setIngredient(this.ingredient); // Ingredient의 이름 설정
-        return userIngredient;
     }
 }
 
