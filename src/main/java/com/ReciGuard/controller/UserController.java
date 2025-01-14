@@ -37,24 +37,30 @@ public class UserController {
     //회원정보 조회
     @GetMapping("/{userid}")
     public ResponseEntity<?> getUserInfo(@PathVariable Long userid) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
         try {
             // 서비스 호출
+            Long findUserId = userService.findUserIdByUsername(username);
+            if (!findUserId.equals(userid))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다");
+
             UserResponseDTO.Response userInfo = userService.getUserInfo(userid);
-            return ResponseEntity.ok(userInfo); // 성공 시 사용자 정보 반환
+            return ResponseEntity.ok(userInfo);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()); // 사용자 정보 없을 시
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
     //회원 탈퇴
-    @PermitAll
     @DeleteMapping("/{userid}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long userid, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseEntity<String> deleteUser(@PathVariable Long userid) {
         // 본인 확인 (id와 인증된 사용자 비교)
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         try {
-            // 서비스 호출
-            UserResponseDTO.Response userInfo = userService.getUserInfo(userid);
+            Long findUserId = userService.findUserIdByUsername(username);
+            if (!findUserId.equals(userid))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다");
             userService.deleteUser(userid);
             return ResponseEntity.ok("회원탈퇴가 완료되었습니다."); // 성공 시 사용자 정보 반환
         } catch (IllegalArgumentException e) {
@@ -65,11 +71,13 @@ public class UserController {
 
     //allergy 조회
     @GetMapping("/allergy/{userId}")
-    public List<UserIngredientDTO> getUserIngredients(@PathVariable Long userId) {
+    public ResponseEntity<List<UserIngredientDTO>> getUserIngredients(@PathVariable Long userId) {
         List<UserIngredient> userIngredients = userIngredientService.getUserIngredientsByUserId(userId);
-        return userIngredients.stream()
-                .map(UserIngredientDTO::fromEntity)//dto로 변경
+        List<UserIngredientDTO> userIngredientDTOs = userIngredients.stream()
+                .map(UserIngredientDTO::fromEntity) // DTO로 변환
                 .collect(Collectors.toList());
+
+        return ResponseEntity.ok(userIngredientDTOs);
     }
 
 
@@ -84,7 +92,7 @@ public class UserController {
         return ResponseEntity.ok("UserIngredient 추가 또는 갱신 완료");
     }
 
-    @PermitAll
+    //결과를 뭘로 할지 생각필요
     @GetMapping("/scraps")
     public ResponseEntity<List<ScrapRecipeDTO>> getUserScrappedRecipes(
             @RequestParam("userId") Long userId) {
