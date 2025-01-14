@@ -210,11 +210,11 @@ public class RecipeService {
                 recipe.getCuisine(),
                 recipe.getFoodType(),
                 recipe.getCookingStyle(),
-                nutrition != null ? nutrition.getCalories() : 0,
-                nutrition != null ? nutrition.getSodium() : 0,
-                nutrition != null ? nutrition.getCarbohydrate() : 0,
-                nutrition != null ? nutrition.getFat() : 0,
-                nutrition != null ? nutrition.getProtein() : 0,
+                nutrition != null ? (int) nutrition.getCalories() : 0,
+                nutrition != null ? (int) nutrition.getSodium() : 0,
+                nutrition != null ? (int) nutrition.getCarbohydrate() : 0,
+                nutrition != null ? (int) nutrition.getFat() : 0,
+                nutrition != null ? (int) nutrition.getProtein() : 0,
                 stats.getScrapCount(),
                 stats.getViewCount(),
                 ingredients,
@@ -477,11 +477,11 @@ public class RecipeService {
                 recipe.getCookingStyle(),
 
                 // 사용자가 작성한 레시피에 대해서는 nutrition 정보 제공 x -> 다 0으로 기본 세팅
-                recipe.getNutrition() != null ? recipe.getNutrition().getCalories() : 0,
-                recipe.getNutrition() != null ? recipe.getNutrition().getSodium() : 0,
-                recipe.getNutrition() != null ? recipe.getNutrition().getCarbohydrate() : 0,
-                recipe.getNutrition() != null ? recipe.getNutrition().getFat() : 0,
-                recipe.getNutrition() != null ? recipe.getNutrition().getProtein() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getCalories() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getSodium() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getCarbohydrate() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getFat() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getProtein() : 0,
 
                 recipe.getRecipeStats().getViewCount(), // 조회 수
                 recipe.getRecipeStats().getScrapCount(), // 스크랩 수

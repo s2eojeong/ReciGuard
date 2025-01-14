@@ -17,9 +17,9 @@ public class Nutrition {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
-    private int calories;
-    private int sodium;
-    private int carbohydrate;
-    private int fat;
-    private int protein;
+    private double calories;
+    private double sodium;
+    private double carbohydrate;
+    private double fat;
+    private double protein;
 }
