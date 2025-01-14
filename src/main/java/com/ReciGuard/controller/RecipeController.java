@@ -30,36 +30,11 @@ public class RecipeController {
     private final RecipeStatsService recipeStatsService;
     private final UserScrapService userScrapService;
     private final UserService userService;
-    private final RestTemplate restTemplate;
-
-    @Value("${ai.model.api.url:https://example.com/recommend}") // 나중에 ai 모델 완성 후 수정
-    private String aiModelApiUrl;
 
     // 오늘의 추천 레시피
     @GetMapping("/recommend")
     public RecipeRecommendResponseDTO getTodayRecipe(@RequestParam Long userId) {
-
-        // 1. AI 모델에 전달할 데이터 준비
-        Map<String, Object> requestPayload = recipeService.prepareAiModelInput(userId);
-
-        // 2. AI 모델 API 호출
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                aiModelApiUrl,
-                HttpMethod.POST,
-                new HttpEntity<>(requestPayload),
-                new ParameterizedTypeReference<Map<String, Object>>() {
-        }
-        );
-
-        // 3. AI 모델의 추천 레시피 ID 추출
-        if (response.getStatusCode().is2xxSuccessful()) {
-            Long recipeId = Long.valueOf(response.getBody().get("recipe_id").toString());
-
-            // 4. 추천 레시피 데이터 반환
-            return recipeService.getTodayRecipe(recipeId);
-        } else {
-            throw new RuntimeException("AI 모델 API 호출 실패: " + response.getStatusCode());
-        }
+        return recipeService.getTodayRecipe(userId);
     }
 
     // 전체 레시피 리스트
