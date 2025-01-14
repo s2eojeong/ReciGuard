@@ -21,7 +21,6 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("""
         SELECT r 
         FROM Recipe r
-        LEFT JOIN FETCH r.recipeStats
         WHERE r.id = :recipeId
     """)
     Recipe findTodayRecipe(@Param("recipeId") Long recipeId);
