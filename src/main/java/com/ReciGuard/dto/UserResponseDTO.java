@@ -44,13 +44,13 @@ public class UserResponseDTO {
         private String email;
 
         @NotNull(message = "cookingStyle cannot be null")
-        private String userCookingStyle;
+        private List<String> userCookingStyle;
 
         @NotNull(message = "cuisine cannot be null")
-        private String userCuisine;
+        private List<String> userCuisine;
 
         @NotNull(message = "Food type cannot be null")
-        private String userFoodType;
+        private List<String> userFoodType;
 
         @JsonProperty("ingredients")
         private List<String> ingredients;
