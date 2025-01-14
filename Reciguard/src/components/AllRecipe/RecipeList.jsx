@@ -1,53 +1,110 @@
 import React, { useEffect, useState } from "react";
+import "./RecipeList.css";
+import 스크랩전 from "../../assets/allscrap.png"
+import 인분 from "../../assets/all인분.png"
 
-const RecipeCard = ({ recipe }) => (
-    <div className="recipe-card">
-        <h3>{recipe.recipeName}</h3>
-        <img
-            src={recipe.imagePath}
-            alt={recipe.recipeName}
-            className="recipe-image"
-        />
-        <div className="recipe-info">
-            <p>👥 {recipe.serving}인분</p>
-            <button className="recipe-btn">레시피 보기</button>
+
+const RecipeCard = ({ recipe }) => {
+    const [isScrapped, setIsScrapped] = useState(false); // 스크랩 상태 관리
+
+    // 스크랩 API 호출 함수
+    const handleScrap = async () => {
+        const token = localStorage.getItem("jwtToken"); // JWT 토큰 가져오기
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/recipes/scrap/${recipe.recipeId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    recipeId: recipe.recipeId,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("스크랩 요청 실패");
+            }
+
+            const data = await response.json();
+            alert(data.message); // API 응답 메시지 출력
+            setIsScrapped((prev) => !prev); // 스크랩 상태 토글
+        } catch (error) {
+            console.error("스크랩 요청 중 오류:", error);
+        }
+    };
+
+    return (
+        <div className="recipe-card">
+            <div className="recipe-header">
+                <h3>{recipe.recipeName}</h3>
+                <button className="scrap-btn" onClick={handleScrap}>
+                    <img
+                        src={isScrapped ? "../../assets/allscrap.png" : 스크랩전}
+                        alt={isScrapped ? "스크랩됨" : "스크랩하기"}
+                        className="scrap-icon"
+                    />
+                </button>
+            </div>
+            <div className="recipe-image-div">
+            <img
+                src={recipe.imagePath}
+                alt={recipe.recipeName}
+                className="recipe-image-real"
+            />
+            </div>
+            <div className="recipe-info">
+                <p> <img className="recipe-info-person" src={인분}/> {recipe.serving}인분</p>
+                <button className="recipe-btn">레시피 보기</button>
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 function RecipeList() {
     const [recipes, setRecipes] = useState([]); // 레시피 목록
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState(null); // 에러 메시지
     const [filterEnabled, setFilterEnabled] = useState(false); // 필터 상태
+    const [selectedCuisine, setSelectedCuisine] = useState("전체"); // 선택된 카테고리
+
+    const cuisineOptions = ["전체", "한식", "중식", "양식", "일식", "아시안"];
 
     // API 호출 함수
     const fetchRecipes = async () => {
         setLoading(true);
         setError(null);
+
         try {
-            const filterQuery = filterEnabled ? "true" : "false"; // 필터링 여부에 따라 URL 변경
+            const token = localStorage.getItem("jwtToken"); // 로그인 시 저장된 JWT 토큰
+            let url = "";
 
-            // JWT 토큰 가져오기 (예: localStorage 또는 sessionStorage)
-            const token = localStorage.getItem("jwtToken"); // jwtToken은 로그인 시 저장된 토큰
+            if (selectedCuisine === "전체") {
+                // 전체 레시피 API
+                url = `http://localhost:8080/api/recipes/all?filter=${filterEnabled}`;
+            } else {
+                // 카테고리별 레시피 API
+                url = `http://localhost:8080/api/recipes?cuisine=${selectedCuisine}&filter=${filterEnabled}`;
+            }
 
-            const response = await fetch(
-                `http://localhost:8080/api/recipes/all?filter=${filterQuery}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`, // JWT 토큰 추가
-                    },
-                    credentials: "include", // 인증 정보 포함
-                }
-            );
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                credentials: "include",
+            });
 
             if (!response.ok) {
                 throw new Error("레시피 데이터를 불러오지 못했습니다.");
             }
 
             const data = await response.json();
+            console.log("API 응답 데이터:", data);
+            console.log("filterEnabled:", filterEnabled);
+            console.log(url)
             setRecipes(data);
         } catch (err) {
             setError(err.message);
@@ -56,30 +113,46 @@ function RecipeList() {
         }
     };
 
-    // 컴포넌트 마운트 시 레시피 데이터 가져오기
+    // 선택된 카테고리 또는 필터 상태 변경 시 API 호출
     useEffect(() => {
         fetchRecipes();
-    }, [filterEnabled]); // 필터 상태가 변경될 때 API 호출
+    }, [selectedCuisine, filterEnabled]);
 
     return (
         <div className="recipe-list-container">
-            <h2>오늘 뭐 먹지?</h2>
-            <p>알레르기를 가진 당신을 위한 안전한 레시피</p>
+            <h2 className="allrecipes-header">오늘 뭐 먹지?</h2>
+            <p className="allrecipes-p">알레르기를 가진 당신을 위한 안전한 레시피</p>
 
-            {/* 필터링 버튼 */}
+            {/* 필터 스위치 버튼 */}
             <div className="filter-buttons">
-                <button
-                    className={`filter-btn ${!filterEnabled ? "active" : ""}`}
-                    onClick={() => setFilterEnabled(false)}
-                >
-                    전체 레시피 보기
-                </button>
-                <button
-                    className={`filter-btn ${filterEnabled ? "active" : ""}`}
-                    onClick={() => setFilterEnabled(true)}
-                >
-                    필터링된 레시피 보기
-                </button>
+                <div className="filter-header">알레르기 유발 음식 필터링</div>
+                <div className="filter-btn-group">
+                    <button
+                        className={`filter-btn ${!filterEnabled ? "active" : ""}`}
+                        onClick={() => setFilterEnabled(false)}
+                    >
+                        OFF
+                    </button>
+                    <button
+                        className={`filter-btn ${filterEnabled ? "active" : ""}`}
+                        onClick={() => setFilterEnabled(true)}
+                    >
+                        ON
+                    </button>
+                </div>
+            </div>
+
+            {/* 카테고리 탭 */}
+            <div className="cuisine-tabs">
+                {cuisineOptions.map((cuisine) => (
+                    <button
+                        key={cuisine}
+                        className={`tab-btn ${selectedCuisine === cuisine ? "active" : ""}`}
+                        onClick={() => setSelectedCuisine(cuisine)}
+                    >
+                        {cuisine}
+                    </button>
+                ))}
             </div>
 
             {/* 레시피 리스트 */}
@@ -101,5 +174,3 @@ function RecipeList() {
 }
 
 export default RecipeList;
-
-
