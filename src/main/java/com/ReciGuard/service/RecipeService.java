@@ -215,8 +215,8 @@ public class RecipeService {
                 nutrition != null ? (int) nutrition.getCarbohydrate() : 0,
                 nutrition != null ? (int) nutrition.getFat() : 0,
                 nutrition != null ? (int) nutrition.getProtein() : 0,
-                stats.getScrapCount(),
-                stats.getViewCount(),
+                stats != null ? stats.getScrapCount() : 0,
+                stats != null ? stats.getViewCount() : 0,
                 ingredients,
                 instructionDTOs
         );
