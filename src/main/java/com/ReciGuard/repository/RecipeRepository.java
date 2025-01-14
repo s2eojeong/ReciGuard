@@ -29,10 +29,10 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("""
         SELECT DISTINCT r
         FROM Recipe r
-        LEFT JOIN r.recipeIngredients ri
-        LEFT JOIN ri.ingredient i
-        LEFT JOIN UserIngredient ui ON i.id = ui.ingredient.id
-        WHERE ui.user.id IS NULL OR ui.user.id != :userId
+        JOIN r.recipeIngredients ri
+        JOIN ri.ingredient i
+        JOIN UserIngredient ui ON i.id = ui.ingredient.id
+        WHERE ui.user.id = :userId
     """)
     List<Recipe> findAllFilteredRecipes(@Param("userId") Long userId);
 
@@ -43,17 +43,16 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("""
         SELECT DISTINCT r
         FROM Recipe r
-        LEFT JOIN r.recipeIngredients ri
-        LEFT JOIN ri.ingredient i
-        LEFT JOIN UserIngredient ui ON i.id = ui.ingredient.id
-        WHERE (ui.user.id IS NULL OR ui.user.id != :userId)
-          AND r.cuisine = :cuisine
+        JOIN r.recipeIngredients ri
+        JOIN ri.ingredient i
+        JOIN UserIngredient ui ON i.id = ui.ingredient.id
+        WHERE r.cuisine = :cuisine
     """)
     List<Recipe> findCuisineFilteredRecipes(@Param("userId") Long userId, @Param("cuisine") String cuisine);
 
     // 검색 단어 필터링해서 레시피 리스트 검색
     @Query("""
-    SELECT DISTINCT r
+        SELECT DISTINCT r
         FROM Recipe r
         JOIN r.recipeIngredients ri
         JOIN ri.ingredient i
@@ -61,41 +60,40 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     """)
     List<Recipe> findByQuery(@Param("query") String query);
 
-
     // 검색 단어와 사용자 알레르기 정보를 기반으로 필터링된 레시피 리스트 검색
     @Query("""
         SELECT DISTINCT r
         FROM Recipe r
-        LEFT JOIN r.recipeIngredients ri
-        LEFT JOIN ri.ingredient i
-        LEFT JOIN UserIngredient ui ON i.id = ui.ingredient.id
-        WHERE (ui.user.id IS NULL OR ui.user.id != :userId)
-          AND (r.recipeName LIKE %:query% OR i.ingredient LIKE %:query%)
+        JOIN r.recipeIngredients ri
+        JOIN ri.ingredient i
+        JOIN UserIngredient ui ON i.id = ui.ingredient.id AND ui.user.id = :userId
+        WHERE ui.id IS NULL AND (r.recipeName LIKE %:query% OR i.ingredient LIKE %:query%)
     """)
     List<Recipe> findQueryFilteredRecipes(@Param("userId") Long userId, @Param("query") String query);
 
+
     // 특정 레시피 상세 정보
     @Query("""
-    SELECT DISTINCT r
-    FROM Recipe r
-    LEFT JOIN FETCH r.nutrition n
-    WHERE r.id = :id
-""")
+        SELECT DISTINCT r
+        FROM Recipe r
+        LEFT JOIN FETCH r.nutrition n
+        WHERE r.id = :id
+    """)
     Optional<Recipe> findRecipeById(@Param("id") Long id);
 
     @Query("""
-    SELECT i
-    FROM Instruction i
-    WHERE i.recipe.id = :id
-""")
+        SELECT i
+        FROM Instruction i
+        WHERE i.recipe.id = :id
+    """)
     List<Instruction> findInstructionsByRecipeId(@Param("id") Long id);
 
     @Query("""
-    SELECT ri
-    FROM RecipeIngredient ri
-    LEFT JOIN FETCH ri.ingredient ing
-    WHERE ri.recipe.id = :id
-""")
+        SELECT ri
+        FROM RecipeIngredient ri
+        LEFT JOIN FETCH ri.ingredient ing
+        WHERE ri.recipe.id = :id
+    """)
     List<RecipeIngredient> findRecipeIngredientsByRecipeId(@Param("id") Long id);
 
     // 특정 사용자가 등록한 레시피 조회 (userId 사용)
