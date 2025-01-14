@@ -42,7 +42,7 @@ public class Recipe {
     @OneToOne(mappedBy = "recipe", fetch = FetchType.LAZY)
     private Nutrition nutrition;
 
-    @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private RecipeStats recipeStats;
 
     public Recipe(Long id) {
