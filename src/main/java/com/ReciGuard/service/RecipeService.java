@@ -86,15 +86,9 @@ public class RecipeService {
         if (recipe == null) {
             throw new IllegalArgumentException("레시피를 찾을 수 없습니다.");
         }
-
-        RecipeStats stats = recipe.getRecipeStats();
-
         return new RecipeRecommendResponseDTO(
                 recipe.getImagePath(),
-                recipe.getRecipeName(),
-                recipe.getServing(),
-                stats.getScrapCount(),
-                stats.getViewCount()
+                recipe.getRecipeName()
         );
     }
 
