@@ -1,11 +1,11 @@
-import Header from "../components/Header";
+import Header2 from "../components/Header2";
 import Footer from "../components/Footer";
 import RecipeList from "../components/AllRecipe/RecipeList";
 
 const AllRecipes = () => {
   return (
     <div>
-      <Header />
+      <Header2 />
       <RecipeList />
       <Footer />
     </div>

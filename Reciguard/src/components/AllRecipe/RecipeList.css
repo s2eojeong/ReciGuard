@@ -1,0 +1,180 @@
+.recipe-list-container {
+    padding: 20px 30px 30px 30px;
+    background-color: #C9D2CB;
+}
+
+.allrecipes-header {
+    color:#3e5944;
+    text-align: center;
+    font-size: 50px;
+}
+
+.allrecipes-p {
+    color:#686868;
+    text-align: center;
+    font-size: 20px;
+    font-weight:bold;
+    position: relative;
+    top: -35px;
+}
+
+.filter-buttons {
+    display: flex;
+    flex-direction: column; /* 수직 정렬 */
+    align-items: flex-end; /* 오른쪽 정렬 */
+    margin: -57px 20px 25px 0;
+}
+
+.filter-header {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #686868;
+}
+
+.filter-btn-group {
+    display: flex;
+    margin-right: 15px;
+}
+
+.filter-btn {
+    width: 65px;
+    height: 40px;
+    border: 2px solid #3e5944;
+    background-color: #C9D2CB;
+    color: #3e5944;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+}
+
+.filter-btn.active {
+    background-color: #3e5944; /* 활성 상태 배경색 */
+    color: #F2F2F2; /* 활성 상태 텍스트 색 */
+}
+
+.cuisine-tabs {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 1px solid #3E5944; /* 탭 하단 선 */
+    margin-bottom: 20px;
+    position: relative; /* 하위 요소의 기준이 됨 */
+}
+
+.tab-btn {
+    padding: 15px 20px;
+    background-color: transparent; /* 배경 투명 */
+    color: #130201;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.tab-btn.active {
+    color: #3e5944; /* 강조 색상 */
+    font-weight: bold;
+}
+
+.tab-btn.active::after {
+    content: "";
+    display: block;
+    width: 192px; /* 밑줄 길이를 요소 너비의 130%로 설정 */
+    height: 3px;
+    background-color: #3e5944;
+    position: absolute;
+    bottom: -2px;
+    left: 55%; /* 요소의 중앙을 기준으로 */
+    transform: translateX(-50%); /* 좌우 중앙 정렬 */
+}
+
+.recipe-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 한 줄에 4개 */
+    gap: 20px; /* 카드 간격 */
+    justify-content: center;
+}
+
+.recipe-card {
+    border-radius: 10px;
+    padding: 0px 15px 5px 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background-color: #F2F2F2;
+    text-align: start;
+}
+
+.recipe-header {
+    display: flex;
+    justify-content: space-between; /* 양쪽 끝 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    margin-bottom: 10px;
+}
+
+.scrap-btn {
+    all: unset;
+    margin-top: 15px;
+}
+
+.scrap-icon{
+    width:20px;
+}
+
+.recipe-card h3 {
+    font-size: 15px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    color:#542825;
+}
+
+.recipe-image-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.recipe-image-real {
+    width: 90%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.recipe-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: bold;
+    color: #787878;
+    margin: 0 5px 0 5px;
+}
+
+.recipe-info-person {
+    width:30px;
+    position: relative;
+    top:8px;
+}
+
+.recipe-btn {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #C9D2CB;
+    border: none;
+    color: #263629;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.recipe-btn:hover {
+    background-color: #3e5944;
+    color:#F2F2F2;
+}
+
+.error-text {
+    color: #3e5944;
+    font-weight: bold;
+    text-align: center;
+}
