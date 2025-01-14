@@ -18,12 +18,39 @@ function Rightpanel2() {
     setIsPopupOpen(false);
   };
 
-  // 폼 입력값 변경 핸들러
+  // 다중 선택용 체크박스 핸들러
+  const handleMultiCheckboxChange = (e) => {
+    const { name, value } = e.target;
+
+    // 알레르기 항목 처리 (ingredients 배열에 저장)
+    if (["유제품", "견과류", "곡물류", "콩류", "육류", "해산물", "과일류"].some((group) => options[group]?.includes(value))) {
+      setPreferences((prev) => {
+        const selectedAllergies = prev.ingredients || [];
+        if (selectedAllergies.includes(value)) {
+          // 이미 선택된 항목 제거
+          return { ...prev, ingredients: selectedAllergies.filter((item) => item !== value) };
+        } else {
+          // 새로운 항목 추가
+          return { ...prev, ingredients: [...selectedAllergies, value] };
+        }
+      });
+    } else {
+      // 일반적인 선호도 옵션 처리
+      setPreferences((prev) => {
+        const selectedItems = prev[name] || [];
+        return selectedItems.includes(value)
+            ? { ...prev, [name]: selectedItems.filter((item) => item !== value) }
+            : { ...prev, [name]: [...selectedItems, value] };
+      });
+    }
+  };
+
+  // 단순 입력값 변경 핸들러 (텍스트, 숫자 등 단일 입력)
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value } = e.target;
     setPreferences((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: value,
     }));
   };
 
@@ -46,19 +73,13 @@ function Rightpanel2() {
       weight: Number(preferences.weight) || 0,
       email: preferences.email || "",
       password: preferences.password || "",
-      ingredients: Object.entries(preferences)
-          .filter(
-              ([key, value]) =>
-                  value === true &&
-                  key !== "country" &&
-                  key !== "mealType" &&
-                  key !== "cookingStyle"
-          )
-          .map(([key]) => key),
-      userCookingStyle: preferences.cookingStyle || "",
-      userCuisine: preferences.mealType || "",
-      userFoodType: preferences.country || "",
+      ingredients: preferences.ingredients || [], // 알레르기 리스트 배열
+      userCookingStyle: preferences.cookingStyle || [],
+      userCuisine: preferences.mealType || [],
+      userFoodType: preferences.country || [],
     };
+
+    console.log("전송 데이터:", requestData);
 
     try {
       const response = await fetch("http://localhost:8080/register", {
@@ -97,18 +118,7 @@ function Rightpanel2() {
     곡물류: ["밀가루", "귀리", "호밀가루"],
     콩류: ["대두"],
     육류: ["돼지고기", "닭고기", "소고기", "계란"],
-    해산물: [
-      "고등어",
-      "연어",
-      "참치",
-      "꽃게",
-      "새우",
-      "오징어",
-      "굴",
-      "전복",
-      "홍합",
-      "조개",
-    ],
+    해산물: ["고등어", "연어", "참치", "꽃게", "새우", "오징어", "굴", "전복", "홍합", "조개"],
     과일류: ["복숭아", "키위"],
     해당없음: ["해당없음"],
   };
@@ -120,7 +130,12 @@ function Rightpanel2() {
               key={item}
               className={useSpecialClass ? "category-label1" : "category-label"}
           >
-            <input type="checkbox" name={item} onChange={handleInputChange} />{" "}
+            <input
+                type="checkbox"
+                name={name}
+                value={item}
+                onChange={handleMultiCheckboxChange} // 다중 선택 핸들러 사용
+            />{" "}
             {item}
           </label>
       ));
@@ -181,7 +196,6 @@ function Rightpanel2() {
           </p>
         </div>
 
-        {/* 팝업 */}
         {isPopupOpen && (
             <div className="popup-overlay">
               <div className="popup-content">
@@ -193,7 +207,6 @@ function Rightpanel2() {
                     <h1>ReciGuard</h1>
                     {error && <p className="error">{error}</p>}
 
-                    {/* Gender */}
                     <div className="group">
                       <label>성별</label>
                       <div className="gender-options">
@@ -218,7 +231,6 @@ function Rightpanel2() {
                       </div>
                     </div>
 
-                    {/* Age */}
                     <div className="group">
                       <label>나이</label>
                       <div className="year">
@@ -241,7 +253,6 @@ function Rightpanel2() {
                       </div>
                     </div>
 
-                    {/* Weight */}
                     <div className="group">
                       <label>체중</label>
                       <div className="kg">
@@ -256,7 +267,6 @@ function Rightpanel2() {
                       </div>
                     </div>
 
-                    {/* Preferences */}
                     <fieldset className="preferences-section">
                       <legend>
                         <span className="pre">선호도</span> 좋아하는 종류를
@@ -271,20 +281,15 @@ function Rightpanel2() {
                         </div>
                         <div>
                           <label className="type">식사 유형</label>
-                          <div>
-                            {renderCheckboxes("mealType", options.mealType)}
-                          </div>
+                          <div>{renderCheckboxes("mealType", options.mealType)}</div>
                         </div>
                         <div>
                           <label className="type">조리 방식</label>
-                          <div>
-                            {renderCheckboxes("cookingStyle", options.cookingStyle)}
-                          </div>
+                          <div>{renderCheckboxes("cookingStyle", options.cookingStyle)}</div>
                         </div>
                       </div>
                     </fieldset>
 
-                    {/* Allergy */}
                     <fieldset className="allergy-section">
                       <legend>
                         <span className="alle">알레르기</span> 해당되는 항목을
@@ -320,3 +325,4 @@ function Rightpanel2() {
 }
 
 export default Rightpanel2;
+
