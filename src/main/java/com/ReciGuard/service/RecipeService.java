@@ -122,7 +122,7 @@ public class RecipeService {
         List<Recipe> recipes = recipeRepository.findCuisineFilteredRecipes(userId, cuisine);
 
         if (recipes.isEmpty()) {
-            throw new EntityNotFoundException(cuisine + "에 해당하는 레시피가 없습니다.");
+            throw new EntityNotFoundException("사용자 알레르기 정보를 바탕으로 " + cuisine + "에 해당하는 레시피가 없습니다.");
         }
 
         // DTO 변환 및 반환
@@ -156,7 +156,7 @@ public class RecipeService {
         List<Recipe> recipes = recipeRepository.findQueryFilteredRecipes(userId, query);
 
         if (recipes.isEmpty()) {
-            throw new EntityNotFoundException(query + "로 검색된 레시피가 없습니다.");
+            throw new EntityNotFoundException("사용자 알레르기 정보를 바탕으로 " + query + "로 검색된 레시피가 없습니다.");
         }
 
         // DTO 변환 및 반환
