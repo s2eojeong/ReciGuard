@@ -54,26 +54,31 @@ public class UserService {
         userRepository.save(user);
 
         //cookingstyle 저장
-        UserCookingStyle cookingStyle = UserCookingStyle.builder()
-                .cookingsStyle(userRequestDTO.getUserCookingStyle())
-                .user(user)
-                .build();
-        if (cookingStyle.getCookingsStyle() == null) {
-            throw new IllegalArgumentException("Cooking style cannot be null");
-        }
-        userCookingStyleRepository.save(cookingStyle);
+        userRequestDTO.getUserCookingStyle().forEach(cookingStyle -> {
+            UserCookingStyle userCookingStyle = UserCookingStyle.builder()
+                    .cookingsStyle(cookingStyle)
+                    .user(user)
+                    .build();
+            userCookingStyleRepository.save(userCookingStyle);
+        });
+
         //cuisine 저장
-        UserCuisine cuisine = UserCuisine.builder()
-                .cuisine(userRequestDTO.getUserCuisine())
-                .user(user)
-                .build();
-        userCuisineRepository.save(cuisine);
+        userRequestDTO.getUserCuisine().forEach(cuisine -> {
+            UserCuisine userCuisine = UserCuisine.builder()
+                    .cuisine(cuisine)
+                    .user(user)
+                    .build();
+            userCuisineRepository.save(userCuisine);
+        });
+
         //foodtype 저장
-        UserFoodType foodType = UserFoodType.builder()
-                .foodType(userRequestDTO.getUserFoodType())
-                .user(user)
-                .build();
-        userFoodTypeRepository.save(foodType);
+        userRequestDTO.getUserFoodType().forEach(foodType -> {
+            UserFoodType userFoodType = UserFoodType.builder()
+                    .foodType(foodType)
+                    .user(user)
+                    .build();
+            userFoodTypeRepository.save(userFoodType);
+        });
 
 
         List<UserIngredient> userIngredients = userRequestDTO.getIngredients().stream()
