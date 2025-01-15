@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-const MyPage = () => {
+const UserInfo = () => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -58,11 +58,11 @@ const MyPage = () => {
             <h1>나의 계정</h1>
             <p><strong>이름:</strong> {userData.username}</p>
             <p><strong>성별:</strong> {userData.gender}</p>
-            <p><strong>나이:</strong> {userData.age}</p>
+            <p><strong>나이:</strong> {userData.age}년생</p>
             <p><strong>체중:</strong> {userData.weight}kg</p>
             <p><strong>이메일:</strong> {userData.email}</p>
         </div>
     );
 };
 
-export default MyPage;
+export default UserInfo;
