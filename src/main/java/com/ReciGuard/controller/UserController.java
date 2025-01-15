@@ -102,17 +102,24 @@ public class UserController {
         return ResponseEntity.ok(scrappedRecipes);
     }
 
-    @PutMapping("/info")
-    public ResponseEntity<String> updateUserInfo(@Valid @RequestBody UserResponseDTO.Request userDTO, BindingResult bindingResult) {
+    @PutMapping("/info/{userid}")
+    public ResponseEntity<String> updateUserInfo(@Valid @RequestBody UserResponseDTO.Request userDTO, @PathVariable Long userid, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(bindingResult.getFieldError().getDefaultMessage());
         }
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long findUserId = userService.findUserIdByUsername(username);
+        if (!userid.equals(findUserId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다");
 
+        }
         userService.updateUserInfo(userDTO);
         return ResponseEntity.ok("회원정보 수정에 성공했습니다");
     }
 }
+
+
 
 
 
