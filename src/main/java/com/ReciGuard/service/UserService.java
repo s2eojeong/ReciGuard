@@ -4,6 +4,7 @@ import com.ReciGuard.dto.UserPasswordDTO;
 import com.ReciGuard.dto.UserResponseDTO;
 import com.ReciGuard.entity.*;
 import com.ReciGuard.repository.*;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -178,6 +179,66 @@ public class UserService {
         // 새 비밀번호 저장
         user.setPassword(passwordEncoder.encode(passwordDTO.getNewPassword()));
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateUserInfo(UserResponseDTO.Request userDTO) {
+        User user = userRepository.findByUsername(userDTO.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username:" + userDTO.getUsername()));
+
+        user.setUsername(userDTO.getUsername());
+        user.setGender(userDTO.getGender());
+        user.setAge(userDTO.getAge());
+        user.setWeight(userDTO.getWeight());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
+
+        userCookingStyleRepository.deleteByUserId(user.getUserid());
+        List<UserCookingStyle> cookingStyles = userDTO.getUserCookingStyle().stream()
+                .map(style -> UserCookingStyle.builder()
+                        .cookingsStyle(style)
+                        .user(user)
+                        .build())
+                .collect(Collectors.toList());
+        userCookingStyleRepository.saveAll(cookingStyles);
+
+        // Step 4: Cuisine 업데이트
+        userCuisineRepository.deleteByUserId(user.getUserid());
+        List<UserCuisine> cuisines = userDTO.getUserCuisine().stream()
+                .map(cuisine -> UserCuisine.builder()
+                        .cuisine(cuisine)
+                        .user(user)
+                        .build())
+                .collect(Collectors.toList());
+        userCuisineRepository.saveAll(cuisines);
+
+        // Step 5: Food Type 업데이트
+        userFoodTypeRepository.deleteByUserId(user.getUserid());
+        List<UserFoodType> foodTypes = userDTO.getUserFoodType().stream()
+                .map(foodType -> UserFoodType.builder()
+                        .foodType(foodType)
+                        .user(user)
+                        .build())
+                .collect(Collectors.toList());
+        userFoodTypeRepository.saveAll(foodTypes);
+
+        userIngredientRepository.deleteByUserId(user.getUserid());
+        List<UserIngredient> userIngredients = userDTO.getIngredients().stream()
+                .map(ingredientName -> {
+                    Ingredient ingredient = ingredientRepository.findByIngredient(ingredientName);
+                    if (ingredient == null) {
+                        Ingredient newIngredient = new Ingredient();
+                        newIngredient.setIngredient(ingredientName);
+                        ingredient = ingredientRepository.save(newIngredient);
+                    }
+                    return UserIngredient.builder()
+                            .user(user)
+                            .ingredient(ingredient)
+                            .build();
+                })
+                .collect(Collectors.toList());
+        userIngredientRepository.saveAll(userIngredients);
+
     }
 }
 
