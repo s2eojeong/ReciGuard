@@ -11,6 +11,7 @@ import com.ReciGuard.service.UserIngredientService;
 import com.ReciGuard.service.UserScrapService;
 import com.ReciGuard.service.UserService;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -81,7 +83,7 @@ public class UserController {
     }
 
 
-
+    //알레르기 정보 수정
     @PostMapping("/allergy/{userId}")
     public ResponseEntity<String> addOrUpdateUserIngredients(
             @PathVariable Long userId, @RequestBody UserIngredientListDTO userIngredientListDTO) {
@@ -92,7 +94,7 @@ public class UserController {
         return ResponseEntity.ok("UserIngredient 추가 또는 갱신 완료");
     }
 
-    //결과를 뭘로 할지 생각필요
+    //스크랩 레시피 찾기
     @GetMapping("/scraps")
     public ResponseEntity<List<ScrapRecipeDTO>> getUserScrappedRecipes(
             @RequestParam("userId") Long userId) {
@@ -100,7 +102,16 @@ public class UserController {
         return ResponseEntity.ok(scrappedRecipes);
     }
 
+    @PutMapping("/info")
+    public ResponseEntity<String> updateUserInfo(@Valid @RequestBody UserResponseDTO.Request userDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(bindingResult.getFieldError().getDefaultMessage());
+        }
 
+        userService.updateUserInfo(userDTO);
+        return ResponseEntity.ok("회원정보 수정에 성공했습니다");
+    }
 }
 
 
