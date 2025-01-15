@@ -52,11 +52,20 @@ public class RecipeService {
             // 응답 처리
             if (response.getStatusCode().is2xxSuccessful()) {
                 Map<String, Object> responseBody = response.getBody();
-                String imagePath = responseBody.get("imagePath").toString();
-                String recipeName = responseBody.get("recipeName").toString();
+
+                // AI 모델로부터 받은 recipeId
+                Long recipeId = Long.valueOf(responseBody.get("recipeId").toString());
+
+                // recipeId에 해당하는 레시피 정보 조회
+                Recipe recipe = recipeRepository.findById(recipeId)
+                        .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다: " + recipeId));
 
                 // 추천 레시피 반환
-                return new RecipeRecommendResponseDTO(imagePath, recipeName);
+                return new RecipeRecommendResponseDTO(
+                                        recipe.getId(),
+                                        recipe.getImagePath(),
+                                        recipe.getRecipeName());
+
             } else {
                 throw new RuntimeException("AI 모델 API 호출 실패: " + response.getStatusCode());
             }
