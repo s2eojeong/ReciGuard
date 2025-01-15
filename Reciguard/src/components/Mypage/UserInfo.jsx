@@ -1,52 +1,68 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-function UserInfo() {
-    const [userInfo, setUserInfo] = useState(null);
-    const [error, setError] = useState("");
+const MyPage = () => {
+    const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // JWT 토큰에서 username과 userid를 추출하는 함수
+    const getUserInfoFromToken = (token) => {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1])); // JWT payload 디코딩
+            return { username: payload.username, userid: payload.userid };
+        } catch (err) {
+            console.error('Invalid token', err);
+            return null;
+        }
+    };
 
     useEffect(() => {
-        const fetchUserInfo = async () => {
-            try {
-                // LocalStorage에서 JWT 토큰 가져오기
-                const token = localStorage.getItem("jwtToken");
-                if (!token) {
-                    setError("로그인이 필요합니다.");
-                    return;
-                }
+        const token = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 JWT 토큰 가져오기
+        if (!token) {
+            setError('로그인이 필요합니다.');
+            setLoading(false);
+            return;
+        }
 
-                const response = await fetch("http://localhost:8080/api/users/${userId}", {
-                    method: "GET",
+        const userInfo = getUserInfoFromToken(token);
+
+        if (userInfo) {
+            const { userid } = userInfo;
+            axios
+                .get(`http://localhost:8080/api/users/${userid}`, {
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`, // JWT 토큰 추가
+                        Authorization: `Bearer ${token}`, // 인증 헤더에 토큰 포함
                     },
+                })
+                .then((response) => {
+                    console.log("응답 데이터:", response.data);
+                    setUserData(response.data);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    setError('사용자 정보를 불러오지 못했습니다.');
+                    setLoading(false);
                 });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    setUserInfo(data); // 유저 정보 저장
-                } else {
-                    setError("사용자 정보를 가져오는데 실패했습니다.");
-                }
-            } catch (error) {
-                setError("서버 오류가 발생했습니다.");
-            }
-        };
-
-        fetchUserInfo();
+        } else {
+            setError('잘못된 토큰입니다.');
+            setLoading(false);
+        }
     }, []);
 
-    if (error) return <div>{error}</div>;
-    if (!userInfo) return <div>로딩 중...</div>;
+    if (loading) return <p>로딩 중...</p>;
+    if (error) return <p>{error}</p>;
 
     return (
         <div>
-            <h2>My Page</h2>
-            <p>이름: {userInfo.username}</p>
-            <p>이메일: {userInfo.email}</p>
-            <p>역할: {userInfo.role}</p>
+            <h1>나의 계정</h1>
+            <p><strong>이름:</strong> {userData.username}</p>
+            <p><strong>성별:</strong> {userData.gender}</p>
+            <p><strong>나이:</strong> {userData.age}</p>
+            <p><strong>체중:</strong> {userData.weight}kg</p>
+            <p><strong>이메일:</strong> {userData.email}</p>
         </div>
     );
-}
+};
 
-export default UserInfo;
+export default MyPage;

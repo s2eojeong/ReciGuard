@@ -24,8 +24,8 @@ function App() {
         <Route path="/auth/register" element={<Signup />} />
         <Route path="/recipes" element={<Realmain />} />
         <Route path="/users/recipe-form" element={<Register />} />
-        <Route path="/recipes/detail" element={<Recipedetail />} />
-        <Route path="/users/{userid}" element={<MypageHome />} />
+        <Route path="/recipes/:recipeId" element={<Recipedetail />} />
+        <Route path="/users/:userid" element={<MypageHome />} />
         <Route path="/users/info" element={<InfoUpdate />} />
         <Route path="/users/allergy" element={<AllergyUpdate />} />
         <Route path="/users/myrecipes" element={<MypageRecipe />} />

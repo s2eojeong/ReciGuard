@@ -34,7 +34,8 @@ function Rightpanel() {
       if (token) {
         localStorage.setItem("jwtToken", token); // 토큰 저장
         console.log("JWT 토큰 저장:", token);
-        console.log(localStorage.getItem("jwtToken")); // 저장된 JWT 토큰 출력
+        console.log(localStorage.getItem("jwtToken"))// 저장된 JWT 토큰 출력
+        console.log(localStorage.getItem("userid"))
         navigate("/recipes"); // 로그인 후 보호된 페이지로 이동
       } else {
         setErrorMessage("토큰을 가져오지 못했습니다.");
