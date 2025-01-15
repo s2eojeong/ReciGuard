@@ -19,11 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     /* 중복 검사: 중복인 경우 true, 중복되지 않은 경우 false 리턴 */
     boolean existsByUsername(String username);
-    boolean existsByEmail(String email);
-
-    /* 회원정보 수정 */
-    //@Override
-    //<S extends User> S save(S entity);
 
     /* 로그인 검증 */
     Optional<User> findByUsernameAndPassword(String username, String password);
