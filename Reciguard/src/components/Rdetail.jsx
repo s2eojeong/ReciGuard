@@ -90,7 +90,7 @@ const Rdetail = () => {
               </div>
               <div className="icon-item">
                 <img src={조회수} alt="조회수 아이콘" className="icon-image" />
-                <span className="icon-text">조회수 {recipe.viewCount}</span>
+                <span className="icon-text">{recipe.viewCount}</span>
               </div>
             </div>
             <div className="favorite-container">
