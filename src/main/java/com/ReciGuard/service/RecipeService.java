@@ -75,6 +75,7 @@ public class RecipeService {
         }
 
         return recipes.stream().map(recipe -> new RecipeListResponseDTO(
+                                                    recipe.getId(),
                                                     recipe.getRecipeName(),
                                                     recipe.getImagePath(),
                                                     recipe.getServing()))
@@ -94,10 +95,10 @@ public class RecipeService {
         // DTO 변환 및 반환
         return recipes.stream()
                 .map(recipe -> new RecipeListResponseDTO(
+                        recipe.getId(),
                         recipe.getRecipeName(),
                         recipe.getImagePath(),
-                        recipe.getServing()
-                ))
+                        recipe.getServing()))
                 .collect(Collectors.toList());
     }
 
@@ -110,6 +111,7 @@ public class RecipeService {
         }
 
         return recipes.stream().map(recipe -> new RecipeListResponseDTO(
+                                                    recipe.getId(),
                                                     recipe.getRecipeName(),
                                                     recipe.getImagePath(),
                                                     recipe.getServing()))
@@ -128,6 +130,7 @@ public class RecipeService {
         // DTO 변환 및 반환
         return recipes.stream()
                 .map(recipe -> new RecipeListResponseDTO(
+                        recipe.getId(),
                         recipe.getRecipeName(),
                         recipe.getImagePath(),
                         recipe.getServing()
@@ -144,6 +147,7 @@ public class RecipeService {
         }
 
         return recipes.stream().map(recipe -> new RecipeListResponseDTO(
+                                                    recipe.getId(),
                                                     recipe.getRecipeName(),
                                                     recipe.getImagePath(),
                                                     recipe.getServing()))
@@ -162,6 +166,7 @@ public class RecipeService {
         // DTO 변환 및 반환
         return recipes.stream()
                 .map(recipe -> new RecipeListResponseDTO(
+                        recipe.getId(),
                         recipe.getRecipeName(),
                         recipe.getImagePath(),
                         recipe.getServing()))
@@ -298,6 +303,7 @@ public class RecipeService {
         // 3. 해당 사용자의 ID로 등록한 레시피 조회 및 DTO로 변환
         return recipeRepository.findAllByUserId(userId).stream()
                 .map(recipe -> new RecipeListResponseDTO(
+                        recipe.getId(),
                         recipe.getRecipeName(),
                         recipe.getImagePath(),
                         recipe.getServing()
