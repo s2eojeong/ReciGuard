@@ -52,7 +52,7 @@ public class AuthController {
         }
         UserResponseDTO.Request loginResult = userService.login(userDTO);
         if (loginResult != null) {
-            String token = jwtUtil.createJwt(userDTO.getUsername(), "ROLE_USER", 60 * 60 * 1000L); // 토큰 생성
+            String token = jwtUtil.createJwt(userDTO.getUsername(), userDTO.getId(), 60 * 60 * 1000L); // 토큰 생성
             Map<String, String> responseBody = Map.of(
                     "message", "로그인 성공",
                     "token", token
