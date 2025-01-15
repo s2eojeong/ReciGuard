@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./RecipeList.css";
-import 스크랩전 from "../../assets/allscrap.png"
-import 인분 from "../../assets/all인분.png"
-
+import 스크랩전 from "../../assets/allscrap.png";
+import 인분 from "../../assets/all인분.png";
 
 const RecipeCard = ({ recipe }) => {
     const [isScrapped, setIsScrapped] = useState(false); // 스크랩 상태 관리
+    const navigate = useNavigate(); // 페이지 이동 훅
 
     // 스크랩 API 호출 함수
     const handleScrap = async () => {
@@ -35,6 +36,16 @@ const RecipeCard = ({ recipe }) => {
         }
     };
 
+    // 레시피 상세 페이지로 이동
+    const handleViewDetail = () => {
+        console.log("레시피 ID:", recipe.recipeId); // 로그로 확인
+        if (recipe.recipeId) {
+            navigate(`/recipes/${recipe.recipeId}`); // URL에 recipeId 전달
+        } else {
+            console.error("레시피 ID가 없습니다!");
+        }
+    };
+
     return (
         <div className="recipe-card">
             <div className="recipe-header">
@@ -48,15 +59,20 @@ const RecipeCard = ({ recipe }) => {
                 </button>
             </div>
             <div className="recipe-image-div">
-            <img
-                src={recipe.imagePath}
-                alt={recipe.recipeName}
-                className="recipe-image-real"
-            />
+                <img
+                    src={recipe.imagePath}
+                    alt={recipe.recipeName}
+                    className="recipe-image-real"
+                />
             </div>
             <div className="recipe-info">
-                <p> <img className="recipe-info-person" src={인분}/> {recipe.serving}인분</p>
-                <button className="recipe-btn">레시피 보기</button>
+                <p>
+                    <img className="recipe-info-person" src={인분} alt="인분 아이콘" />
+                    {recipe.serving}인분
+                </p>
+                <button className="recipe-btn" onClick={handleViewDetail}>
+                    레시피 보기
+                </button>
             </div>
         </div>
     );
@@ -104,7 +120,6 @@ function RecipeList() {
             const data = await response.json();
             console.log("API 응답 데이터:", data);
             console.log("filterEnabled:", filterEnabled);
-            console.log(url)
             setRecipes(data);
         } catch (err) {
             setError(err.message);

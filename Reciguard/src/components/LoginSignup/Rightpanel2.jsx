@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Rightpanel2.css";
 import "./Form1.css";
 
@@ -7,6 +8,8 @@ function Rightpanel2() {
   const [preferences, setPreferences] = useState({}); // Form1의 상태
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태 관리
   const [error, setError] = useState(""); // 오류 메시지 관리
+
+  const navigate = useNavigate();
 
   // 팝업 열기 및 닫기 핸들러
   const handlePopupOpen = (e) => {
@@ -96,6 +99,7 @@ function Rightpanel2() {
         alert(responseText); // 성공 메시지 표시
         setIsPopupOpen(false); // 팝업 닫기
         setPreferences({}); // 입력값 초기화
+        navigate("/auth/login");
       } else {
         console.error("오류 응답:", responseText);
         alert(responseText || "서버 오류가 발생했습니다.");
