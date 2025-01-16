@@ -42,13 +42,13 @@ public class UserUpdateDTO {
         @Pattern(regexp = "^(?:\\w+\\.?)*\\w+@(?:\\w+\\.)+\\w+$", message = "이메일 형식이 올바르지 않습니다.")
         private String email;
 
-        @NotNull(message = "cookingStyle cannot be null")
+
         private List<String> userCookingStyle;
 
-        @NotNull(message = "cuisine cannot be null")
+
         private List<String> userCuisine;
 
-        @NotNull(message = "Food type cannot be null")
+
         private List<String> userFoodType;
 
         @JsonProperty("ingredients")
