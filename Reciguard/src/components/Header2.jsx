@@ -13,7 +13,6 @@ const Header2 = () => {
         <Link to="/recipes/all" style={{ textDecoration: "none" }}>
           <li>분류</li>
         </Link>
-        <li>랭킹</li>
         <Link to="/users/recipe-form" style={{ textDecoration: "none" }}>
           <li>레시피 등록</li>
         </Link>
