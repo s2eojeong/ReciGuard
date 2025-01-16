@@ -31,10 +31,11 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
         }
 
-    public String createJwt(String username, Long userid, Long expiredMs) {
+    public String createJwt(String username, Long userid, String role, Long expiredMs) {
         return Jwts.builder()
                 .claim("username", username)  // 사용자 이름 저장
-                .claim("userid", userid)          // 사용자 역할(Role) 추가
+                .claim("userid", userid)
+                .claim("role", role)// 사용자 역할(Role) 추가
                 .issuedAt(new Date(System.currentTimeMillis()))  // 발행 시간
                 .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 만료 시간
                 .signWith(secretKey)  // 서명 키 설정
