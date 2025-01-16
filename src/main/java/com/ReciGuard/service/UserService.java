@@ -2,6 +2,7 @@ package com.ReciGuard.service;
 
 import com.ReciGuard.dto.UserPasswordDTO;
 import com.ReciGuard.dto.UserResponseDTO;
+import com.ReciGuard.dto.UserUpdateDTO;
 import com.ReciGuard.entity.*;
 import com.ReciGuard.repository.*;
 import jakarta.validation.Valid;
@@ -182,16 +183,13 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUserInfo(UserResponseDTO.Request userDTO) {
+    public void updateUserInfo(UserUpdateDTO.Request userDTO) {
         User user = userRepository.findByUsername(userDTO.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with username:" + userDTO.getUsername()));
 
-        user.setUsername(userDTO.getUsername());
         user.setGender(userDTO.getGender());
         user.setAge(userDTO.getAge());
         user.setWeight(userDTO.getWeight());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
 
         userCookingStyleRepository.deleteByUserId(user.getUserid());
         List<UserCookingStyle> cookingStyles = userDTO.getUserCookingStyle().stream()
