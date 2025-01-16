@@ -1,9 +1,6 @@
 package com.ReciGuard.controller;
 import com.ReciGuard.SecurityConfig.UserPrincipal;
-import com.ReciGuard.dto.ScrapRecipeDTO;
-import com.ReciGuard.dto.UserIngredientDTO;
-import com.ReciGuard.dto.UserIngredientListDTO;
-import com.ReciGuard.dto.UserResponseDTO;
+import com.ReciGuard.dto.*;
 import com.ReciGuard.entity.Ingredient;
 import com.ReciGuard.entity.User;
 import com.ReciGuard.entity.UserIngredient;
@@ -103,7 +100,7 @@ public class UserController {
     }
 
     @PutMapping("/info/{userid}")
-    public ResponseEntity<String> updateUserInfo(@Valid @RequestBody UserResponseDTO.Request userDTO, @PathVariable Long userid, BindingResult bindingResult) {
+    public ResponseEntity<String> updateUserInfo(@Valid @RequestBody UserUpdateDTO.Request userDTO, @PathVariable Long userid, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(bindingResult.getFieldError().getDefaultMessage());
@@ -114,6 +111,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다");
 
         }
+        userDTO.setUsername(username);
         userService.updateUserInfo(userDTO);
         return ResponseEntity.ok("회원정보 수정에 성공했습니다");
     }
