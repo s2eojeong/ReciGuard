@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Sidebar1.css";
 import 회원정보 from "../../assets/회원정보.png";
 import 회원정보호버 from "../../assets/회원정보호버.png";
@@ -12,6 +12,11 @@ import 회원탈퇴 from "../../assets/회원탈퇴.png";
 
 const Sidebar2 = () => {
   const [hoveredItem, setHoveredItem] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/");
+  };
 
   return (
     <div className="sidebar-container">
@@ -57,7 +62,7 @@ const Sidebar2 = () => {
       </div>
 
       <div className="menu-footer">
-        <div className="menu-item2">
+        <div className="menu-item2" onClick={handleLogout}>
           <img src={로그아웃} alt="로그아웃" className="menu-icon2" />
           <span>로그아웃</span>
         </div>
