@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -33,15 +34,15 @@ public class RecipeService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RestTemplate restTemplate;
 
-    @Value("${ai.model.api.url:https://example.com/recommend}") // 나중에 ai 모델 완성 후 수정
+    @Value("http://localhost:3000/") // 나중에 ai 모델 완성 후 수정
     private String recipeRecommendApiUrl;
 
-    @Value("${ai.model.api.url.similar}")
+    @Value("http://localhost:8000/check_allergy")
     private String similarAllergyApiUrl;
 
     public RecipeRecommendResponseDTO getTodayRecipe(Long userId) {
         // AI 모델에 전달할 데이터 준비
-        Map<String, Object> requestPayload = Map.of("userId", userId);
+        Map<String, Object> requestPayload = Map.of("user_id", userId);
 
         try {
             // AI 모델 API 호출
@@ -52,27 +53,31 @@ public class RecipeService {
                     new ParameterizedTypeReference<Map<String, Object>>() {}
             );
 
-            // 응답 처리
-            if (response.getStatusCode().is2xxSuccessful()) {
-                Map<String, Object> responseBody = response.getBody();
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("AI 모델 API 호출 실패: " + response.getStatusCode());
+            }
 
-                // AI 모델로부터 받은 recipeId
-                Long recipeId = Long.valueOf(responseBody.get("recipeId").toString());
+            Map<String, Object> responseBody = response.getBody();
+            if (responseBody == null || !responseBody.containsKey("recipeId")) {
+                throw new RuntimeException("AI 모델 응답에 recipeId가 없습니다.");
+            }
 
-                // recipeId에 해당하는 레시피 정보 조회
-                Recipe recipe = recipeRepository.findById(recipeId)
+            // AI 모델로부터 받은 recipeId
+            Long recipeId = Long.valueOf(responseBody.get("recipe_id").toString());
+
+            // recipeId에 해당하는 레시피 정보 조회
+            Recipe recipe = recipeRepository.findById(recipeId)
                         .orElseThrow(() -> new RuntimeException("레시피를 찾을 수 없습니다: " + recipeId));
 
-                // 추천 레시피 반환
-                return new RecipeRecommendResponseDTO(
+            // 추천 레시피 반환
+            return new RecipeRecommendResponseDTO(
                                         recipe.getId(),
                                         recipe.getImagePath(),
                                         recipe.getRecipeName());
 
-            } else {
-                throw new RuntimeException("AI 모델 API 호출 실패: " + response.getStatusCode());
-            }
-        } catch (Exception e) {
+            } catch (HttpClientErrorException e){
+                throw new RuntimeException("AI 모델 API 호출 실패: " + e.getStatusCode(), e);
+            } catch (Exception e) {
             throw new RuntimeException("AI 모델 호출 중 오류 발생", e);
         }
     }
@@ -186,45 +191,58 @@ public class RecipeService {
     }
 
     // 알레르기 유발 가능한 유사 재료 받아오는 ai 모델
-    private List<String> getSimilarAllergyIngredients(Long recipeId, Long userId){
+    private SimilarAllergyIngredientDTO getSimilarAllergyIngredients(Long recipeId, Long userId) {
         try {
+            // 요청 페이로드 생성
             Map<String, Object> requestPayload = Map.of(
-                    "recipeId", recipeId,
-                    "userId", userId
+                    "recipe_id", recipeId,
+                    "user_id", userId
             );
 
-            ResponseEntity<List<String>> response = restTemplate.exchange(
+            // AI 모델 API 호출
+            ResponseEntity<SimilarAllergyIngredientDTO> response = restTemplate.exchange(
                     similarAllergyApiUrl,
                     HttpMethod.POST,
                     new HttpEntity<>(requestPayload),
-                    new ParameterizedTypeReference<List<String>>() {}
+                    SimilarAllergyIngredientDTO.class
             );
-            return response.getBody() != null ? response.getBody() : Collections.emptyList();
+            log.info("AI 모델 응답: {}", response.getBody());
+            log.info("Calling AI model with recipeId: {} and userId: {}", recipeId, userId);
+
+            // 응답 본문 반환 (null 체크)
+            return response.getBody() != null ? response.getBody() : new SimilarAllergyIngredientDTO(Collections.emptyList());
         } catch (Exception e) {
             log.error("AI 모델 호출 실패: {}", e.getMessage());
-            return Collections.emptyList();
+            log.info("Calling AI model with recipeId: {} and userId: {}", recipeId, userId);
+
+            return new SimilarAllergyIngredientDTO(Collections.emptyList());
         }
     }
+
 
     // 레시피 상세 검색
     public RecipeDetailResponseDTO getRecipeDetail(Long id) {
 
-        // 1. 기본 Recipe 정보 로드
+        // 1. 현재 인증된 사용자의 username 가져오기
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
+
+        // 2. 기본 Recipe 정보 로드
         Recipe recipe = recipeRepository.findRecipeById(id)
                 .orElseThrow(() -> new EntityNotFoundException("요청한 데이터를 찾을 수 없습니다."));
 
-        // 2. RecipeStats 로드 (viewCount와 scrapCount)
+        // 3. RecipeStats 로드 (viewCount와 scrapCount)
         RecipeStats stats = recipeStatsRepository.findByRecipeId(id)
                 .orElseThrow(() -> new EntityNotFoundException("RecipeStats 데이터를 찾을 수 없습니다."));
 
-        // 2. Instructions와 RecipeIngredients 로드
+        // 4. Instructions와 RecipeIngredients 로드
         List<Instruction> instructions = recipeRepository.findInstructionsByRecipeId(id);
         List<RecipeIngredient> recipeIngredients = recipeRepository.findRecipeIngredientsByRecipeId(id);
 
-        // 3. Nutrition 정보 가져오기 (null 가능)
+        // 5. Nutrition 정보 가져오기 (null 가능)
         Nutrition nutrition = recipe.getNutrition();
 
-        // 4. Ingredients 변환
+        // 6. Ingredients 변환
         List<IngredientResponseDTO> ingredients = recipeIngredients.stream()
                 .map(recipeIngredient -> new IngredientResponseDTO(
                         recipeIngredient.getIngredient().getIngredient(),
@@ -232,7 +250,7 @@ public class RecipeService {
                 ))
                 .collect(Collectors.toList());
 
-        // 5. Instructions 변환
+        // 7. Instructions 변환
         List<InstructionResponseDTO> instructionDTOs = instructions.stream()
                 .map(instruction -> new InstructionResponseDTO(
                         instruction.getInstructionImage(),
@@ -240,7 +258,11 @@ public class RecipeService {
                 ))
                 .collect(Collectors.toList());
 
-        // 7. RecipeDetailResponseDTO 생성 및 반환
+        // 8. AI 모델에서 유사 알레르기 유발 재료 가져오기
+        SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
+        List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
+
+        // 9. RecipeDetailResponseDTO 생성 및 반환
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
@@ -256,7 +278,8 @@ public class RecipeService {
                 stats != null ? stats.getScrapCount() : 0,
                 stats != null ? stats.getViewCount() : 0,
                 ingredients,
-                instructionDTOs
+                instructionDTOs,
+                similarAllergyIngredients
         );
     }
 
@@ -506,7 +529,11 @@ public class RecipeService {
             existingInstructions.addAll(updatedInstructions);
         }
 
-        // 7. 수정된 레시피를 RecipeDetailResponseDTO로 변환 & 리턴
+        // 7. 수정된 재료로 AI 모델 호출
+        SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
+        List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
+
+        // 8. 수정된 레시피를 RecipeDetailResponseDTO로 변환 & 리턴
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
@@ -536,7 +563,9 @@ public class RecipeService {
                                 instruction.getInstruction(),
                                 instruction.getInstructionImage()
                         ))
-                        .collect(Collectors.toList()) : Collections.emptyList()
+                        .collect(Collectors.toList()) : Collections.emptyList(),
+
+                similarAllergyIngredients
         );
     }
 }
