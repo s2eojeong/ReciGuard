@@ -218,19 +218,19 @@ function Rightpanel2() {
                           <input
                               type="radio"
                               name="gender"
-                              value="male"
+                              value="남성"
                               onChange={handleGenderChange}
                           />{" "}
-                          남자
+                          남성
                         </label>
                         <label>
                           <input
                               type="radio"
                               name="gender"
-                              value="female"
+                              value="여성"
                               onChange={handleGenderChange}
                           />{" "}
-                          여자
+                          여성
                         </label>
                       </div>
                     </div>

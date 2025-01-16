@@ -16,16 +16,36 @@ const InfoUpdate = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState('');
 
+    // JWT 토큰에서 username과 userid를 추출하는 함수
+    const getUserInfoFromToken = (token) => {
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1])); // JWT payload 디코딩
+            return { username: payload.username, userid: payload.userid };
+        } catch (err) {
+            console.error('Invalid token', err);
+            return null;
+        }
+    };
+
     // 사용자 정보 GET 요청
     useEffect(() => {
-        const token = localStorage.getItem('jwtToken');
+        const token = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 JWT 토큰 가져오기
+        console.log('Authorization Header:', `Bearer ${token}`);
         if (!token) {
             setError('로그인이 필요합니다.');
             return;
         }
 
+        const userInfo = getUserInfoFromToken(token);
+        if (!userInfo) {
+            setError('잘못된 토큰입니다.');
+            return;
+        }
+
+        const { userid } = userInfo; // 디코딩된 토큰에서 userid 가져오기
+
         axios
-            .get('http://localhost:8080/api/users/info', {
+            .get(`http://localhost:8080/api/users/info/${userid}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -49,9 +69,17 @@ const InfoUpdate = () => {
             return;
         }
 
+        const userInfo = getUserInfoFromToken(token);
+        if (!userInfo) {
+            setError('잘못된 토큰입니다.');
+            return;
+        }
+
+        const { userid } = userInfo; // 디코딩된 토큰에서 userid 가져오기
+
         try {
             const response = await axios.put(
-                'http://localhost:8080/api/users/info',
+                `http://localhost:8080/api/users/info/${userid}`,
                 userInfo, // 수정할 정보를 요청 바디로 전달
                 {
                     headers: {
@@ -61,7 +89,7 @@ const InfoUpdate = () => {
                 }
             );
 
-            setMessage(response.data); // 성공 메시지
+            setMessage('회원정보가 성공적으로 수정되었습니다.'); // 성공 메시지
             console.log('회원정보 수정 성공:', response.data);
         } catch (err) {
             setError('회원정보를 수정하지 못했습니다.');
