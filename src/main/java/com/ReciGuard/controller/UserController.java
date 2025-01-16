@@ -100,7 +100,7 @@ public class UserController {
     }
 
     @PutMapping("/info/{userid}")
-    public ResponseEntity<String> updateUserInfo(@Valid @RequestBody UserUpdateDTO.Request userDTO, @PathVariable Long userid, BindingResult bindingResult) {
+    public ResponseEntity<?> updateUserInfo(@Valid @RequestBody UserUpdateDTO.Request userDTO, @PathVariable Long userid, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(bindingResult.getFieldError().getDefaultMessage());
@@ -113,7 +113,23 @@ public class UserController {
         }
         userDTO.setUsername(username);
         userService.updateUserInfo(userDTO);
-        return ResponseEntity.ok("회원정보 수정에 성공했습니다");
+        return ResponseEntity.ok(userDTO);
+    }
+    @GetMapping("/info/{userid}")
+    public ResponseEntity<?> updateGetUserInfo(@PathVariable Long userid) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        try {
+            // 서비스 호출
+            Long findUserId = userService.findUserIdByUsername(username);
+            if (!findUserId.equals(userid))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다");
+
+            UserUpdateDTO.Response userInfo = userService.updateGetUserInfo(userid);
+            return ResponseEntity.ok(userInfo);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/info/{userid}")
