@@ -115,6 +115,23 @@ public class UserController {
         userService.updateUserInfo(userDTO);
         return ResponseEntity.ok("회원정보 수정에 성공했습니다");
     }
+
+    @GetMapping("/info/{userid}")
+    public ResponseEntity<?> updateUserInfo(@PathVariable Long userid) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        try {
+            // 서비스 호출
+            Long findUserId = userService.findUserIdByUsername(username);
+            if (!findUserId.equals(userid))
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("권한이 없습니다");
+
+            UserResponseDTO.Response userInfo = userService.getUserInfo(userid);
+            return ResponseEntity.ok(userInfo);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 }
 
 

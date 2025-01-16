@@ -220,22 +220,6 @@ public class UserService {
                 .collect(Collectors.toList());
         userFoodTypeRepository.saveAll(foodTypes);
 
-        userIngredientRepository.deleteByUserId(user.getUserid());
-        List<UserIngredient> userIngredients = userDTO.getIngredients().stream()
-                .map(ingredientName -> {
-                    Ingredient ingredient = ingredientRepository.findByIngredient(ingredientName);
-                    if (ingredient == null) {
-                        Ingredient newIngredient = new Ingredient();
-                        newIngredient.setIngredient(ingredientName);
-                        ingredient = ingredientRepository.save(newIngredient);
-                    }
-                    return UserIngredient.builder()
-                            .user(user)
-                            .ingredient(ingredient)
-                            .build();
-                })
-                .collect(Collectors.toList());
-        userIngredientRepository.saveAll(userIngredients);
 
     }
 }
