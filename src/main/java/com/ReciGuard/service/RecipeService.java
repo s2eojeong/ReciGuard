@@ -34,7 +34,10 @@ public class RecipeService {
     private final RestTemplate restTemplate;
 
     @Value("${ai.model.api.url:https://example.com/recommend}") // 나중에 ai 모델 완성 후 수정
-    private String aiModelApiUrl;
+    private String recipeRecommendApiUrl;
+
+    @Value("${ai.model.api.url.similar}")
+    private String similarAllergyApiUrl;
 
     public RecipeRecommendResponseDTO getTodayRecipe(Long userId) {
         // AI 모델에 전달할 데이터 준비
@@ -43,7 +46,7 @@ public class RecipeService {
         try {
             // AI 모델 API 호출
             ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                    aiModelApiUrl,
+                    recipeRecommendApiUrl,
                     HttpMethod.POST,
                     new HttpEntity<>(requestPayload),
                     new ParameterizedTypeReference<Map<String, Object>>() {}
@@ -180,6 +183,27 @@ public class RecipeService {
                         recipe.getImagePath(),
                         recipe.getServing()))
                 .collect(Collectors.toList());
+    }
+
+    // 알레르기 유발 가능한 유사 재료 받아오는 ai 모델
+    private List<String> getSimilarAllergyIngredients(Long recipeId, Long userId){
+        try {
+            Map<String, Object> requestPayload = Map.of(
+                    "recipeId", recipeId,
+                    "userId", userId
+            );
+
+            ResponseEntity<List<String>> response = restTemplate.exchange(
+                    similarAllergyApiUrl,
+                    HttpMethod.POST,
+                    new HttpEntity<>(requestPayload),
+                    new ParameterizedTypeReference<List<String>>() {}
+            );
+            return response.getBody() != null ? response.getBody() : Collections.emptyList();
+        } catch (Exception e) {
+            log.error("AI 모델 호출 실패: {}", e.getMessage());
+            return Collections.emptyList();
+        }
     }
 
     // 레시피 상세 검색
