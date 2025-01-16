@@ -102,7 +102,7 @@ public class UserController {
         return ResponseEntity.ok(scrappedRecipes);
     }
 
-    @PutMapping("/info/{userid}")
+    @PostMapping("/info/{userid}")
     public ResponseEntity<String> updateUserInfo(@Valid @RequestBody UserResponseDTO.Request userDTO, @PathVariable Long userid, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
