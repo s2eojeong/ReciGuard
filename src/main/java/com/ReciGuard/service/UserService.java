@@ -184,8 +184,9 @@ public class UserService {
 
     @Transactional
     public void updateUserInfo(UserUpdateDTO.Request userDTO) {
+        final String username = userDTO.getUsername();
         User user = userRepository.findByUsername(userDTO.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with username:" + userDTO.getUsername()));
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username:" + username));
 
         user.setGender(userDTO.getGender());
         user.setAge(userDTO.getAge());
@@ -220,7 +221,24 @@ public class UserService {
                 .collect(Collectors.toList());
         userFoodTypeRepository.saveAll(foodTypes);
 
+        userIngredientRepository.deleteByUserId(user.getUserid());
 
+        User finduser = userRepository.findOneByUserName(user.getUsername());
+        userDTO = UserUpdateDTO.toUserDTO(finduser);
+
+    }
+    public UserUpdateDTO.Response updateGetUserInfo(Long userid) {
+        User user = userRepository.findById(userid).orElseThrow(() ->
+                new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+        //entity를 dto로 변환해서 전달
+        List<UserCookingStyle> cookingStyles = userCookingStyleRepository.findByUserId(userid);
+        List<UserFoodType> foodTypes = userFoodTypeRepository.findByUserId(userid);
+        List<UserCuisine> cuisines = userCuisineRepository.findByUserId(userid);
+
+        user.setCookingStyles(cookingStyles);
+        user.setFoodTypes(foodTypes);
+        user.setCuisines(cuisines);
+        return new UserUpdateDTO.Response(user);
     }
 }
 
