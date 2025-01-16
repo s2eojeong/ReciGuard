@@ -1,7 +1,6 @@
 package com.ReciGuard.dto;
 
-import com.ReciGuard.entity.Ingredient;
-import com.ReciGuard.entity.User;
+import com.ReciGuard.entity.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -11,6 +10,8 @@ import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -87,6 +88,10 @@ public class UserUpdateDTO {
         private final Double weight;
         private final LocalDateTime createdAt;
         private final LocalDateTime updatedAt;
+        private List<String> userCookingStyle;
+        private List<String> userCuisine;
+        private List<String> userFoodType;
+
 
         /* Entity -> DTO */
         public Response(User user) {
@@ -98,11 +103,20 @@ public class UserUpdateDTO {
             this.weight = user.getWeight();
             this.createdAt = user.getCreatedAt();
             this.updatedAt = user.getUpdatedAt();
+            this.userCookingStyle = user.getCookingStyles().stream()
+                    .map(UserCookingStyle::getCookingsStyle)  // UserCookingStyle에서 필요한 속성만 추출
+                    .collect(Collectors.toList());
+            this.userFoodType = user.getFoodTypes().stream()
+                    .map(UserFoodType::getFoodType)
+                    .collect(Collectors.toList());
+            this.userCuisine = user.getCuisines().stream()
+                    .map(UserCuisine::getCuisine)
+                    .collect(Collectors.toList());
         }
     }
     //dto로 변경
-    public static UserResponseDTO.Request toUserDTO(User userEntity) {
-        return UserResponseDTO.Request.builder()
+    public static UserUpdateDTO.Request toUserDTO(User userEntity) {
+        return UserUpdateDTO.Request.builder()
                 .id(userEntity.getUserid())
                 .username(userEntity.getUsername())
                 .gender(userEntity.getGender())
