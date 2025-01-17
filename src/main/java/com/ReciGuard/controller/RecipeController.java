@@ -25,7 +25,10 @@ public class RecipeController {
 
     // 오늘의 추천 레시피
     @GetMapping("/recommend")
-    public RecipeRecommendResponseDTO getTodayRecipe(@RequestParam Long userId) {
+    public RecipeRecommendResponseDTO getTodayRecipe() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
+
         return recipeService.getTodayRecipe(userId);
     }
 
@@ -69,12 +72,12 @@ public class RecipeController {
     // 레시피 상세 페이지
     @GetMapping("/{recipeId}")
     public RecipeDetailResponseDTO getRecipeDetail(@PathVariable Long recipeId) {
+        log.info("Received recipeId: {}", recipeId);
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userService.findUserIdByUsername(username);
-
         recipeStatsService.increaseViewCount(recipeId); // viewCount 증가
 
-        return recipeService.getRecipeDetail(userId, recipeId);
+        return recipeService.getRecipeDetail(recipeId, userId);
     }
 
     // 하트 버튼 눌러서 레시피 스크랩 (등록/수정)

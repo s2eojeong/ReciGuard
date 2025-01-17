@@ -35,7 +35,7 @@ public class RecipeService {
     private final UserScrapRepository userScrapRepository;
     private final RestTemplate restTemplate;
 
-    @Value("http://localhost:3000/") // 나중에 ai 모델 완성 후 수정
+    @Value("http://localhost:3000/recommend") // 나중에 ai 모델 완성 후 수정
     private String recipeRecommendApiUrl;
 
     @Value("http://localhost:8000/check_allergy")
