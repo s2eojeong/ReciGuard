@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RecipeList.css";
 import 스크랩전 from "../../assets/allscrap.png";
+import 스크랩후 from "../../assets/allscraps.png"
 import 인분 from "../../assets/all인분.png";
 
 const RecipeCard = ({ recipe }) => {
@@ -10,9 +11,10 @@ const RecipeCard = ({ recipe }) => {
 
     // 스크랩 API 호출 함수
     const handleScrap = async () => {
-        const token = localStorage.getItem("jwtToken"); // JWT 토큰 가져오기
+        const token = localStorage.getItem("jwtToken");
 
         try {
+            // API 요청
             const response = await fetch(`http://localhost:8080/api/recipes/scrap/${recipe.recipeId}`, {
                 method: "POST",
                 headers: {
@@ -24,15 +26,27 @@ const RecipeCard = ({ recipe }) => {
                 }),
             });
 
+            // 응답 처리
+            const contentType = response.headers.get("content-type");
             if (!response.ok) {
-                throw new Error("스크랩 요청 실패");
+                if (contentType && contentType.includes("application/json")) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || "스크랩 요청 실패");
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(errorText || "스크랩 요청 실패");
+                }
             }
 
-            const data = await response.json();
-            alert(data.message); // API 응답 메시지 출력
+            const data = contentType && contentType.includes("application/json")
+                ? await response.json()
+                : await response.text();
+
+            alert(data.message || data); // 성공 메시지 출력
             setIsScrapped((prev) => !prev); // 스크랩 상태 토글
         } catch (error) {
             console.error("스크랩 요청 중 오류:", error);
+            alert(error.message || "스크랩 요청 중 문제가 발생했습니다.");
         }
     };
 
@@ -52,7 +66,7 @@ const RecipeCard = ({ recipe }) => {
                 <h3>{recipe.recipeName}</h3>
                 <button className="scrap-btn" onClick={handleScrap}>
                     <img
-                        src={isScrapped ? "../../assets/allscrap.png" : 스크랩전}
+                        src={isScrapped ? 스크랩후 : 스크랩전}
                         alt={isScrapped ? "스크랩됨" : "스크랩하기"}
                         className="scrap-icon"
                     />
