@@ -119,13 +119,13 @@ public class RecipeService {
         // DTO 변환 및 반환
         return recipes.stream()
                 .map(recipe -> {
-                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
                     return new RecipeListResponseDTO(
                             recipe.getId(),
                             recipe.getRecipeName(),
                             recipe.getImagePath(),
                             recipe.getServing(),
-                            isScrapped
+                            scrapped
                     );
                 })
                 .collect(Collectors.toList());
@@ -141,13 +141,13 @@ public class RecipeService {
 
         return recipes.stream()
                 .map(recipe -> {
-                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
                     return new RecipeListResponseDTO(
                             recipe.getId(),
                             recipe.getRecipeName(),
                             recipe.getImagePath(),
                             recipe.getServing(),
-                            isScrapped
+                            scrapped
                     );
                 })
                 .collect(Collectors.toList());
@@ -165,13 +165,13 @@ public class RecipeService {
         // DTO 변환 및 반환
         return recipes.stream()
                 .map(recipe -> {
-                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
                     return new RecipeListResponseDTO(
                             recipe.getId(),
                             recipe.getRecipeName(),
                             recipe.getImagePath(),
                             recipe.getServing(),
-                            isScrapped
+                            scrapped
                     );
                 })
                 .collect(Collectors.toList());
@@ -187,13 +187,13 @@ public class RecipeService {
 
         return recipes.stream()
                 .map(recipe -> {
-                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
                     return new RecipeListResponseDTO(
                             recipe.getId(),
                             recipe.getRecipeName(),
                             recipe.getImagePath(),
                             recipe.getServing(),
-                            isScrapped
+                            scrapped
                     );
                 })
                 .collect(Collectors.toList());
@@ -211,13 +211,13 @@ public class RecipeService {
         // DTO 변환 및 반환
         return recipes.stream()
                 .map(recipe -> {
-                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
                     return new RecipeListResponseDTO(
                             recipe.getId(),
                             recipe.getRecipeName(),
                             recipe.getImagePath(),
                             recipe.getServing(),
-                            isScrapped
+                            scrapped
                     );
                 })
                 .collect(Collectors.toList());
@@ -291,7 +291,7 @@ public class RecipeService {
         List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
 
         // isScrapped 값 확인
-        boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+        boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
 
         // 9. RecipeDetailResponseDTO 생성 및 반환
         return new RecipeDetailResponseDTO(
@@ -306,7 +306,7 @@ public class RecipeService {
                 nutrition != null ? (int) nutrition.getCarbohydrate() : 0,
                 nutrition != null ? (int) nutrition.getFat() : 0,
                 nutrition != null ? (int) nutrition.getProtein() : 0,
-                isScrapped,
+                scrapped,
                 stats != null ? stats.getScrapCount() : 0,
                 stats != null ? stats.getViewCount() : 0,
                 ingredients,
@@ -384,13 +384,13 @@ public class RecipeService {
         // 해당 사용자의 ID로 등록한 레시피 조회 및 DTO로 변환
         return recipeRepository.findAllByUserId(userId).stream()
                 .map(recipe -> {
-                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
                     return new RecipeListResponseDTO(
                             recipe.getId(),
                             recipe.getRecipeName(),
                             recipe.getImagePath(),
                             recipe.getServing(),
-                            isScrapped
+                            scrapped
                     );
                 })
                 .collect(Collectors.toList());
