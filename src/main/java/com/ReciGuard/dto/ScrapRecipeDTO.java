@@ -15,4 +15,7 @@ public class ScrapRecipeDTO {
     private Long recipeId;
     private String recipeName;
     private LocalDateTime createdAt;
+    private boolean scrapped;
 }
+
+

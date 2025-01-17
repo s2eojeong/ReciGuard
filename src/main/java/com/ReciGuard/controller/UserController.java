@@ -93,10 +93,11 @@ public class UserController {
 
     //스크랩 레시피 찾기
     @GetMapping("/scraps")
-    public ResponseEntity<List<ScrapRecipeDTO>> getUserScrappedRecipes(
-            @RequestParam("userId") Long userId) {
-        List<ScrapRecipeDTO> scrappedRecipes = userScrapService.getScrappedRecipesByUser(userId);
-        return ResponseEntity.ok(scrappedRecipes);
+    public List<ScrapRecipeDTO> getUserScrappedRecipes(){
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
+
+        return userScrapService.getScrappedRecipesByUser(userId);
     }
 
     @PutMapping("/info/{userid}")
