@@ -1,10 +1,6 @@
 package com.ReciGuard.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-
 import java.util.List;
 
 @Getter
@@ -24,9 +20,7 @@ public class RecipeDetailResponseDTO {
     private int fat;
     private int protein;
 
-    @JsonProperty("isScrapped")
-    private boolean isScrapped;
-
+    private boolean scrapped;
     private int scrapCount;
     private int viewCount;
 
@@ -41,7 +35,7 @@ public class RecipeDetailResponseDTO {
                                    String foodType,
                                    String cookingStyle,
                                    int calories, int sodium, int carbohydrate, int fat, int protein,
-                                   boolean isScrapped, int scrapCount, int viewCount,
+                                   boolean scrapped, int scrapCount, int viewCount,
                                    List<IngredientResponseDTO> ingredients,
                                    List<InstructionResponseDTO> instructions,
                                    List<String> similarAllergyIngredients) {
@@ -56,7 +50,7 @@ public class RecipeDetailResponseDTO {
         this.carbohydrate = carbohydrate;
         this.fat = fat;
         this.protein = protein;
-        this.isScrapped = isScrapped;
+        this.scrapped = scrapped;
         this.scrapCount = scrapCount;
         this.viewCount = viewCount;
         this.ingredients = ingredients;
