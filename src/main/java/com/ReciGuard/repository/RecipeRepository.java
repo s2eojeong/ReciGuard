@@ -29,12 +29,35 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("""
         SELECT DISTINCT r
         FROM Recipe r
-        JOIN r.recipeIngredients ri
-        JOIN ri.ingredient i
-        JOIN UserIngredient ui ON i.id = ui.ingredient.id
-        WHERE ui.user.id = :userId
+        WHERE NOT EXISTS (
+                        SELECT 1
+                        FROM RecipeIngredient ri
+                        JOIN Ingredient i ON ri.ingredient.id = i.id
+                        WHERE ri.recipe.id = r.id
+                          AND (
+                              i.id IN (
+                                  SELECT ui.ingredient.id
+                                  FROM UserIngredient ui
+                                  WHERE ui.user.id = :userId
+                              )
+                              OR EXISTS (
+                                  SELECT 1
+                                  FROM UserIngredient ui
+                                  JOIN Ingredient i2 ON ui.ingredient.id = i2.id
+                                  WHERE ui.user.id = :userId
+                                    AND (
+                                        i2.ingredient IN :allergyIngredients
+                                        OR i2.ingredient LIKE CONCAT('%', :allergyIngredients, '%')
+                                    )
+                                    AND (
+                                        i.ingredient = i2.ingredient
+                                        OR i.ingredient LIKE CONCAT('%', i2.ingredient, '%')
+                                    )
+                              )
+                          )
+                    )
     """)
-    List<Recipe> findAllFilteredRecipes(@Param("userId") Long userId);
+    List<Recipe> findAllFilteredRecipes(@Param("userId") Long userId, @Param("allergyIngredients") List<String> allergyIngredients);
 
     // cuisine 별로 레시피 리스트 검색
     List<Recipe> findByCuisine(String cuisine);
@@ -43,12 +66,36 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("""
         SELECT DISTINCT r
         FROM Recipe r
-        JOIN r.recipeIngredients ri
-        JOIN ri.ingredient i
-        JOIN UserIngredient ui ON i.id = ui.ingredient.id
         WHERE r.cuisine = :cuisine
+                      AND NOT EXISTS (
+                          SELECT 1
+                          FROM RecipeIngredient ri
+                          JOIN Ingredient i ON ri.ingredient.id = i.id
+                          WHERE ri.recipe.id = r.id
+                            AND (
+                                i.id IN (
+                                    SELECT ui.ingredient.id
+                                    FROM UserIngredient ui
+                                    WHERE ui.user.id = :userId
+                                )
+                                OR EXISTS (
+                                    SELECT 1
+                                    FROM UserIngredient ui
+                                    JOIN Ingredient i2 ON ui.ingredient.id = i2.id
+                                    WHERE ui.user.id = :userId
+                                      AND (
+                                          i2.ingredient IN :allergyIngredients
+                                          OR i2.ingredient LIKE CONCAT('%', :allergyIngredients, '%')
+                                      )
+                                      AND (
+                                          i.ingredient = i2.ingredient
+                                          OR i.ingredient LIKE CONCAT('%', i2.ingredient, '%')
+                                      )
+                                )
+                            )
+                      )
     """)
-    List<Recipe> findCuisineFilteredRecipes(@Param("userId") Long userId, @Param("cuisine") String cuisine);
+    List<Recipe> findCuisineFilteredRecipes(@Param("userId") Long userId, @Param("cuisine") String cuisine, @Param("allergyIngredients") List<String> allergyIngredients);
 
     // 검색 단어 필터링해서 레시피 리스트 검색
     @Query("""
@@ -64,12 +111,42 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query("""
         SELECT DISTINCT r
         FROM Recipe r
-        JOIN r.recipeIngredients ri
-        JOIN ri.ingredient i
-        JOIN UserIngredient ui ON i.id = ui.ingredient.id AND ui.user.id = :userId
-        WHERE ui.id IS NULL AND (r.recipeName LIKE %:query% OR i.ingredient LIKE %:query%)
+        WHERE (r.recipeName LIKE %:query% OR EXISTS (
+                        SELECT 1
+                        FROM RecipeIngredient ri
+                        JOIN Ingredient i ON ri.ingredient.id = i.id
+                        WHERE ri.recipe.id = r.id
+                          AND i.ingredient LIKE %:query%
+                    ))
+                      AND NOT EXISTS (
+                          SELECT 1
+                          FROM RecipeIngredient ri
+                          JOIN Ingredient i ON ri.ingredient.id = i.id
+                          WHERE ri.recipe.id = r.id
+                            AND (
+                                i.id IN (
+                                    SELECT ui.ingredient.id
+                                    FROM UserIngredient ui
+                                    WHERE ui.user.id = :userId
+                                )
+                                OR EXISTS (
+                                    SELECT 1
+                                    FROM UserIngredient ui
+                                    JOIN Ingredient i2 ON ui.ingredient.id = i2.id
+                                    WHERE ui.user.id = :userId
+                                      AND (
+                                          i2.ingredient IN :allergyIngredients
+                                          OR i2.ingredient LIKE CONCAT('%', :allergyIngredients, '%')
+                                      )
+                                      AND (
+                                          i.ingredient = i2.ingredient
+                                          OR i.ingredient LIKE CONCAT('%', i2.ingredient, '%')
+                                      )
+                                )
+                            )
+                      )
     """)
-    List<Recipe> findQueryFilteredRecipes(@Param("userId") Long userId, @Param("query") String query);
+    List<Recipe> findQueryFilteredRecipes(@Param("userId") Long userId, @Param("query") String query, @Param("allergyIngredients") List<String> allergyIngredients);
 
 
     // 특정 레시피 상세 정보
