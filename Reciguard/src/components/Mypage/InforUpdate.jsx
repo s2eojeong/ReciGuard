@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import {useNavigate} from "react-router-dom";
 import axios from 'axios';
 
 const InforUpdate = () => {
+
+    const navigate=useNavigate();
+    const passwordUp = () => {
+        navigate("/users/password")
+    }
+
     const [userData, setUserData] = useState({
         username: '',
         gender: '',
@@ -68,13 +75,13 @@ const InforUpdate = () => {
     }, []);
 
     const handleUpdate = () => {
-        const token = localStorage.getItem('jwtToken');
+        const token = localStorage.getItem('jwtToken'); // JWT 토큰 가져오기
         if (!token) {
             setError('로그인이 필요합니다.');
             return;
         }
 
-        const userInfo = getUserInfoFromToken(token);
+        const userInfo = getUserInfoFromToken(token); // 토큰에서 사용자 정보 추출
 
         if (userInfo) {
             const { userid } = userInfo;
@@ -82,18 +89,20 @@ const InforUpdate = () => {
             axios
                 .put(
                     `http://localhost:8080/api/users/info/${userid}`,
+                    userData, // 업데이트할 데이터
                     {
                         headers: {
-                            Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${token}`, // 올바른 위치에 헤더 추가
+                            'Content-Type': 'application/json', // Content-Type 명시
                         },
                     }
                 )
                 .then((response) => {
                     alert('사용자 정보가 성공적으로 업데이트되었습니다.');
-                    setUserData(response.data);
+                    setUserData(response.data); // 서버에서 반환된 데이터로 업데이트
                 })
                 .catch((err) => {
-                    console.error("에러:", err);
+                    console.error('에러:', err);
                     setError('사용자 정보를 업데이트하지 못했습니다.');
                 });
         }
@@ -121,6 +130,9 @@ const InforUpdate = () => {
                     value={userData.username}
                     readOnly
                 />
+            </div>
+            <div onClick={passwordUp}>
+                비밀번호:******** <button>수정</button>
             </div>
             <div>
                 <label>성별:</label>
