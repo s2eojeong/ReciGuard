@@ -1,24 +1,16 @@
 package com.ReciGuard.controller;
 
 import com.ReciGuard.dto.*;
-import com.ReciGuard.entity.Recipe;
 import com.ReciGuard.service.RecipeService;
 import com.ReciGuard.service.RecipeStatsService;
 import com.ReciGuard.service.UserScrapService;
 import com.ReciGuard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -40,12 +32,12 @@ public class RecipeController {
     // 전체 레시피 리스트
     @GetMapping("/all")
     public List<RecipeListResponseDTO> getRecipes(@RequestParam(required = false, defaultValue = "false") boolean filter) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
         if (filter) {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            Long userId = userService.findUserIdByUsername(username);
             return recipeService.getAllFilteredRecipes(userId);
         }
-        return recipeService.getAllRecipes();
+        return recipeService.getAllRecipes(userId);
     }
 
     // cuisine별 레시피 리스트
@@ -53,12 +45,12 @@ public class RecipeController {
     public List<RecipeListResponseDTO> getRecipesByCuisine(
             @RequestParam String cuisine,
             @RequestParam(required = false, defaultValue = "false") boolean filter) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
         if (filter) {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            Long userId = userService.findUserIdByUsername(username);
             return recipeService.getFilteredRecipesByCuisine(userId, cuisine);
         }
-        return recipeService.getRecipesByCuisine(cuisine);
+        return recipeService.getRecipesByCuisine(userId, cuisine);
     }
 
     // query로 레시피 검색
@@ -66,30 +58,26 @@ public class RecipeController {
     public List<RecipeListResponseDTO> getRecipesByQuery(
             @RequestParam String query,
             @RequestParam(required = false, defaultValue = "false") boolean filter) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
         if (filter) {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
-            Long userId = userService.findUserIdByUsername(username);
             return recipeService.getFilteredRecipesByQuery(userId, query);
         }
-        return recipeService.getRecipesByQuery(query);
+        return recipeService.getRecipesByQuery(userId, query);
     }
 
     // 레시피 상세 페이지
     @GetMapping("/{recipeId}")
     public RecipeDetailResponseDTO getRecipeDetail(@PathVariable Long recipeId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
+
         recipeStatsService.increaseViewCount(recipeId); // viewCount 증가
-        return recipeService.getRecipeDetail(recipeId);
+
+        return recipeService.getRecipeDetail(userId, recipeId);
     }
 
-//    // 하트 버튼 눌러서 레시피 스크랩 (등록/수정)
-//    @PostMapping("/scrap/{recipeId}")
-//    public ResponseEntity<Boolean> toggleScrap(@PathVariable Long recipeId){
-//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        Long userId = userService.findUserIdByUsername(username);
-//
-//        boolean isScrapped = userScrapService.toggleScrap(userId, recipeId);
-//        return ResponseEntity.ok(isScrapped);
-//    }
+    // 하트 버튼 눌러서 레시피 스크랩 (등록/수정)
     @PostMapping("/scrap/{recipeId}")
     public ResponseEntity<String> toggleScrap(@PathVariable Long recipeId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -106,7 +94,10 @@ public class RecipeController {
     // 나만의 레시피 조회 (간단 리스트 조회)
     @GetMapping("/myrecipes")
     public List<RecipeListResponseDTO> getMyRecipes() {
-        return recipeService.findMyRecipes();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
+
+        return recipeService.findMyRecipes(userId);
     }
 
     // 나만의 레시피 저장
@@ -121,7 +112,10 @@ public class RecipeController {
     // 나만의 레시피 수정 폼
     @GetMapping("/myrecipe/{recipeId}/edit")
     public MyRecipeForm UpdateMyRecipeForm(@PathVariable Long recipeId) {
-        return recipeService.getRecipeFormEdit(recipeId);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
+
+        return recipeService.getRecipeFormEdit(userId, recipeId);
     }
 
     // 나만의 레시피 수정
@@ -129,7 +123,10 @@ public class RecipeController {
     public ResponseEntity<String> updateMyRecipe(
             @PathVariable Long recipeId,
             @RequestBody MyRecipeForm recipeForm) {
-        recipeService.updateMyRecipe(recipeId, recipeForm);
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userService.findUserIdByUsername(username);
+
+        recipeService.updateMyRecipe(recipeId, userId, recipeForm);
         return ResponseEntity.ok("레시피가 수정되었습니다.");
     }
 }
