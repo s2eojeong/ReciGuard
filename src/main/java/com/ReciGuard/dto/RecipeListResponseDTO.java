@@ -1,6 +1,6 @@
 package com.ReciGuard.dto;
 
-import com.ReciGuard.entity.Recipe;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +11,15 @@ public class RecipeListResponseDTO { //전체 리스트, cuisine 별 리스트, 
     private String recipeName;
     private int serving;
 
-    public RecipeListResponseDTO(Long recipeId, String recipeName, String imagePath, int serving) {
+    @JsonProperty("isScrapped")
+    private boolean isScrapped;
+
+    public RecipeListResponseDTO(Long recipeId, String recipeName, String imagePath, int serving, boolean isScrapped) {
         this.recipeId = recipeId;
         this.recipeName = recipeName;
         this.imagePath = imagePath;
         this.serving = serving;
+        this.isScrapped = isScrapped;
     }
 }
 

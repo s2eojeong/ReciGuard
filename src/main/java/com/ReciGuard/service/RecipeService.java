@@ -32,6 +32,7 @@ public class RecipeService {
     private final UserService userService;
     private final RecipeStatsRepository recipeStatsRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
+    private final UserScrapRepository userScrapRepository;
     private final RestTemplate restTemplate;
 
     @Value("http://localhost:3000/") // 나중에 ai 모델 완성 후 수정
@@ -83,7 +84,7 @@ public class RecipeService {
     }
 
     // 전체 레시피 리스트
-    public List<RecipeListResponseDTO> getAllRecipes() {
+    public List<RecipeListResponseDTO> getAllRecipes(Long userId) {
 
         List<Recipe> recipes = recipeRepository.findAll();
 
@@ -91,12 +92,18 @@ public class RecipeService {
             throw new EntityNotFoundException("레시피를 찾을 수 없습니다.");
         }
 
-        return recipes.stream().map(recipe -> new RecipeListResponseDTO(
-                                                    recipe.getId(),
-                                                    recipe.getRecipeName(),
-                                                    recipe.getImagePath(),
-                                                    recipe.getServing()))
-                                             .collect(Collectors.toList());
+        return recipes.stream()
+                .map(recipe -> {
+                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    return new RecipeListResponseDTO(
+                            recipe.getId(),
+                            recipe.getRecipeName(),
+                            recipe.getImagePath(),
+                            recipe.getServing(),
+                            isScrapped // 추가
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     // 전체 레시피 리스트 -> 필터링 후
@@ -111,28 +118,39 @@ public class RecipeService {
 
         // DTO 변환 및 반환
         return recipes.stream()
-                .map(recipe -> new RecipeListResponseDTO(
-                        recipe.getId(),
-                        recipe.getRecipeName(),
-                        recipe.getImagePath(),
-                        recipe.getServing()))
+                .map(recipe -> {
+                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    return new RecipeListResponseDTO(
+                            recipe.getId(),
+                            recipe.getRecipeName(),
+                            recipe.getImagePath(),
+                            recipe.getServing(),
+                            isScrapped
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
     // cuisine 별 레시피 리스트
-    public List<RecipeListResponseDTO> getRecipesByCuisine(String cuisine){
+    public List<RecipeListResponseDTO> getRecipesByCuisine(Long userId, String cuisine){
         List<Recipe> recipes = recipeRepository.findByCuisine(cuisine);
 
         if (recipes.isEmpty()) {
             throw new EntityNotFoundException("검색 결과가 없습니다.");
         }
 
-        return recipes.stream().map(recipe -> new RecipeListResponseDTO(
-                                                    recipe.getId(),
-                                                    recipe.getRecipeName(),
-                                                    recipe.getImagePath(),
-                                                    recipe.getServing()))
-                                            .collect(Collectors.toList());
+        return recipes.stream()
+                .map(recipe -> {
+                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    return new RecipeListResponseDTO(
+                            recipe.getId(),
+                            recipe.getRecipeName(),
+                            recipe.getImagePath(),
+                            recipe.getServing(),
+                            isScrapped
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     // cuisine 별 레시피 리스트 -> 필터링 후
@@ -146,29 +164,39 @@ public class RecipeService {
 
         // DTO 변환 및 반환
         return recipes.stream()
-                .map(recipe -> new RecipeListResponseDTO(
-                        recipe.getId(),
-                        recipe.getRecipeName(),
-                        recipe.getImagePath(),
-                        recipe.getServing()
-                ))
+                .map(recipe -> {
+                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    return new RecipeListResponseDTO(
+                            recipe.getId(),
+                            recipe.getRecipeName(),
+                            recipe.getImagePath(),
+                            recipe.getServing(),
+                            isScrapped
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
     // query 검색에 따른 레시피 리스트
-    public List<RecipeListResponseDTO> getRecipesByQuery(String query){
+    public List<RecipeListResponseDTO> getRecipesByQuery(Long userId, String query){
         List<Recipe> recipes = recipeRepository.findByQuery(query);
 
         if (recipes.isEmpty()) {
             throw new EntityNotFoundException(query + "로(으로) 검색된 결과가 없습니다.");
         }
 
-        return recipes.stream().map(recipe -> new RecipeListResponseDTO(
-                                                    recipe.getId(),
-                                                    recipe.getRecipeName(),
-                                                    recipe.getImagePath(),
-                                                    recipe.getServing()))
-                                            .collect(Collectors.toList());
+        return recipes.stream()
+                .map(recipe -> {
+                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    return new RecipeListResponseDTO(
+                            recipe.getId(),
+                            recipe.getRecipeName(),
+                            recipe.getImagePath(),
+                            recipe.getServing(),
+                            isScrapped
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     // 검색 단어와 사용자 알레르기 정보를 기반으로 필터링된 레시피 리스트 검색
@@ -182,11 +210,16 @@ public class RecipeService {
 
         // DTO 변환 및 반환
         return recipes.stream()
-                .map(recipe -> new RecipeListResponseDTO(
-                        recipe.getId(),
-                        recipe.getRecipeName(),
-                        recipe.getImagePath(),
-                        recipe.getServing()))
+                .map(recipe -> {
+                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    return new RecipeListResponseDTO(
+                            recipe.getId(),
+                            recipe.getRecipeName(),
+                            recipe.getImagePath(),
+                            recipe.getServing(),
+                            isScrapped
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
@@ -219,25 +252,20 @@ public class RecipeService {
         }
     }
 
-
     // 레시피 상세 검색
-    public RecipeDetailResponseDTO getRecipeDetail(Long id) {
-
-        // 1. 현재 인증된 사용자의 username 가져오기
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long userId = userService.findUserIdByUsername(username);
+    public RecipeDetailResponseDTO getRecipeDetail(Long recipeId, Long userId) {
 
         // 2. 기본 Recipe 정보 로드
-        Recipe recipe = recipeRepository.findRecipeById(id)
+        Recipe recipe = recipeRepository.findRecipeById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("요청한 데이터를 찾을 수 없습니다."));
 
         // 3. RecipeStats 로드 (viewCount와 scrapCount)
-        RecipeStats stats = recipeStatsRepository.findByRecipeId(id)
+        RecipeStats stats = recipeStatsRepository.findByRecipeId(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("RecipeStats 데이터를 찾을 수 없습니다."));
 
         // 4. Instructions와 RecipeIngredients 로드
-        List<Instruction> instructions = recipeRepository.findInstructionsByRecipeId(id);
-        List<RecipeIngredient> recipeIngredients = recipeRepository.findRecipeIngredientsByRecipeId(id);
+        List<Instruction> instructions = recipeRepository.findInstructionsByRecipeId(recipeId);
+        List<RecipeIngredient> recipeIngredients = recipeRepository.findRecipeIngredientsByRecipeId(recipeId);
 
         // 5. Nutrition 정보 가져오기 (null 가능)
         Nutrition nutrition = recipe.getNutrition();
@@ -262,6 +290,9 @@ public class RecipeService {
         SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
         List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
 
+        // isScrapped 값 확인
+        boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+
         // 9. RecipeDetailResponseDTO 생성 및 반환
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
@@ -275,6 +306,7 @@ public class RecipeService {
                 nutrition != null ? (int) nutrition.getCarbohydrate() : 0,
                 nutrition != null ? (int) nutrition.getFat() : 0,
                 nutrition != null ? (int) nutrition.getProtein() : 0,
+                isScrapped,
                 stats != null ? stats.getScrapCount() : 0,
                 stats != null ? stats.getViewCount() : 0,
                 ingredients,
@@ -348,31 +380,24 @@ public class RecipeService {
         return recipeRepository.save(recipe);
     }
 
-    public List<RecipeListResponseDTO> findMyRecipes() { // 리스트로 반환 (간단 조회)
-
-        // 1. 현재 인증된 사용자의 username 가져오기
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        // 2. username으로 userId 조회
-        Long userId = userService.findUserIdByUsername(username);
-
-        // 3. 해당 사용자의 ID로 등록한 레시피 조회 및 DTO로 변환
+    public List<RecipeListResponseDTO> findMyRecipes(Long userId) { // 리스트로 반환 (간단 조회)
+        // 해당 사용자의 ID로 등록한 레시피 조회 및 DTO로 변환
         return recipeRepository.findAllByUserId(userId).stream()
-                .map(recipe -> new RecipeListResponseDTO(
-                        recipe.getId(),
-                        recipe.getRecipeName(),
-                        recipe.getImagePath(),
-                        recipe.getServing()
-                ))
+                .map(recipe -> {
+                    boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
+                    return new RecipeListResponseDTO(
+                            recipe.getId(),
+                            recipe.getRecipeName(),
+                            recipe.getImagePath(),
+                            recipe.getServing(),
+                            isScrapped
+                    );
+                })
                 .collect(Collectors.toList());
     }
 
     // 수정 폼 데이터 반환
-    public MyRecipeForm getRecipeFormEdit(Long recipeId) {
-        // 1. 현재 인증된 사용자 정보 가져오기
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long userId = userService.findUserIdByUsername(username);
-
+    public MyRecipeForm getRecipeFormEdit(Long recipeId, Long userId) {
         // 2. recipeId로 레시피 조회 (소유권 검증 포함)
         Recipe recipe = recipeRepository.findRecipeByUserId(recipeId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
@@ -408,17 +433,13 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeDetailResponseDTO updateMyRecipe(Long recipeId, MyRecipeForm recipeForm) {
+    public RecipeDetailResponseDTO updateMyRecipe(Long recipeId, Long userId, MyRecipeForm recipeForm) {
 
         // 1. 레시피 ID로 영속 상태의 Recipe 엔티티 조회
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("레시피를 찾을 수 없습니다."));
 
-        // 2. 현재 인증된 사용자의 userId 가져오기
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long userId = userService.findUserIdByUsername(username);
-
-        // 4. 레시피 정보 수정
+        // 2. 레시피 정보 수정
         recipe.setRecipeName(recipeForm.getRecipeName());
         recipe.setImagePath(recipeForm.getImagePath());
         recipe.setServing(recipeForm.getServing());
@@ -426,7 +447,7 @@ public class RecipeService {
         recipe.setFoodType(recipeForm.getFoodType());
         recipe.setCookingStyle(recipeForm.getCookingStyle());
 
-        // 5. 재료 수정
+        // 3. 재료 수정
         if (recipeForm.getIngredients() != null) {
             List<RecipeIngredient> existingIngredients = recipe.getRecipeIngredients();
 
@@ -483,7 +504,7 @@ public class RecipeService {
             });
         }
 
-        // 6. 조리 과정 수정
+        // 4. 조리 과정 수정
         if (recipeForm.getInstructions() != null) {
             List<Instruction> existingInstructions = recipe.getInstructions();
 
@@ -529,11 +550,14 @@ public class RecipeService {
             existingInstructions.addAll(updatedInstructions);
         }
 
-        // 7. 수정된 재료로 AI 모델 호출
+        // 5. 수정된 재료로 AI 모델 호출
         SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
         List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
 
-        // 8. 수정된 레시피를 RecipeDetailResponseDTO로 변환 & 리턴
+        // 스크랩 여부 확인
+        boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipeId);
+
+        // 6. 수정된 레시피를 RecipeDetailResponseDTO로 변환 & 리턴
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
@@ -549,6 +573,7 @@ public class RecipeService {
                 recipe.getNutrition() != null ? (int) recipe.getNutrition().getFat() : 0,
                 recipe.getNutrition() != null ? (int) recipe.getNutrition().getProtein() : 0,
 
+                isScrapped,
                 recipe.getRecipeStats().getViewCount(), // 조회 수
                 recipe.getRecipeStats().getScrapCount(), // 스크랩 수
 
