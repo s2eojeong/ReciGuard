@@ -13,6 +13,7 @@ import MypageScrap from "./pages/Mypage/MypageScrap";
 import InfoUpdate from "./pages/Mypage/InfoUpdate";
 import AllergyUpdate from "./pages/Mypage/AllergyUpdate";
 import AllRecipes from "./pages/AllRecipes";
+import PasswordUpdate from "./pages/Mypage/PasswordUpdate.jsx";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/recipes/:recipeId" element={<Recipedetail />} />
         <Route path="/users/:userid" element={<MypageHome />} />
         <Route path="/users/info" element={<InfoUpdate />} />
+        <Route path="/users/password" element={<PasswordUpdate />} />
         <Route path="/users/allergy" element={<AllergyUpdate />} />
         <Route path="/users/myrecipes" element={<MypageRecipe />} />
         <Route path="/users/scraps" element={<MypageScrap />} />

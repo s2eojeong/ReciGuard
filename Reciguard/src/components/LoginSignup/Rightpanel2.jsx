@@ -148,7 +148,7 @@ function Rightpanel2() {
       <div className="right-panel">
         <h2>Create your account</h2>
         <p className="easy">It's easy and free</p>
-        <form className="login-form">
+        <form className="login-form" onSubmit={handlePopupOpen}>
           <div className="form-group">
             <label htmlFor="name">이름</label>
             <input
@@ -190,7 +190,7 @@ function Rightpanel2() {
               가입 시 개인정보 수집 및 이용에 동의합니다.
             </label>
           </div>
-          <button type="button" className="sign-up-btn" onClick={handlePopupOpen}>
+          <button type="submit" className="sign-up-btn">
             Tell us more!
           </button>
         </form>
@@ -245,7 +245,7 @@ function Rightpanel2() {
                             defaultValue=""
                         >
                           <option value="" disabled></option>
-                          {Array.from({ length: 116 }, (_, i) => 1910 + i).map(
+                          {Array.from({ length: 116 }, (_, i) => 2025 - i).map(
                               (year) => (
                                   <option key={year} value={year}>
                                     {year}
