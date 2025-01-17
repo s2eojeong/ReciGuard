@@ -54,17 +54,18 @@ public class RecipeService {
                     new ParameterizedTypeReference<Map<String, Object>>() {}
             );
 
-            if (!response.getStatusCode().is2xxSuccessful()) {
-                throw new RuntimeException("AI 모델 API 호출 실패: " + response.getStatusCode());
-            }
+            log.info("AI 모델 응답: {}", response.getBody());
+            log.info("Calling AI model with userId: {}", userId);
 
             Map<String, Object> responseBody = response.getBody();
-            if (responseBody == null || !responseBody.containsKey("recipeId")) {
-                throw new RuntimeException("AI 모델 응답에 recipeId가 없습니다.");
+            if (responseBody == null || !responseBody.containsKey("recipe_id")) {
+                log.error("AI 모델 응답에 recipeId가 없습니다.");
+                return new RecipeRecommendResponseDTO(null, null, null);
             }
 
             // AI 모델로부터 받은 recipeId
-            Long recipeId = Long.valueOf(responseBody.get("recipe_id").toString());
+            Double recipeIdDouble = Double.valueOf(responseBody.get("recipe_id").toString());
+            Long recipeId = recipeIdDouble.longValue();
 
             // recipeId에 해당하는 레시피 정보 조회
             Recipe recipe = recipeRepository.findById(recipeId)
@@ -77,9 +78,13 @@ public class RecipeService {
                                         recipe.getRecipeName());
 
             } catch (HttpClientErrorException e){
-                throw new RuntimeException("AI 모델 API 호출 실패: " + e.getStatusCode(), e);
+                log.error("AI 모델 API 호출 실패: {}", e.getStatusCode());
+                log.info("Calling AI model with userId: {}", userId);
+                return new RecipeRecommendResponseDTO(null, null, null);
             } catch (Exception e) {
-            throw new RuntimeException("AI 모델 호출 중 오류 발생", e);
+                log.error("AI 모델 호출 중 오류 발생: {}", e.getMessage());
+                log.info("Calling AI model with userId: {}", userId);
+                return new RecipeRecommendResponseDTO(null, null, null);
         }
     }
 
