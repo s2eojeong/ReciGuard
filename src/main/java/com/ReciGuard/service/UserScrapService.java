@@ -46,10 +46,14 @@ public class UserScrapService {
 
         // DTO로 변환하여 반환
         return userScraps.stream()
-                .map(scrap -> new ScrapRecipeDTO(
-                        scrap.getRecipe().getId(),
-                        scrap.getRecipe().getRecipeName(), // Recipe 엔티티의 이름 필드
-                        scrap.getCreatedAt()))
+                .map(scrap -> {
+                    boolean scrapped = userScrapRepository.existsUserScrap(userId, scrap.getRecipe().getId());
+                    return new ScrapRecipeDTO(
+                            scrap.getRecipe().getId(),
+                            scrap.getRecipe().getRecipeName(),
+                            scrap.getCreatedAt(),
+                            scrapped);
+                })
                 .collect(Collectors.toList());
     }
 }
