@@ -370,7 +370,12 @@ public class RecipeService {
 
                     // Ingredient 조회
                     Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
-
+                    if (ingredient == null) {
+                        // 재료가 없으면 새로 추가
+                        ingredient = new Ingredient();
+                        ingredient.setIngredient(ingredientDto.getIngredient());
+                        ingredient = ingredientRepository.save(ingredient);
+                    }
                     // RecipeIngredient 설정
                     recipeIngredient.setIngredient(ingredient);
                     recipeIngredient.setQuantity(ingredientDto.getQuantity());
@@ -519,9 +524,17 @@ public class RecipeService {
                         .anyMatch(existing -> existing.getIngredient().getIngredient().equals(ingredientDto.getIngredient()));
 
                 if (!isExisting) {
+                    Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
+
+                    if (ingredient == null) {
+                        // 새로운 재료가 DB에 없으면 추가
+                        ingredient = new Ingredient();
+                        ingredient.setIngredient(ingredientDto.getIngredient());
+                        ingredient = ingredientRepository.save(ingredient);
+                    }
+
                     // 새로 추가
                     RecipeIngredient newIngredient = new RecipeIngredient();
-                    Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
                     newIngredient.setIngredient(ingredient);
                     newIngredient.setQuantity(ingredientDto.getQuantity());
                     newIngredient.setRecipe(recipe);
