@@ -6,7 +6,7 @@ import 스크랩후 from "../../assets/allscraps.png"
 import 인분 from "../../assets/all인분.png";
 
 const RecipeCard = ({ recipe }) => {
-    const [isScrapped, setIsScrapped] = useState(recipe.isScrapped); // 초기값은 props로 설정
+    const [scrapped, setScrapped] = useState(recipe.scrapped); // 초기값은 props로 설정
     const navigate = useNavigate();
 
     const handleScrap = async () => {
@@ -31,7 +31,7 @@ const RecipeCard = ({ recipe }) => {
             }
 
             alert(data.message || data); // 성공 메시지 출력
-            setIsScrapped((prev) => !prev); // 상태 토글
+            setScrapped((prev) => !prev); // 상태 토글
         } catch (error) {
             console.error("스크랩 요청 중 오류:", error);
             alert(error.message || "스크랩 요청 중 문제가 발생했습니다.");
@@ -44,8 +44,8 @@ const RecipeCard = ({ recipe }) => {
                 <h3>{recipe.recipeName}</h3>
                 <button className="scrap-btn" onClick={handleScrap}>
                     <img
-                        src={isScrapped ? 스크랩후 : 스크랩전}
-                        alt={isScrapped ? "스크랩됨" : "스크랩하기"}
+                        src={scrapped ? 스크랩후 : 스크랩전}
+                        alt={scrapped ? "스크랩됨" : "스크랩하기"}
                         className="scrap-icon"
                     />
                 </button>
@@ -170,3 +170,4 @@ const RecipeList = () => {
 
 
 export default RecipeList;
+
