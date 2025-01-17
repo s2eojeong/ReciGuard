@@ -10,7 +10,7 @@ import emptyHeartImg from "../assets/heart.png";
 const Rdetail = () => {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
-  const [isScrapped, setIsScrapped] = useState(false);
+  const [scrapped, setScrapped] = useState(false);
   const [scrapCount, setScrapCount] = useState(0);
 
   // 레시피 상세 정보 및 초기 스크랩 상태 로드
@@ -32,8 +32,8 @@ const Rdetail = () => {
 
         const data = await response.json();
         setRecipe(data);
-        setScrapCount(data.scrapCount); // 백엔드에서 받은 스크랩 수
-        setIsScrapped(data.isScrapped); // 백엔드에서 받은 스크랩 상태
+        setScrapCount(data.scrapCount || 0); // 초기 스크랩 수 설정
+        setScrapped(data.scrapped || false); // 초기 스크랩 상태 설정
       } catch (error) {
         console.error("레시피 데이터를 가져오는 중 오류 발생:", error);
       }
@@ -42,7 +42,6 @@ const Rdetail = () => {
     fetchRecipeDetail();
   }, [recipeId]);
 
-  // 스크랩 버튼 클릭 처리
   // 스크랩 버튼 클릭 시 처리
   const handleScrapClick = async () => {
     try {
@@ -65,9 +64,13 @@ const Rdetail = () => {
 
       alert(data.message || data); // 성공 메시지 출력
 
-      // 백엔드에서 최신 상태 가져오기
-      setIsScrapped(data.isScrapped); // 백엔드에서 반환된 값을 적용
-      setScrapCount(data.scrapCount); // 스크랩 수 업데이트
+      // **스크랩 상태와 스크랩 수 안전 업데이트**
+      setScrapped((prevScrapped) => {
+        const newScrapped = !prevScrapped;
+        setScrapCount((prevCount) => newScrapped ? prevCount + 1 : prevCount - 1);
+        return newScrapped;
+      });
+
     } catch (error) {
       console.error("스크랩 요청 중 오류:", error);
       alert(error.message || "스크랩 요청 중 문제가 발생했습니다.");
@@ -102,8 +105,8 @@ const Rdetail = () => {
             <div className="favorite-container">
               <button className="favorite-button" onClick={handleScrapClick}>
                 <img
-                    src={isScrapped ? filledHeartImg : emptyHeartImg}
-                    alt={isScrapped ? "스크랩됨" : "스크랩하기"}
+                    src={scrapped ? filledHeartImg : emptyHeartImg}
+                    alt={scrapped ? "스크랩됨" : "스크랩하기"}
                     className="heart-image"
                 />
               </button>
