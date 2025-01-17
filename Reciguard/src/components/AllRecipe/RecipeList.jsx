@@ -6,57 +6,35 @@ import 스크랩후 from "../../assets/allscraps.png"
 import 인분 from "../../assets/all인분.png";
 
 const RecipeCard = ({ recipe }) => {
-    const [isScrapped, setIsScrapped] = useState(false); // 스크랩 상태 관리
-    const navigate = useNavigate(); // 페이지 이동 훅
+    const [isScrapped, setIsScrapped] = useState(recipe.isScrapped); // 초기값은 props로 설정
+    const navigate = useNavigate();
 
-    // 스크랩 API 호출 함수
     const handleScrap = async () => {
         const token = localStorage.getItem("jwtToken");
 
         try {
-            // API 요청
             const response = await fetch(`http://localhost:8080/api/recipes/scrap/${recipe.recipeId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    recipeId: recipe.recipeId,
-                }),
             });
 
-            // 응답 처리
             const contentType = response.headers.get("content-type");
-            if (!response.ok) {
-                if (contentType && contentType.includes("application/json")) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || "스크랩 요청 실패");
-                } else {
-                    const errorText = await response.text();
-                    throw new Error(errorText || "스크랩 요청 실패");
-                }
-            }
-
             const data = contentType && contentType.includes("application/json")
                 ? await response.json()
                 : await response.text();
 
+            if (!response.ok) {
+                throw new Error(data.message || "스크랩 요청 실패");
+            }
+
             alert(data.message || data); // 성공 메시지 출력
-            setIsScrapped((prev) => !prev); // 스크랩 상태 토글
+            setIsScrapped((prev) => !prev); // 상태 토글
         } catch (error) {
             console.error("스크랩 요청 중 오류:", error);
             alert(error.message || "스크랩 요청 중 문제가 발생했습니다.");
-        }
-    };
-
-    // 레시피 상세 페이지로 이동
-    const handleViewDetail = () => {
-        console.log("레시피 ID:", recipe.recipeId); // 로그로 확인
-        if (recipe.recipeId) {
-            navigate(`/recipes/${recipe.recipeId}`); // URL에 recipeId 전달
-        } else {
-            console.error("레시피 ID가 없습니다!");
         }
     };
 
@@ -84,7 +62,7 @@ const RecipeCard = ({ recipe }) => {
                     <img className="recipe-info-person" src={인분} alt="인분 아이콘" />
                     {recipe.serving}인분
                 </p>
-                <button className="recipe-btn" onClick={handleViewDetail}>
+                <button className="recipe-btn" onClick={() => navigate(`/recipes/${recipe.recipeId}`)}>
                     레시피 보기
                 </button>
             </div>
@@ -92,7 +70,8 @@ const RecipeCard = ({ recipe }) => {
     );
 };
 
-function RecipeList() {
+
+const RecipeList = () => {
     const [recipes, setRecipes] = useState([]); // 레시피 목록
     const [loading, setLoading] = useState(true); // 로딩 상태
     const [error, setError] = useState(null); // 에러 메시지
@@ -108,15 +87,9 @@ function RecipeList() {
 
         try {
             const token = localStorage.getItem("jwtToken"); // 로그인 시 저장된 JWT 토큰
-            let url = "";
-
-            if (selectedCuisine === "전체") {
-                // 전체 레시피 API
-                url = `http://localhost:8080/api/recipes/all?filter=${filterEnabled}`;
-            } else {
-                // 카테고리별 레시피 API
-                url = `http://localhost:8080/api/recipes?cuisine=${selectedCuisine}&filter=${filterEnabled}`;
-            }
+            let url = selectedCuisine === "전체"
+                ? `http://localhost:8080/api/recipes/all?filter=${filterEnabled}`
+                : `http://localhost:8080/api/recipes?cuisine=${selectedCuisine}&filter=${filterEnabled}`;
 
             const response = await fetch(url, {
                 method: "GET",
@@ -124,7 +97,6 @@ function RecipeList() {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
                 },
-                credentials: "include",
             });
 
             if (!response.ok) {
@@ -132,9 +104,7 @@ function RecipeList() {
             }
 
             const data = await response.json();
-            console.log("API 응답 데이터:", data);
-            console.log("filterEnabled:", filterEnabled);
-            setRecipes(data);
+            setRecipes(data); // 레시피 데이터 설정
         } catch (err) {
             setError(err.message);
         } finally {
@@ -142,7 +112,6 @@ function RecipeList() {
         }
     };
 
-    // 선택된 카테고리 또는 필터 상태 변경 시 API 호출
     useEffect(() => {
         fetchRecipes();
     }, [selectedCuisine, filterEnabled]);
@@ -152,7 +121,6 @@ function RecipeList() {
             <h2 className="allrecipes-header">오늘 뭐 먹지?</h2>
             <p className="allrecipes-p">알레르기를 가진 당신을 위한 안전한 레시피</p>
 
-            {/* 필터 스위치 버튼 */}
             <div className="filter-buttons">
                 <div className="filter-header">알레르기 유발 음식 필터링</div>
                 <div className="filter-btn-group">
@@ -171,7 +139,6 @@ function RecipeList() {
                 </div>
             </div>
 
-            {/* 카테고리 탭 */}
             <div className="cuisine-tabs">
                 {cuisineOptions.map((cuisine) => (
                     <button
@@ -184,7 +151,6 @@ function RecipeList() {
                 ))}
             </div>
 
-            {/* 레시피 리스트 */}
             <div className="recipe-list">
                 {loading ? (
                     <p>레시피를 불러오는 중...</p>
@@ -200,6 +166,7 @@ function RecipeList() {
             </div>
         </div>
     );
-}
+};
+
 
 export default RecipeList;
