@@ -24,6 +24,7 @@ const MyScrap = () => {
                 }
 
                 const data = await response.json();
+                console.log(data); // 데이터를 확인하여 imagePath가 포함되어 있는지 체크
                 setScrapRecipes(data);
             } catch (error) {
                 setError(error.message);
@@ -34,6 +35,7 @@ const MyScrap = () => {
 
         fetchScrapRecipes();
     }, []);
+
 
     const handleScrapToggle = async (recipeId, currentScrapped) => {
         try {
@@ -112,7 +114,7 @@ const MyScrap = () => {
                         </div>
                         <div className="scrap-recipe-cuisine">{recipe.cuisine}</div>
                         <img
-                            src={recipe.imagePath}
+                            src={`http://localhost:8080${recipe.imagePath}`}
                             alt={recipe.recipeName}
                             className="scrap-recipe-image"
                         />
