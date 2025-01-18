@@ -158,16 +158,16 @@ public class RecipeController {
         return ResponseEntity.ok("레시피가 성공적으로 등록되었습니다.");
     }
 
-
     // 나만의 레시피 수정 폼
     @GetMapping("/myrecipe/{recipeId}/edit")
-    public MyRecipeFormEdit UpdateMyRecipeForm(@PathVariable Long recipeId) {
+    public MyRecipeForm UpdateMyRecipeForm(@PathVariable Long recipeId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userService.findUserIdByUsername(username);
 
-        return recipeService.getRecipeFormEdit(userId, recipeId);
+        return recipeService.getRecipeFormEdit(recipeId, userId);
     }
 
+    // 나만의 레시피 수정
     @PostMapping(value = "/myrecipe/{recipeId}/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateMyRecipe(
             @PathVariable Long recipeId,
