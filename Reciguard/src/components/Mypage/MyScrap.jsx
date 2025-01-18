@@ -114,7 +114,7 @@ const MyScrap = () => {
                         </div>
                         <div className="scrap-recipe-cuisine">{recipe.cuisine}</div>
                         <img
-                            src={`http://localhost:8080${recipe.imagePath}`}
+                            src={recipe.imagePath}
                             alt={recipe.recipeName}
                             className="scrap-recipe-image"
                         />
