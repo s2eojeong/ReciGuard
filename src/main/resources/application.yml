@@ -28,7 +28,7 @@ spring:
   cloud:
     aws:
       S3:
-        bucket:
+        bucket: aa
         stack:
           auto: false
         region:
