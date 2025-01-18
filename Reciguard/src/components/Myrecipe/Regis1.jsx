@@ -46,32 +46,32 @@ const Regis = () => {
                 <option value="" disabled selected>
                   국가별
                 </option>
-                <option value="korean">한식</option>
-                <option value="chinese">중식</option>
-                <option value="japanese">일식</option>
-                <option value="western">양식</option>
-                <option value="asian">아시안</option>
+                <option value="한식">한식</option>
+                <option value="중식">중식</option>
+                <option value="일식">일식</option>
+                <option value="양식">양식</option>
+                <option value="아시안">아시안</option>
               </select>
               <select id="category" className="regis-select">
                 <option value="" disabled selected>
                   식사 유형
                 </option>
-                <option value="korean">밥</option>
-                <option value="chinese">면</option>
-                <option value="japanese">떡</option>
-                <option value="western">죽</option>
-                <option value="asian">반찬</option>
+                <option value="밥">밥</option>
+                <option value="면">면</option>
+                <option value="떡">떡</option>
+                <option value="떡">죽</option>
+                <option value="반찬">반찬</option>
               </select>
               <select id="category" className="regis-select">
                 <option value="" disabled selected>
                   조리 방식
                 </option>
-                <option value="korean">찌기</option>
-                <option value="chinese">끓이기</option>
-                <option value="japanese">굽기</option>
-                <option value="western">볶기</option>
-                <option value="asian">튀기기</option>
-                <option value="asian">기타</option>
+                <option value="찌기">찌기</option>
+                <option value="끓이기">끓이기</option>
+                <option value="굽기">굽기</option>
+                <option value="볶기">볶기</option>
+                <option value="튀기기">튀기기</option>
+                <option value="기타">기타</option>
               </select>
             </div>
             <div className="regis-group">
