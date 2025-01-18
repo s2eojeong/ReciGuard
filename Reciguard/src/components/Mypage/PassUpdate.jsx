@@ -4,7 +4,6 @@ import axios from "axios";
 const PasswordUpdate = () => {
     const [formData, setFormData] = useState({
         username: "",
-        userid: "",
         currentPassword: "",
         newPassword: "",
     });
@@ -15,14 +14,13 @@ const PasswordUpdate = () => {
     const decodeToken = (token) => {
         try {
             const payload = JSON.parse(atob(token.split(".")[1])); // JWT Payload 디코딩
-            return { userid: payload.userid }; // username과 userid 추출
+            return { userid: payload.userid  }; // userid 추출
         } catch (err) {
             console.error("토큰 디코딩 실패:", err);
             return null;
         }
     };
 
-    // 컴포넌트 마운트 시 username과 userid 설정
     useEffect(() => {
         const token = localStorage.getItem("jwtToken");
         if (!token) {
@@ -34,7 +32,6 @@ const PasswordUpdate = () => {
         if (userInfo) {
             setFormData((prevData) => ({
                 ...prevData,
-                username: userInfo.username,
                 userid: userInfo.userid,
             }));
         } else {
@@ -65,7 +62,7 @@ const PasswordUpdate = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:8080/api/users/password",
+                "http://localhost:8080/password", // 경로 확인
                 {
                     username: formData.username,
                     currentPassword: formData.currentPassword,
@@ -79,11 +76,16 @@ const PasswordUpdate = () => {
                 }
             );
             if (response.status === 200) {
-                setMessage(response.data.message); // 성공 메시지 설정
+                setMessage("비밀번호가 성공적으로 변경되었습니다."); // 성공 메시지
+                setFormData((prevData) => ({
+                    ...prevData,
+                    currentPassword: "",
+                    newPassword: "",
+                })); // 비밀번호 입력 필드 초기화
             }
         } catch (err) {
             console.error("비밀번호 변경 오류:", err);
-            setError(err.response?.data?.message || "비밀번호 변경 중 오류가 발생했습니다.");
+            setError(err.response?.data || "비밀번호 변경 중 오류가 발생했습니다.");
         }
     };
 
@@ -111,7 +113,7 @@ const PasswordUpdate = () => {
                             type="password"
                             id="currentPassword"
                             name="currentPassword"
-                            value={formData.currentPassword}
+                            value={formData.currentPassword || ""}
                             onChange={handleChange}
                             required
                         />
@@ -122,7 +124,7 @@ const PasswordUpdate = () => {
                             type="password"
                             id="newPassword"
                             name="newPassword"
-                            value={formData.newPassword}
+                            value={formData.newPassword || ""}
                             onChange={handleChange}
                             required
                         />
