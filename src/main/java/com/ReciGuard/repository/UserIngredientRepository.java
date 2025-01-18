@@ -29,4 +29,12 @@ public interface UserIngredientRepository extends JpaRepository<UserIngredient, 
     @Transactional
     @Query("DELETE FROM UserIngredient ui WHERE ui.user.id = :userId")
     void deleteByUserId(@Param("userId")Long userid);
+
+    @Query("""
+        SELECT i.ingredient
+        FROM UserIngredient ui
+        JOIN ui.ingredient i
+        WHERE ui.user.id = :userId
+    """)
+    List<String> findAllergyIngredientsByUserId(@Param("userId") Long userId);
 }

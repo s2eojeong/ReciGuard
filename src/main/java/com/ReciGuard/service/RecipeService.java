@@ -33,6 +33,7 @@ public class RecipeService {
     private final RecipeStatsRepository recipeStatsRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final UserScrapRepository userScrapRepository;
+    private final UserIngredientRepository userIngredientRepository;
     private final RestTemplate restTemplate;
 
     @Value("http://localhost:3000/recommend") // 나중에 ai 모델 완성 후 수정
@@ -114,8 +115,14 @@ public class RecipeService {
     // 전체 레시피 리스트 -> 필터링 후
     public List<RecipeListResponseDTO> getAllFilteredRecipes(Long userId) {
 
+        List<String> allergyIngredients = userIngredientRepository.findAllergyIngredientsByUserId(userId);
+
+        if (allergyIngredients.isEmpty()) {
+            throw new EntityNotFoundException("사용자의 알레르기 정보가 없습니다.");
+        }
+
         // 사용자 알레르기 정보를 제외한 레시피 필터링
-        List<Recipe> recipes = recipeRepository.findAllFilteredRecipes(userId);
+        List<Recipe> recipes = recipeRepository.findAllFilteredRecipes(userId, allergyIngredients);
 
         if (recipes.isEmpty()) {
             throw new EntityNotFoundException("조건에 맞는 레시피가 없습니다.");
@@ -160,8 +167,15 @@ public class RecipeService {
 
     // cuisine 별 레시피 리스트 -> 필터링 후
     public List<RecipeListResponseDTO> getFilteredRecipesByCuisine(Long userId, String cuisine) {
-        // 사용자 알레르기 정보를 제외한 특정 cuisine 레시피 필터링
-        List<Recipe> recipes = recipeRepository.findCuisineFilteredRecipes(userId, cuisine);
+
+        List<String> allergyIngredients = userIngredientRepository.findAllergyIngredientsByUserId(userId);
+
+        if (allergyIngredients.isEmpty()) {
+            throw new EntityNotFoundException("사용자의 알레르기 정보가 없습니다.");
+        }
+
+        // 사용자 알레르기 정보를 제외한 레시피 필터링
+        List<Recipe> recipes = recipeRepository.findCuisineFilteredRecipes(userId, cuisine, allergyIngredients);
 
         if (recipes.isEmpty()) {
             throw new EntityNotFoundException("사용자 알레르기 정보를 바탕으로 " + cuisine + "에 해당하는 레시피가 없습니다.");
@@ -206,8 +220,15 @@ public class RecipeService {
 
     // 검색 단어와 사용자 알레르기 정보를 기반으로 필터링된 레시피 리스트 검색
     public List<RecipeListResponseDTO> getFilteredRecipesByQuery(Long userId, String query) {
-        // 사용자 알레르기 정보를 제외하고 검색 결과 필터링
-        List<Recipe> recipes = recipeRepository.findQueryFilteredRecipes(userId, query);
+
+        List<String> allergyIngredients = userIngredientRepository.findAllergyIngredientsByUserId(userId);
+
+        if (allergyIngredients.isEmpty()) {
+            throw new EntityNotFoundException("사용자의 알레르기 정보가 없습니다.");
+        }
+
+        // 사용자 알레르기 정보를 제외한 레시피 필터링
+        List<Recipe> recipes = recipeRepository.findQueryFilteredRecipes(userId, query, allergyIngredients);
 
         if (recipes.isEmpty()) {
             throw new EntityNotFoundException("사용자 알레르기 정보를 바탕으로 " + query + "로 검색된 레시피가 없습니다.");
@@ -349,7 +370,12 @@ public class RecipeService {
 
                     // Ingredient 조회
                     Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
-
+                    if (ingredient == null) {
+                        // 재료가 없으면 새로 추가
+                        ingredient = new Ingredient();
+                        ingredient.setIngredient(ingredientDto.getIngredient());
+                        ingredient = ingredientRepository.save(ingredient);
+                    }
                     // RecipeIngredient 설정
                     recipeIngredient.setIngredient(ingredient);
                     recipeIngredient.setQuantity(ingredientDto.getQuantity());
@@ -498,9 +524,17 @@ public class RecipeService {
                         .anyMatch(existing -> existing.getIngredient().getIngredient().equals(ingredientDto.getIngredient()));
 
                 if (!isExisting) {
+                    Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
+
+                    if (ingredient == null) {
+                        // 새로운 재료가 DB에 없으면 추가
+                        ingredient = new Ingredient();
+                        ingredient.setIngredient(ingredientDto.getIngredient());
+                        ingredient = ingredientRepository.save(ingredient);
+                    }
+
                     // 새로 추가
                     RecipeIngredient newIngredient = new RecipeIngredient();
-                    Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
                     newIngredient.setIngredient(ingredient);
                     newIngredient.setQuantity(ingredientDto.getQuantity());
                     newIngredient.setRecipe(recipe);
