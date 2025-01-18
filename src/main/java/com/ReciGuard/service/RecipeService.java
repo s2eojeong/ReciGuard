@@ -312,6 +312,7 @@ public class RecipeService {
         // 7. Instructions 변환
         List<InstructionResponseDTO> instructionDTOs = instructions.stream()
                 .map(instruction -> new InstructionResponseDTO(
+                        instruction.getInstructionId(),
                         instruction.getInstructionImage(),
                         instruction.getInstruction()
                 ))
@@ -361,8 +362,10 @@ public class RecipeService {
         if (recipeImage != null && !recipeImage.isEmpty()) {
             String uploadedRecipeImage = s3Uploader.saveFile(recipeImage);
             recipe.setImagePath(uploadedRecipeImage); // 단일 사진 저장
+            log.info("Received recipeImage: {}, size: {}", recipeImage.getOriginalFilename(), recipeImage.getSize());
         } else {
             recipe.setImagePath(null); // 사진이 없으면 null 처리
+            log.info("No recipeImage provided.");
         }
 
         recipe.setServing(recipeForm.getServing());
@@ -524,19 +527,29 @@ public class RecipeService {
         form.setIngredients(ingredientDTOs);
 
         // 5. 조리 단계 정보 매핑
-        List<InstructionResponseDTO> instructionDTOs = recipe.getInstructions().stream()
-                .map(instruction -> new InstructionResponseDTO(
-                        instruction.getInstruction(),
-                        instruction.getInstructionImage()
+        List<InstructionRequestDTO> instructionDTOs = recipe.getInstructions().stream()
+                .map(instruction -> new InstructionRequestDTO(
+                        instruction.getInstructionId(), // Integer 타입
+                        instruction.getInstruction(), // String 타입
+                        false,
+                        null,
+                        instruction.getInstructionImage() // S3에 저장된 이미지 URL
                 ))
                 .collect(Collectors.toList());
+
+
         form.setInstructions(instructionDTOs);
 
         return form;
     }
 
     @Transactional
-    public RecipeDetailResponseDTO updateMyRecipe(Long recipeId, Long userId, MyRecipeForm recipeForm) {
+    public RecipeDetailResponseDTO updateMyRecipe(
+            Long recipeId,
+            Long userId,
+            MyRecipeFormEdit recipeForm,
+            MultipartFile recipeImage,
+            Map<String, MultipartFile> instructionImageFiles) {
 
         // 1. 레시피 ID로 영속 상태의 Recipe 엔티티 조회
         Recipe recipe = recipeRepository.findById(recipeId)
@@ -549,18 +562,26 @@ public class RecipeService {
         recipe.setFoodType(recipeForm.getFoodType());
         recipe.setCookingStyle(recipeForm.getCookingStyle());
 
-        // 3. 재료 수정
+        // 3. 레시피 메인 이미지 처리
+        if (recipeForm.isImageRemoved() && recipe.getImagePath() != null) {
+            s3Uploader.deleteFile(recipe.getImagePath()); // 기존 이미지 삭제
+            recipe.setImagePath(null); // 이미지 경로 제거
+        }
+        if (recipeImage != null && !recipeImage.isEmpty()) {
+            String uploadedImagePath = s3Uploader.saveFile(recipeImage); // 새 이미지 업로드
+            recipe.setImagePath(uploadedImagePath); // 새 이미지 경로 저장
+        }
+
+        // 4. 재료 수정
         if (recipeForm.getIngredients() != null) {
             List<RecipeIngredient> existingIngredients = recipe.getRecipeIngredients();
 
             // 업데이트 또는 삭제를 위한 매핑
             Map<String, String> formIngredientMap = recipeForm.getIngredients().stream()
                     .filter(ingredientDto -> {
-                        // 재료명과 수량 둘 다 공백인 경우 삭제로 간주 (필터 제외)
                         if (ingredientDto.getIngredient().isBlank() && ingredientDto.getQuantity().isBlank()) {
                             return false; // 제외
                         }
-                        // 재료명이나 수량 둘 중 하나라도 공백인 경우 예외 발생
                         if (ingredientDto.getIngredient().isBlank() || ingredientDto.getQuantity().isBlank()) {
                             throw new IllegalArgumentException("재료와 수량을 확인해주세요.");
                         }
@@ -577,19 +598,17 @@ public class RecipeService {
                 String formQuantity = formIngredientMap.get(existingIngredient.getIngredient().getIngredient());
 
                 if (formQuantity == null) {
-                    // 폼에 없는 데이터는 삭제 대상에 추가
                     ingredientsToRemove.add(existingIngredient);
                 } else if (!existingIngredient.getQuantity().equals(formQuantity)) {
-                    // quantity가 다르면 업데이트
-                    existingIngredient.setQuantity(formQuantity);
+                    existingIngredient.setQuantity(formQuantity); // 수량 업데이트
                 }
             }
 
-            // 1-1. 삭제 대상 제거 (Hibernate에게 명확히 알림)
+            // 삭제 대상 제거
             ingredientsToRemove.forEach(existingIngredients::remove);
             recipeIngredientRepository.deleteAll(ingredientsToRemove);
 
-            // 2. 추가 처리: 폼에만 있는 데이터 추가
+            // 추가 처리
             recipeForm.getIngredients().forEach(ingredientDto -> {
                 boolean isExisting = existingIngredients.stream()
                         .anyMatch(existing -> existing.getIngredient().getIngredient().equals(ingredientDto.getIngredient()));
@@ -598,13 +617,11 @@ public class RecipeService {
                     Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
 
                     if (ingredient == null) {
-                        // 새로운 재료가 DB에 없으면 추가
                         ingredient = new Ingredient();
                         ingredient.setIngredient(ingredientDto.getIngredient());
                         ingredient = ingredientRepository.save(ingredient);
                     }
 
-                    // 새로 추가
                     RecipeIngredient newIngredient = new RecipeIngredient();
                     newIngredient.setIngredient(ingredient);
                     newIngredient.setQuantity(ingredientDto.getQuantity());
@@ -614,57 +631,58 @@ public class RecipeService {
             });
         }
 
-        // 4. 조리 과정 수정
+        // 5. 조리 과정 수정
         if (recipeForm.getInstructions() != null) {
             List<Instruction> existingInstructions = recipe.getInstructions();
 
-            // 기존 데이터 매핑 (instruction_id 기준으로)
+            // 현재 존재하는 instructionId의 최대값 찾기
+            AtomicInteger instructionCounter = new AtomicInteger(
+                    existingInstructions.stream()
+                            .mapToInt(Instruction::getInstructionId)
+                            .max()
+                            .orElse(0) + 1
+            );
+
+            // 기존 데이터 매핑 (instructionId 기준으로)
             Map<Integer, Instruction> existingInstructionMap = existingInstructions.stream()
                     .collect(Collectors.toMap(
-                            Instruction::getInstructionId, // key: instruction_id
-                            instruction -> instruction // value: Instruction 객체
+                            Instruction::getInstructionId,
+                            instruction -> instruction
                     ));
 
-            // 입력된 순서대로 처리
-            AtomicInteger currentInstructionId = new AtomicInteger(1);
             List<Instruction> updatedInstructions = new ArrayList<>();
 
             recipeForm.getInstructions().forEach(instructionDto -> {
-                Instruction instruction = existingInstructionMap.get(currentInstructionId.get());
-
-                if (instruction == null) {
-                    // 새 데이터 추가
-                    instruction = new Instruction();
-                    instruction.setInstructionId(currentInstructionId.get());
-                    instruction.setRecipe(recipe);
+                if (instructionDto.getInstructionId() == null) {
+                    // 새로운 조리 과정에 ID를 부여
+                    instructionDto.setInstructionId(instructionCounter.getAndIncrement());
                 }
 
-                // 공통 처리: 조리 내용 설정
+                Instruction instruction = existingInstructionMap.get(instructionDto.getInstructionId());
+                if (instruction == null) {
+                    // 새로운 조리 과정 추가
+                    instruction = new Instruction();
+                    instruction.setRecipe(recipe);
+                    instruction.setInstructionId(instructionDto.getInstructionId());
+                }
+
+                // 조리 내용 설정
                 instruction.setInstruction(instructionDto.getInstruction());
 
                 // 이미지 처리
-                if (instructionDto.hasInstructionImage()) {
-                    // 새 이미지 업로드 및 기존 이미지 삭제
-                    String uploadedImageUrl = s3Uploader.saveFile(instructionDto.getInstructionImageFile());
-                    if (instruction.getInstructionImage() != null) {
-                        s3Uploader.deleteFile(instruction.getInstructionImage());
-                    }
-                    instruction.setInstructionImage(uploadedImageUrl);
+                String key = "instructionImageFiles[" + instructionDto.getInstructionId() + "]";
+                if (instructionImageFiles != null && instructionImageFiles.containsKey(key)) {
+                    handleInstructionImage(instruction, instructionImageFiles.get(key));
                 } else if (instructionDto.isImageRemoved()) {
-                    // 이미지 삭제 처리
-                    if (instruction.getInstructionImage() != null) {
-                        s3Uploader.deleteFile(instruction.getInstructionImage());
-                    }
-                    instruction.setInstructionImage(null);
+                    handleInstructionImage(instruction, null);
                 }
 
                 updatedInstructions.add(instruction);
-                currentInstructionId.incrementAndGet();
             });
 
             // 기존 데이터 중 폼에 없는 데이터는 삭제 처리
             existingInstructions.removeIf(existing ->
-                    updatedInstructions.stream().noneMatch(updated -> updated.getInstructionId() == existing.getInstructionId())
+                    updatedInstructions.stream().noneMatch(updated -> updated.getInstructionId().equals(existing.getInstructionId()))
             );
 
             // 기존 리스트를 업데이트된 리스트로 교체
@@ -672,15 +690,14 @@ public class RecipeService {
             existingInstructions.addAll(updatedInstructions);
         }
 
-
-        // 5. 수정된 재료로 AI 모델 호출
+        // 6. AI 모델 호출
         SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
         List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
 
         // 스크랩 여부 확인
         boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipeId);
 
-        // 6. 수정된 레시피를 RecipeDetailResponseDTO로 변환 & 리턴
+        // 7. 수정된 레시피를 RecipeDetailResponseDTO로 변환 & 리턴
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
@@ -688,18 +705,14 @@ public class RecipeService {
                 recipe.getCuisine(),
                 recipe.getFoodType(),
                 recipe.getCookingStyle(),
-
-                // 사용자가 작성한 레시피에 대해서는 nutrition 정보 제공 x -> 다 0으로 기본 세팅
                 recipe.getNutrition() != null ? (int) recipe.getNutrition().getCalories() : 0,
                 recipe.getNutrition() != null ? (int) recipe.getNutrition().getSodium() : 0,
                 recipe.getNutrition() != null ? (int) recipe.getNutrition().getCarbohydrate() : 0,
                 recipe.getNutrition() != null ? (int) recipe.getNutrition().getFat() : 0,
                 recipe.getNutrition() != null ? (int) recipe.getNutrition().getProtein() : 0,
-
                 isScrapped,
-                recipe.getRecipeStats().getViewCount(), // 조회 수
-                recipe.getRecipeStats().getScrapCount(), // 스크랩 수
-
+                recipe.getRecipeStats().getViewCount(),
+                recipe.getRecipeStats().getScrapCount(),
                 recipe.getRecipeIngredients() != null ? recipe.getRecipeIngredients().stream()
                         .map(ingredient -> new IngredientResponseDTO(
                                 ingredient.getIngredient().getIngredient(),
@@ -708,12 +721,29 @@ public class RecipeService {
                         .collect(Collectors.toList()) : Collections.emptyList(),
                 recipe.getInstructions() != null ? recipe.getInstructions().stream()
                         .map(instruction -> new InstructionResponseDTO(
-                                instruction.getInstruction(),
-                                instruction.getInstructionImage()
+                                instruction.getInstructionId(),
+                                instruction.getInstructionImage(),
+                                instruction.getInstruction()
                         ))
                         .collect(Collectors.toList()) : Collections.emptyList(),
-
                 similarAllergyIngredients
         );
+    }
+
+    // 이미지 처리 메서드
+    private void handleInstructionImage(Instruction instruction, MultipartFile newImageFile) {
+        if (newImageFile != null && !newImageFile.isEmpty()) {
+            String uploadedImageUrl = s3Uploader.saveFile(newImageFile);
+
+            // 기존 이미지 삭제
+            if (instruction.getInstructionImage() != null) {
+                s3Uploader.deleteFile(instruction.getInstructionImage());
+            }
+
+            instruction.setInstructionImage(uploadedImageUrl);
+        } else if (instruction.getInstructionImage() != null) {
+            s3Uploader.deleteFile(instruction.getInstructionImage());
+            instruction.setInstructionImage(null);
+        }
     }
 }
