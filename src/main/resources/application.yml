@@ -20,9 +20,24 @@ spring:
     level:
       org.hibernate.SQL: DEBUG
       org.springframework: DEBUG
-
   sql:
     init:
       data-locations: classpath:db/data.sql
       mode: always
       platform: sql
+  cloud:
+    aws:
+      S3:
+        bucket:
+        stack:
+          auto: false
+        region:
+          static: ap-northeast-2
+        credentials:
+          accessKey:
+          secretKey:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+      resolve-lazily: true
