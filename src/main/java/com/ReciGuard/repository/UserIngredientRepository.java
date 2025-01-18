@@ -37,4 +37,5 @@ public interface UserIngredientRepository extends JpaRepository<UserIngredient, 
         WHERE ui.user.id = :userId
     """)
     List<String> findAllergyIngredientsByUserId(@Param("userId") Long userId);
+
 }
