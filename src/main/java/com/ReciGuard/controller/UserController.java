@@ -69,7 +69,7 @@ public class UserController {
     }
 
     //allergy 조회
-    @GetMapping("/allergy/{userId}")
+    @GetMapping("/allergy/{userid}")
     public ResponseEntity<List<UserIngredientDTO>> getUserIngredients(@PathVariable Long userId) {
         List<UserIngredient> userIngredients = userIngredientService.getUserIngredientsByUserId(userId);
         List<UserIngredientDTO> userIngredientDTOs = userIngredients.stream()
@@ -81,7 +81,7 @@ public class UserController {
 
 
     //알레르기 정보 수정
-    @PostMapping("/allergy/{userId}")
+    @PostMapping("/allergy/{userid}")
     public ResponseEntity<String> addOrUpdateUserIngredients(
             @PathVariable Long userId, @RequestBody UserIngredientListDTO userIngredientListDTO) {
         // Step 1: 서비스 호출
