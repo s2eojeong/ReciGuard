@@ -430,45 +430,41 @@ public class RecipeService {
                     // 현재 처리 중인 Instruction ID 확인
                     log.info("Processing instruction ID: {}", instruction.getInstructionId());
 
-                    // 기본값 설정: 이미지가 없으면 null로 처리
-                    instruction.setInstructionImage(null);
+                    // instructionImageFiles로부터 파일을 매핑하거나 null 처리
+                    if (finalInstructionImageFiles != null) {
+                        String matchingKey = finalInstructionImageFiles.keySet().stream()
+                                .filter(key -> key.equals("instructionImageFiles[" + instruction.getInstructionId() + "]"))
+                                .findFirst()
+                                .orElse(null);
 
-                    // instructionImageFiles가 없는 경우 처리
-                    if (finalInstructionImageFiles == null) {
+                        if (matchingKey != null) {
+                            log.info("Found matching key for instruction {}: {}", instruction.getInstructionId(), matchingKey);
+                            MultipartFile file = finalInstructionImageFiles.get(matchingKey);
+
+                            // 파일이 있으면 업로드, 없으면 null로 처리
+                            if (file != null && !file.isEmpty()) {
+                                try {
+                                    String uploadedUrl = s3Uploader.saveFile(file); // S3에 단일 파일 저장
+                                    instruction.setInstructionImage(uploadedUrl); // URL 설정
+                                    log.info("Uploaded image for instruction {}: {}", instruction.getInstructionId(), uploadedUrl);
+                                } catch (Exception e) {
+                                    log.error("Failed to upload image for instruction {}: {}", instruction.getInstructionId(), e.getMessage());
+                                    instruction.setInstructionImage(null); // 업로드 실패 시 null
+                                }
+                            } else {
+                                log.info("No file provided for instruction {}", instruction.getInstructionId());
+                                instruction.setInstructionImage(null); // 사진이 없으면 null로 처리
+                            }
+                        } else {
+                            log.info("No matching file found for instruction {}", instruction.getInstructionId());
+                            instruction.setInstructionImage(null); // 사진이 없으면 null로 처리
+                        }
+                    } else {
                         log.info("No instruction image files provided");
-                        return instruction;
+                        instruction.setInstructionImage(null); // 사진이 없으면 null로 처리
                     }
+                    instruction.setRecipe(recipe);
 
-                    // 파일 키를 변환하여 찾기
-                    String matchingKey = finalInstructionImageFiles.keySet().stream()
-                            .filter(key -> key.equals("instructionImageFiles[" + instruction.getInstructionId() + "]"))
-                            .findFirst()
-                            .orElse(null);
-
-                    // 매칭된 파일 키가 없는 경우 처리
-                    if (matchingKey == null) {
-                        log.info("No matching file found for instruction {}", instruction.getInstructionId());
-                        return instruction;
-                    }
-
-                    // 매칭된 파일 키가 있는 경우 파일 가져오기
-                    MultipartFile file = finalInstructionImageFiles.get(matchingKey);
-
-                    // 파일이 비어 있는 경우 처리
-                    if (file == null || file.isEmpty()) {
-                        log.info("No file provided for instruction {}", instruction.getInstructionId());
-                        return instruction;
-                    }
-
-                    // 파일이 존재하고 유효한 경우 업로드
-                    try {
-                        String uploadedUrl = s3Uploader.saveFile(file); // 단일 파일 저장
-                        instruction.setInstructionImage(uploadedUrl); // URL
-                        log.info("Uploaded image for instruction {}: {}", instruction.getInstructionId(), uploadedUrl);
-                    } catch (Exception e) {
-                        log.error("Failed to upload image for instruction {}: {}", instruction.getInstructionId(), e.getMessage());
-                        // 업로드 실패 시 null로 설정
-                    }
                     return instruction;
                 })
                 .collect(Collectors.toList());
