@@ -70,8 +70,8 @@ public class UserController {
 
     //allergy 조회
     @GetMapping("/allergy/{userid}")
-    public ResponseEntity<List<UserIngredientDTO>> getUserIngredients(@PathVariable Long userId) {
-        List<UserIngredient> userIngredients = userIngredientService.getUserIngredientsByUserId(userId);
+    public ResponseEntity<List<UserIngredientDTO>> getUserIngredients(@PathVariable Long userid) {
+        List<UserIngredient> userIngredients = userIngredientService.getUserIngredientsByUserId(userid);
         List<UserIngredientDTO> userIngredientDTOs = userIngredients.stream()
                 .map(UserIngredientDTO::fromEntity) // DTO로 변환
                 .collect(Collectors.toList());
@@ -83,9 +83,9 @@ public class UserController {
     //알레르기 정보 수정
     @PostMapping("/allergy/{userid}")
     public ResponseEntity<String> addOrUpdateUserIngredients(
-            @PathVariable Long userId, @RequestBody UserIngredientListDTO userIngredientListDTO) {
+            @PathVariable Long userid, @RequestBody UserIngredientListDTO userIngredientListDTO) {
         // Step 1: 서비스 호출
-        userIngredientService.addOrUpdateUserIngredients(userId, userIngredientListDTO);
+        userIngredientService.addOrUpdateUserIngredients(userid, userIngredientListDTO);
 
         // Step 2: 응답 반환
         return ResponseEntity.ok("UserIngredient 추가 또는 갱신 완료");
