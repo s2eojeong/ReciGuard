@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./RecipeList.css";
 import 스크랩전 from "../../assets/allscrap.png";
 import 스크랩후 from "../../assets/allscraps.png";
-import 인분 from "../../assets/all인분.png";
+import 인분 from "../../assets/allService.png";
 
 const RecipeCard = ({ recipe }) => {
     const [scrapped, setScrapped] = useState(recipe.scrapped);

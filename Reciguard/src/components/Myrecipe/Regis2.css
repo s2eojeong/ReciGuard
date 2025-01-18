@@ -46,6 +46,18 @@
     gap: 8px;
 }
 
+.react-select__control {
+    border-color: #ddd;
+    box-shadow: none;
+    &:hover {
+        border-color: #bbb;
+    }
+}
+
+.react-select__menu {
+    z-index: 10;
+}
+
 .regis2-form input[type="text"] {
     width: 200px;
     padding: 8px;
