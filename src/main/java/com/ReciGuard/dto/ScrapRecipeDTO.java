@@ -16,6 +16,7 @@ public class ScrapRecipeDTO {
     private String recipeName;
     private LocalDateTime createdAt;
     private boolean scrapped;
+    private String imagePath;
 }
 
 
