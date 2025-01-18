@@ -4,10 +4,10 @@ spring:
   jwt:
     secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
   datasource:
-    url: jdbc:mysql://localhost:3306/RECIGUARD?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
-    username: root
-    password: kmj030523
     driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://reciguard-db.czouas0eqnqo.ap-northeast-2.rds.amazonaws.com:3306/reciguard?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: reciguard
+    password: tavereciguard
   jpa:
     defer-datasource-initialization: true
     show-sql: true
@@ -24,5 +24,5 @@ spring:
   sql:
     init:
       data-locations: classpath:db/data.sql
-      mode: always
+      mode: never
       platform: sql
