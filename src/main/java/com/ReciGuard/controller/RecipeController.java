@@ -1,16 +1,22 @@
 package com.ReciGuard.controller;
 
 import com.ReciGuard.dto.*;
-import com.ReciGuard.service.RecipeService;
-import com.ReciGuard.service.RecipeStatsService;
-import com.ReciGuard.service.UserScrapService;
-import com.ReciGuard.service.UserService;
+import com.ReciGuard.service.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -22,6 +28,7 @@ public class RecipeController {
     private final RecipeStatsService recipeStatsService;
     private final UserScrapService userScrapService;
     private final UserService userService;
+    private final S3Uploader s3Uploader;
 
     // 오늘의 추천 레시피
     @GetMapping("/recommend")
@@ -105,16 +112,61 @@ public class RecipeController {
 
     // 나만의 레시피 저장
     @PostMapping("/myrecipe/save")
-    public ResponseEntity<String> saveMyRecipe(@RequestBody MyRecipeForm recipeForm) {
+    public ResponseEntity<String> saveMyRecipe(
+            @RequestPart("recipeForm") String recipeFormJson,
+            @RequestPart(value = "recipeImage", required = false) MultipartFile recipeImage,
+            @RequestPart(value = "instructionImageFiles", required = false) Map<String, MultipartFile> instructionImageFiles,
+            HttpServletRequest request) {
+
+        // recipeImage 로깅
+        if (recipeImage != null && !recipeImage.isEmpty()) {
+            log.info("Received recipeImage: {}, size: {}", recipeImage.getOriginalFilename(), recipeImage.getSize());
+        } else {
+            log.info("No recipeImage provided.");
+        }
+        // 로그 추가: instructionImageFiles 확인
+        log.info("Received instructionImageFiles: {}", instructionImageFiles);
+
+        // 로그 추가: 각 파일 정보 확인
+        if (instructionImageFiles != null) {
+            instructionImageFiles.forEach((key, file) -> {
+                log.info("Key: {}, File Name: {}", key, file.getOriginalFilename());
+            });
+        }
+
+        // instructionImageFiles가 null일 경우 빈 Map으로 초기화
+        if (instructionImageFiles == null) {
+            instructionImageFiles = new HashMap<>();
+        }
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+
+        MyRecipeForm recipeForm;
+        try {
+            recipeForm = objectMapper.readValue(recipeFormJson, MyRecipeForm.class);
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid JSON format: " + e.getMessage());
+        }
+        log.info("Instruction Image Files: {}", instructionImageFiles);
+        instructionImageFiles.forEach((key, file) -> {
+            log.info("Key: {}, File Name: {}", key, file.getOriginalFilename());
+        });
+
         log.info("Received recipeForm: {}", recipeForm);
-        recipeService.saveMyRecipe(recipeForm);
+        log.info("Received instructionImageFiles: {}", instructionImageFiles);
+
+        // Recipe 저장 서비스 호출
+        recipeService.saveMyRecipe(recipeForm, recipeImage, instructionImageFiles, request);
 
         return ResponseEntity.ok("레시피가 성공적으로 등록되었습니다.");
     }
 
+
     // 나만의 레시피 수정 폼
     @GetMapping("/myrecipe/{recipeId}/edit")
-    public MyRecipeForm UpdateMyRecipeForm(@PathVariable Long recipeId) {
+    public MyRecipeFormEdit UpdateMyRecipeForm(@PathVariable Long recipeId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userService.findUserIdByUsername(username);
 
