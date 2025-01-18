@@ -503,15 +503,14 @@ public class RecipeService {
     }
 
     // 수정 폼 데이터 반환
-    public MyRecipeFormEdit getRecipeFormEdit(Long recipeId, Long userId) {
+    public MyRecipeForm getRecipeFormEdit(Long recipeId, Long userId) {
         // 2. recipeId로 레시피 조회 (소유권 검증 포함)
         Recipe recipe = recipeRepository.findRecipeByUserId(recipeId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
 
         // 3. MyRecipeForm 생성 및 데이터 매핑
-        MyRecipeFormEdit form = new MyRecipeFormEdit();
+        MyRecipeForm form = new MyRecipeForm();
         form.setRecipeName(recipe.getRecipeName());
-        form.setImagePath(recipe.getImagePath());
         form.setServing(recipe.getServing());
         form.setCuisine(recipe.getCuisine());
         form.setFoodType(recipe.getFoodType());
@@ -527,19 +526,14 @@ public class RecipeService {
         form.setIngredients(ingredientDTOs);
 
         // 5. 조리 단계 정보 매핑
-        List<InstructionRequestDTO> instructionDTOs = recipe.getInstructions().stream()
-                .map(instruction -> new InstructionRequestDTO(
-                        instruction.getInstructionId(), // Integer 타입
-                        instruction.getInstruction(), // String 타입
-                        false,
-                        null,
-                        instruction.getInstructionImage() // S3에 저장된 이미지 URL
-                ))
+        List<InstructionResponseDTO> instructionDTOs = recipe.getInstructions().stream()
+                .map(instruction -> new InstructionResponseDTO(
+                        instruction.getInstructionId(),
+                        instruction.getInstructionImage(),
+                        instruction.getInstruction()
+                        ))
                 .collect(Collectors.toList());
-
-
         form.setInstructions(instructionDTOs);
-
         return form;
     }
 
@@ -564,12 +558,15 @@ public class RecipeService {
 
         // 3. 레시피 메인 이미지 처리
         if (recipeForm.isImageRemoved() && recipe.getImagePath() != null) {
+            log.info("Removing existing recipe image for recipeId: {}", recipeId);
             s3Uploader.deleteFile(recipe.getImagePath()); // 기존 이미지 삭제
             recipe.setImagePath(null); // 이미지 경로 제거
         }
         if (recipeImage != null && !recipeImage.isEmpty()) {
+            log.info("Uploading new recipe image for recipeId: {}", recipeId);
             String uploadedImagePath = s3Uploader.saveFile(recipeImage); // 새 이미지 업로드
             recipe.setImagePath(uploadedImagePath); // 새 이미지 경로 저장
+            log.info("Uploaded new recipe image: {}", uploadedImagePath);
         }
 
         // 4. 재료 수정
@@ -635,7 +632,6 @@ public class RecipeService {
         if (recipeForm.getInstructions() != null) {
             List<Instruction> existingInstructions = recipe.getInstructions();
 
-            // 현재 존재하는 instructionId의 최대값 찾기
             AtomicInteger instructionCounter = new AtomicInteger(
                     existingInstructions.stream()
                             .mapToInt(Instruction::getInstructionId)
@@ -643,7 +639,6 @@ public class RecipeService {
                             .orElse(0) + 1
             );
 
-            // 기존 데이터 매핑 (instructionId 기준으로)
             Map<Integer, Instruction> existingInstructionMap = existingInstructions.stream()
                     .collect(Collectors.toMap(
                             Instruction::getInstructionId,
@@ -654,22 +649,18 @@ public class RecipeService {
 
             recipeForm.getInstructions().forEach(instructionDto -> {
                 if (instructionDto.getInstructionId() == null) {
-                    // 새로운 조리 과정에 ID를 부여
                     instructionDto.setInstructionId(instructionCounter.getAndIncrement());
                 }
 
                 Instruction instruction = existingInstructionMap.get(instructionDto.getInstructionId());
                 if (instruction == null) {
-                    // 새로운 조리 과정 추가
                     instruction = new Instruction();
                     instruction.setRecipe(recipe);
                     instruction.setInstructionId(instructionDto.getInstructionId());
                 }
 
-                // 조리 내용 설정
                 instruction.setInstruction(instructionDto.getInstruction());
 
-                // 이미지 처리
                 String key = "instructionImageFiles[" + instructionDto.getInstructionId() + "]";
                 if (instructionImageFiles != null && instructionImageFiles.containsKey(key)) {
                     handleInstructionImage(instruction, instructionImageFiles.get(key));
@@ -680,12 +671,10 @@ public class RecipeService {
                 updatedInstructions.add(instruction);
             });
 
-            // 기존 데이터 중 폼에 없는 데이터는 삭제 처리
             existingInstructions.removeIf(existing ->
                     updatedInstructions.stream().noneMatch(updated -> updated.getInstructionId().equals(existing.getInstructionId()))
             );
 
-            // 기존 리스트를 업데이트된 리스트로 교체
             existingInstructions.clear();
             existingInstructions.addAll(updatedInstructions);
         }
@@ -733,17 +722,28 @@ public class RecipeService {
     // 이미지 처리 메서드
     private void handleInstructionImage(Instruction instruction, MultipartFile newImageFile) {
         if (newImageFile != null && !newImageFile.isEmpty()) {
-            String uploadedImageUrl = s3Uploader.saveFile(newImageFile);
+            // 새 이미지를 업로드하는 로직
+            try {
+                String uploadedImageUrl = s3Uploader.saveFile(newImageFile); // S3에 이미지 업로드
+                log.info("Uploaded image to S3: {}", uploadedImageUrl);
 
-            // 기존 이미지 삭제
-            if (instruction.getInstructionImage() != null) {
-                s3Uploader.deleteFile(instruction.getInstructionImage());
+                // 기존 이미지 삭제
+                if (instruction.getInstructionImage() != null) {
+                    log.info("Deleting existing image from S3: {}", instruction.getInstructionImage());
+                    s3Uploader.deleteFile(instruction.getInstructionImage());
+                }
+
+                instruction.setInstructionImage(uploadedImageUrl); // 새 이미지 URL 저장
+            } catch (Exception e) {
+                log.error("Failed to upload image for instruction: {}", e.getMessage());
+                throw new RuntimeException("Failed to upload image", e);
             }
-
-            instruction.setInstructionImage(uploadedImageUrl);
         } else if (instruction.getInstructionImage() != null) {
+            // 이미지를 삭제하는 경우
+            log.info("Deleting existing image from S3 for instructionId {}: {}", instruction.getInstructionId(), instruction.getInstructionImage());
             s3Uploader.deleteFile(instruction.getInstructionImage());
-            instruction.setInstructionImage(null);
+            instruction.setInstructionImage(null); // 이미지 필드 null 처리
         }
     }
+
 }

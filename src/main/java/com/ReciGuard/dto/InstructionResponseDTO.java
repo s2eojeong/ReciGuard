@@ -1,6 +1,8 @@
 package com.ReciGuard.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,7 +14,10 @@ public class InstructionResponseDTO {
     private String instructionImage; // 단계 번호
     private String instruction;
 
-    public InstructionResponseDTO(Integer instructionId, String instructionImage, String instruction) {
+    @JsonCreator
+    public InstructionResponseDTO(@JsonProperty("instructionId") Integer instructionId,
+                                  @JsonProperty("instructionImage") String instructionImage,
+                                  @JsonProperty("instruction") String instruction) {
         this.instructionId = instructionId;
         this.instructionImage = instructionImage;
         this.instruction = instruction;
