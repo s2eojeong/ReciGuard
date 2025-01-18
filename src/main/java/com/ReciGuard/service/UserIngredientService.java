@@ -30,35 +30,29 @@ public class UserIngredientService {
 
     @Transactional
     public void addOrUpdateUserIngredients(Long userId, UserIngredientListDTO userIngredientDTO) {
+        userIngredientRepository.deleteByUserId(userId);
         for (String ingredientName : userIngredientDTO.getIngredients()) {
             // Step 1: Ingredient 찾거나 생성
             Ingredient ingredient = findOrCreateIngredient(ingredientName);
 
-            // Step 2: UserIngredient가 있는지 확인
-            Optional<UserIngredient> optionalUserIngredient = userIngredientRepository
-                    .findByUserIdAndIngredientId(userId, ingredient.getId());
-
             UserIngredient userIngredient;
-            if (optionalUserIngredient.isPresent()) {
-                // 기존 UserIngredient가 존재할 경우
-                userIngredient = optionalUserIngredient.get();
-            } else {
-                // 새 UserIngredient를 생성
-                User user = userRepository.findById(userId)
-                        .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
-                userIngredient = new UserIngredient(null, user, ingredient);
-            }
+
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+            userIngredient = new UserIngredient(null, user, ingredient);
 
             // UserIngredient 저장 또는 갱신
             userIngredientRepository.save(userIngredient);
         }
     }
 
+    @Transactional
     public Ingredient findOrCreateIngredient(String ingredientName) {
         return ingredientRepository.findFirstByIngredient(ingredientName)
                 .orElseGet(() -> createNewIngredient(ingredientName));
     }
 
+    @Transactional
     private Ingredient createNewIngredient(String ingredientName) {
         Ingredient ingredient = new Ingredient();
         ingredient.setIngredient(ingredientName);
