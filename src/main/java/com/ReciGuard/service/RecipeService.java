@@ -4,6 +4,7 @@ import com.ReciGuard.dto.*;
 import com.ReciGuard.entity.*;
 import com.ReciGuard.repository.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,6 +37,8 @@ public class RecipeService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final UserScrapRepository userScrapRepository;
     private final UserIngredientRepository userIngredientRepository;
+    private final InstructionRepository instructionRepository;
+    private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;
 
     @Value("http://localhost:3000/recommend") // 나중에 ai 모델 완성 후 수정
@@ -342,7 +347,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public Recipe saveMyRecipe(MyRecipeForm recipeForm) {
+    public Recipe saveMyRecipe(MyRecipeForm recipeForm, MultipartFile recipeImage, Map<String, MultipartFile> instructionImageFiles, HttpServletRequest request) {
 
         // 1. 현재 인증된 사용자의 username 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -352,7 +357,14 @@ public class RecipeService {
         Recipe recipe = new Recipe();
 
         recipe.setRecipeName(recipeForm.getRecipeName());
-        recipe.setImagePath(recipeForm.getImagePath());
+        // 레시피 사진 업로드 (사용자가 업로드한 경우만!!)
+        if (recipeImage != null && !recipeImage.isEmpty()) {
+            String uploadedRecipeImage = s3Uploader.saveFile(recipeImage);
+            recipe.setImagePath(uploadedRecipeImage); // 단일 사진 저장
+        } else {
+            recipe.setImagePath(null); // 사진이 없으면 null 처리
+        }
+
         recipe.setServing(recipeForm.getServing());
         recipe.setCuisine(recipeForm.getCuisine());
         recipe.setFoodType(recipeForm.getFoodType());
@@ -360,7 +372,7 @@ public class RecipeService {
 
         // 3. userId로 User 엔티티 연관관계 설정
         User user = new User();
-        user.setUserid(userId); // ID만 설정하여 연관관계 매핑
+        user.setUserid(userId);
         recipe.setUser(user);
 
         // 4. Ingredients 저장
@@ -386,18 +398,78 @@ public class RecipeService {
         recipe.setRecipeIngredients(ingredients);
 
         // 5. Instructions 저장
-        AtomicInteger counter = new AtomicInteger(1); // 1부터 시작하는 카운터 생성
+        if (request instanceof MultipartHttpServletRequest) {
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            Map<String, MultipartFile> parsedInstructionFiles = new HashMap<>();
+            multipartRequest.getFileMap().forEach((key, value) -> {
+                if (key.startsWith("instructionImageFiles[")) {
+                    parsedInstructionFiles.put(key, value);
+                }
+            });
+            instructionImageFiles = parsedInstructionFiles;
+        }
+
+        // 파싱된 파일 키 확인
+        log.info("Parsed file keys: {}", instructionImageFiles != null ? instructionImageFiles.keySet() : "No files provided");
+
+        // recipe_id 범위 내에서 instruction_id 시작값 설정
+        AtomicInteger instructionCounter = new AtomicInteger(
+                instructionRepository.findMaxInstructionIdByRecipeId(recipe.getId()).orElse(0) + 1
+        );
+
+        // 여기서부터 찐 Instructions 저장!!
+        Map<String, MultipartFile> finalInstructionImageFiles = instructionImageFiles;
         List<Instruction> instructions = recipeForm.getInstructions().stream()
                 .map(instructionDto -> {
                     Instruction instruction = new Instruction();
-                    instruction.setInstructionImage(instructionDto.getInstructionImage());
                     instruction.setInstruction(instructionDto.getInstruction());
-                    instruction.setInstructionId(counter.getAndIncrement()); // 순차적으로 instruction_id 설정
+
+                    // instruction_id 설정
+                    instruction.setInstructionId(instructionCounter.getAndIncrement());
+
+                    // 현재 처리 중인 Instruction ID 확인
+                    log.info("Processing instruction ID: {}", instruction.getInstructionId());
+
+                    // instructionImageFiles로부터 파일을 매핑하거나 null 처리
+                    if (finalInstructionImageFiles != null) {
+                        String matchingKey = finalInstructionImageFiles.keySet().stream()
+                                .filter(key -> key.equals("instructionImageFiles[" + instruction.getInstructionId() + "]"))
+                                .findFirst()
+                                .orElse(null);
+
+                        if (matchingKey != null) {
+                            log.info("Found matching key for instruction {}: {}", instruction.getInstructionId(), matchingKey);
+                            MultipartFile file = finalInstructionImageFiles.get(matchingKey);
+
+                            // 파일이 있으면 업로드, 없으면 null로 처리
+                            if (file != null && !file.isEmpty()) {
+                                try {
+                                    String uploadedUrl = s3Uploader.saveFile(file); // S3에 단일 파일 저장
+                                    instruction.setInstructionImage(uploadedUrl); // URL 설정
+                                    log.info("Uploaded image for instruction {}: {}", instruction.getInstructionId(), uploadedUrl);
+                                } catch (Exception e) {
+                                    log.error("Failed to upload image for instruction {}: {}", instruction.getInstructionId(), e.getMessage());
+                                    instruction.setInstructionImage(null); // 업로드 실패 시 null
+                                }
+                            } else {
+                                log.info("No file provided for instruction {}", instruction.getInstructionId());
+                                instruction.setInstructionImage(null); // 사진이 없으면 null로 처리
+                            }
+                        } else {
+                            log.info("No matching file found for instruction {}", instruction.getInstructionId());
+                            instruction.setInstructionImage(null); // 사진이 없으면 null로 처리
+                        }
+                    } else {
+                        log.info("No instruction image files provided");
+                        instruction.setInstructionImage(null); // 사진이 없으면 null로 처리
+                    }
                     instruction.setRecipe(recipe);
+
                     return instruction;
                 })
                 .collect(Collectors.toList());
         recipe.setInstructions(instructions);
+        recipeRepository.save(recipe);
 
 
         // 6. RecipeStats 기본값 생성
@@ -428,13 +500,13 @@ public class RecipeService {
     }
 
     // 수정 폼 데이터 반환
-    public MyRecipeForm getRecipeFormEdit(Long recipeId, Long userId) {
+    public MyRecipeFormEdit getRecipeFormEdit(Long recipeId, Long userId) {
         // 2. recipeId로 레시피 조회 (소유권 검증 포함)
         Recipe recipe = recipeRepository.findRecipeByUserId(recipeId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
 
         // 3. MyRecipeForm 생성 및 데이터 매핑
-        MyRecipeForm form = new MyRecipeForm();
+        MyRecipeFormEdit form = new MyRecipeFormEdit();
         form.setRecipeName(recipe.getRecipeName());
         form.setImagePath(recipe.getImagePath());
         form.setServing(recipe.getServing());
@@ -472,7 +544,6 @@ public class RecipeService {
 
         // 2. 레시피 정보 수정
         recipe.setRecipeName(recipeForm.getRecipeName());
-        recipe.setImagePath(recipeForm.getImagePath());
         recipe.setServing(recipeForm.getServing());
         recipe.setCuisine(recipeForm.getCuisine());
         recipe.setFoodType(recipeForm.getFoodType());
@@ -554,28 +625,40 @@ public class RecipeService {
                             instruction -> instruction // value: Instruction 객체
                     ));
 
-            // 업데이트 리스트
+            // 입력된 순서대로 처리
+            AtomicInteger currentInstructionId = new AtomicInteger(1);
             List<Instruction> updatedInstructions = new ArrayList<>();
 
-            // 입력된 순서대로 처리
-            AtomicInteger currentInstructionId = new AtomicInteger(1); // 순서 관리
             recipeForm.getInstructions().forEach(instructionDto -> {
-                Instruction existingInstruction = existingInstructionMap.get(currentInstructionId.get());
+                Instruction instruction = existingInstructionMap.get(currentInstructionId.get());
 
-                if (existingInstruction != null) {
-                    // 기존 데이터 수정
-                    existingInstruction.setInstruction(instructionDto.getInstruction());
-                    existingInstruction.setInstructionImage(instructionDto.getInstructionImage());
-                    updatedInstructions.add(existingInstruction);
-                } else {
+                if (instruction == null) {
                     // 새 데이터 추가
-                    Instruction newInstruction = new Instruction();
-                    newInstruction.setInstructionId(currentInstructionId.get());
-                    newInstruction.setInstruction(instructionDto.getInstruction());
-                    newInstruction.setInstructionImage(instructionDto.getInstructionImage());
-                    newInstruction.setRecipe(recipe);
-                    updatedInstructions.add(newInstruction);
+                    instruction = new Instruction();
+                    instruction.setInstructionId(currentInstructionId.get());
+                    instruction.setRecipe(recipe);
                 }
+
+                // 공통 처리: 조리 내용 설정
+                instruction.setInstruction(instructionDto.getInstruction());
+
+                // 이미지 처리
+                if (instructionDto.hasInstructionImage()) {
+                    // 새 이미지 업로드 및 기존 이미지 삭제
+                    String uploadedImageUrl = s3Uploader.saveFile(instructionDto.getInstructionImageFile());
+                    if (instruction.getInstructionImage() != null) {
+                        s3Uploader.deleteFile(instruction.getInstructionImage());
+                    }
+                    instruction.setInstructionImage(uploadedImageUrl);
+                } else if (instructionDto.isImageRemoved()) {
+                    // 이미지 삭제 처리
+                    if (instruction.getInstructionImage() != null) {
+                        s3Uploader.deleteFile(instruction.getInstructionImage());
+                    }
+                    instruction.setInstructionImage(null);
+                }
+
+                updatedInstructions.add(instruction);
                 currentInstructionId.incrementAndGet();
             });
 
@@ -588,6 +671,7 @@ public class RecipeService {
             existingInstructions.clear();
             existingInstructions.addAll(updatedInstructions);
         }
+
 
         // 5. 수정된 재료로 AI 모델 호출
         SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
