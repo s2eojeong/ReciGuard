@@ -162,6 +162,7 @@ public class UserService {
                 .getUserid();
     }
 
+    @Transactional
     public void changePassword(UserPasswordDTO passwordDTO) {
         // 사용자 조회
         Optional<User> optionalUser = userRepository.findByUsername(passwordDTO.getUsername());
