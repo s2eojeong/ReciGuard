@@ -175,8 +175,14 @@ const InforUpdate = () => {
                 <input
                     type="text"
                     name="userCookingStyle"
-                    value={userData.userCookingStyle}
-                    onChange={handleChange}
+                    value={userData.userCookingStyle.join(", ")} // 배열 데이터를 문자열로 변환
+                    onChange={(e) => {
+                        const value = e.target.value.split(",").map((item) => item.trim()); // 쉼표로 구분된 문자열을 배열로 변환
+                        setUserData((prevData) => ({
+                            ...prevData,
+                            userCookingStyle: value,
+                        }));
+                    }}
                 />
             </div>
             <div>
@@ -184,8 +190,14 @@ const InforUpdate = () => {
                 <input
                     type="text"
                     name="userCuisine"
-                    value={userData.userCuisine}
-                    onChange={handleChange}
+                    value={userData.userCuisine.join(", ")} // 배열 데이터를 문자열로 변환
+                    onChange={(e) => {
+                        const value = e.target.value.split(",").map((item) => item.trim()); // 쉼표로 구분된 문자열을 배열로 변환
+                        setUserData((prevData) => ({
+                            ...prevData,
+                            userCuisine: value,
+                        }));
+                    }}
                 />
             </div>
             <div>
@@ -193,8 +205,14 @@ const InforUpdate = () => {
                 <input
                     type="text"
                     name="userFoodType"
-                    value={userData.userFoodType}
-                    onChange={handleChange}
+                    value={userData.userFoodType.join(", ")} // 배열 데이터를 문자열로 변환
+                    onChange={(e) => {
+                        const value = e.target.value.split(",").map((item) => item.trim()); // 쉼표로 구분된 문자열을 배열로 변환
+                        setUserData((prevData) => ({
+                            ...prevData,
+                            userFoodType: value,
+                        }));
+                    }}
                 />
             </div>
             <button onClick={handleUpdate}>정보 업데이트</button>
