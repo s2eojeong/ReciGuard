@@ -15,6 +15,6 @@ public class MyRecipeForm {
     private String cookingStyle;                     // 조리 방식 (예: 볶음, 찜 등)
 
     private List<IngredientResponseDTO> ingredients; // 재료 정보
-    private List<InstructionRequestDTO> instructions; // 조리 단계 정보
+    private List<InstructionResponseDTO> instructions; // 조리 단계 정보
 
 }
