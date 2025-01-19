@@ -166,15 +166,41 @@ const Rdetail = () => {
           <div className="nutrition-container">
             <section className="nutrition-section">
               <div className="nutritions-list">
-                {["칼로리", "탄수화물", "단백질", "지방", "나트륨"].map((nutrient, index) => (
-                    <div className="nutrition1-row" key={index}>
-                      <div className="nutrition-texts">
-                        <span className="nutrition-name">{nutrient}</span>
-                        <span className="nutrition-quantity">{recipe[nutrient.toLowerCase()]}{nutrient === "칼로리" ? " kcal" : nutrient === "나트륨" ? "mg" : "g"}</span>
-                      </div>
-                      <hr />
-                    </div>
-                ))}
+                <div className="nutrition1-row">
+                  <div className="nutrition-texts">
+                    <span className="nutrition-name">칼로리</span>
+                    <span className="nutrition-quantity">{recipe.calories} kcal</span>
+                  </div>
+                  <hr />
+                </div>
+                <div className="nutrition1-row">
+                  <div className="nutrition-texts">
+                    <span className="nutrition-name">탄수화물</span>
+                    <span className="nutrition-quantity">{recipe.carbohydrate}g</span>
+                  </div>
+                  <hr />
+                </div>
+                <div className="nutrition1-row">
+                  <div className="nutrition-texts">
+                    <span className="nutrition-name">단백질</span>
+                    <span className="nutrition-quantity">{recipe.protein}g</span>
+                  </div>
+                  <hr />
+                </div>
+                <div className="nutrition1-row">
+                  <div className="nutrition-texts">
+                    <span className="nutrition-name">지방</span>
+                    <span className="nutrition-quantity">{recipe.fat}g</span>
+                  </div>
+                  <hr />
+                </div>
+                <div className="nutrition1-row">
+                  <div className="nutrition-texts">
+                    <span className="nutrition-name">나트륨</span>
+                    <span className="nutrition-quantity">{recipe.sodium}mg</span>
+                  </div>
+                  <hr />
+                </div>
               </div>
             </section>
           </div>
