@@ -25,6 +25,8 @@ const AlleUpdate = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("jwtToken"); // 로컬 스토리지에서 JWT 토큰 가져오기
+        console.log("사용 중인 토큰:", token);
+
         if (!token) {
             setError("로그인이 필요합니다.");
             setLoading(false);
