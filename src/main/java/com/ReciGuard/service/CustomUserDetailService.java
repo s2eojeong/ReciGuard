@@ -4,6 +4,7 @@ import com.ReciGuard.dto.CustomUserDetails;
 import com.ReciGuard.entity.User;
 import com.ReciGuard.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +23,7 @@ public class CustomUserDetailService implements UserDetailsService {
         User userData = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다:" + username));
 
+        userData.setRole(userData.getRole());
         return new CustomUserDetails(userData);
     }
 }

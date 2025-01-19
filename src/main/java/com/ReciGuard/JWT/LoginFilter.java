@@ -80,10 +80,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
+        String role = (auth != null) ? auth.getAuthority() : "ROLE_USER";
 
 
-        String token = jwtUtil.createJwt(username, userid,60*60*24*100L);
-
+        String token = jwtUtil.createJwt(username, userid, "ROLE_USER",60*60*24*100L);
+        System.out.println("Authorities: " + authorities);
+        System.out.println("Extracted role: " + role);
         response.addHeader("Authorization", "Bearer " + token);
     }
     //로그인 실패시 실행하는 매소드

@@ -16,17 +16,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
     /* email로 사용자 조회 */
     Optional<User> findByEmail(String email);
 
+    @Query("SELECT u FROM User u WHERE u.username = :username")
+    User findOneByUserName(@Param("username") String username);
+
 
     /* 중복 검사: 중복인 경우 true, 중복되지 않은 경우 false 리턴 */
     boolean existsByUsername(String username);
-    boolean existsByEmail(String email);
 
-    /* 회원정보 수정 */
-    //@Override
-    //<S extends User> S save(S entity);
-
-    /* 로그인 검증 */
-    Optional<User> findByUsernameAndPassword(String username, String password);
 
     // 사용자 ID로 스크랩 데이터 조회
     @Query("SELECT s FROM UserScrap s WHERE s.user.id = :userId")
