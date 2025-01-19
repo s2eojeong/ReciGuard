@@ -14,7 +14,8 @@ import InfoUpdate from "./pages/Mypage/InfoUpdate";
 import AllergyUpdate from "./pages/Mypage/AllergyUpdate";
 import PasswordUpdate from "./pages/Mypage/PasswordUpdate.jsx";
 import AllRecipes from "./pages/AllRecipes";
-import SearchPage from "./pages/SearchPage"; // 검색 결과 페이지 추가
+import SearchPage from "./pages/SearchPage";
+import RegisterUpdate from "./pages/RegisterUpdate.jsx";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/auth/register" element={<Signup />} />
           <Route path="/recipes" element={<Realmain />} />
           <Route path="/users/recipe-form" element={<Register />} />
+            <Route path="/recipes/edit/:recipeId" element={<RegisterUpdate />} />
           <Route path="/recipes/:recipeId" element={<Recipedetail />} />
           <Route path="/users/:userid" element={<MypageHome />} />
           <Route path="/users/info" element={<InfoUpdate />} />
