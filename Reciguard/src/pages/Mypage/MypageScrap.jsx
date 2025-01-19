@@ -1,7 +1,9 @@
 import React from "react";
 import Header2 from "../../components/Header2";
 import Footer from "../../components/Footer";
-import Sidebar2 from "../../components/Mypage/Sidebar2";
+import MyScrap from "../../components/Mypage/MyScrap.jsx";
+import Sidebar2 from "../../components/Mypage/Sidebar2.jsx";
+
 
 function MypageScrap() {
   return (
@@ -9,8 +11,11 @@ function MypageScrap() {
       <div style={{ borderBottom: "2px solid #ddd" }}>
         <Header2 />
       </div>
-      <Sidebar2 />
-      <Footer />
+        <div className="MypageHome-Container">
+            <Sidebar2/>
+            <MyScrap />
+        </div>
+        <Footer/>
     </div>
   );
 }

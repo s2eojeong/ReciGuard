@@ -13,6 +13,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ScrapRecipeDTO {
     private Long recipeId;
-    private String recipeName; // Recipe 엔티티에 있는 이름 필드라고 가정
+    private String recipeName;
     private LocalDateTime createdAt;
+    private boolean scrapped;
+    private String imagePath;
 }
+
+

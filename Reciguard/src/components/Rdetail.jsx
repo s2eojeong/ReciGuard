@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // URL 파라미터 사용을 위해 import
+import { useParams } from "react-router-dom";
 import "./Rdetail.css";
-import 몇인분 from "../assets/몇인분.png"; // 유지된 프론트 이미지
-import 국가별 from "../assets/국가별.png"; // 유지된 프론트 이미지
-import 조회수 from "../assets/조회수.png"; // 유지된 프론트 이미지
-import filledHeartImg from "../assets/heart1.png"; // 유지된 프론트 이미지
-import emptyHeartImg from "../assets/heart.png"; // 유지된 프론트 이미지
+import 몇인분 from "../assets/몇인분.png";
+import 국가별 from "../assets/국가별.png";
+import 조회수 from "../assets/조회수.png";
+import filledHeartImg from "../assets/heart1.png";
+import emptyHeartImg from "../assets/heart.png";
 
 const Rdetail = () => {
-  const { recipeId } = useParams(); // URL에서 recipeId 가져오기
-  const [recipe, setRecipe] = useState(null); // API 데이터를 저장할 상태
-  const [isScrapped, setIsScrapped] = useState(false); // 스크랩 여부 상태
-  const [scrapCount, setScrapCount] = useState(0); // 초기 스크랩 수
+  const { recipeId } = useParams();
+  const [recipe, setRecipe] = useState(null);
+  const [scrapped, setScrapped] = useState(false);
+  const [scrapCount, setScrapCount] = useState(0);
 
-  // API 호출
+  // 레시피 상세 정보 및 초기 스크랩 상태 로드
   useEffect(() => {
     const fetchRecipeDetail = async () => {
       try {
-        const token = localStorage.getItem("jwtToken"); // 로컬 스토리지에서 토큰 가져오기
-        console.log("JWT 토큰:", token);
-        console.log("레시피 ID:", recipeId);
+        const token = localStorage.getItem("jwtToken");
         const response = await fetch(`http://localhost:8080/api/recipes/${recipeId}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`, // 토큰 추가
+            "Authorization": `Bearer ${token}`,
           },
         });
 
@@ -33,9 +31,9 @@ const Rdetail = () => {
         }
 
         const data = await response.json();
-        console.log("레시피 데이터:", data);
-        setRecipe(data); // 레시피 데이터 설정
-        setScrapCount(data.scrapCount); // 스크랩 수 설정
+        setRecipe(data);
+        setScrapCount(data.scrapCount || 0); // 초기 스크랩 수 설정
+        setScrapped(data.scrapped || false); // 초기 스크랩 상태 설정
       } catch (error) {
         console.error("레시피 데이터를 가져오는 중 오류 발생:", error);
       }
@@ -49,33 +47,44 @@ const Rdetail = () => {
     try {
       const token = localStorage.getItem("jwtToken");
       const response = await fetch(`http://localhost:8080/api/recipes/scrap/${recipeId}`, {
-        method: isScrapped ? "DELETE" : "POST",
+        method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) throw new Error("스크랩 요청 실패");
+      const contentType = response.headers.get("content-type");
+      const data = contentType && contentType.includes("application/json")
+          ? await response.json()
+          : await response.text();
 
-      setScrapCount((prev) => (isScrapped ? prev - 1 : prev + 1));
-      setIsScrapped((prev) => !prev);
+      if (!response.ok) {
+        throw new Error(data.message || "스크랩 요청 실패");
+      }
+
+      alert(data.message || data); // 성공 메시지 출력
+
+      // **스크랩 상태와 스크랩 수 안전 업데이트**
+      setScrapped((prevScrapped) => {
+        const newScrapped = !prevScrapped;
+        setScrapCount((prevCount) => newScrapped ? prevCount + 1 : prevCount - 1);
+        return newScrapped;
+      });
+
     } catch (error) {
       console.error("스크랩 요청 중 오류:", error);
+      alert(error.message || "스크랩 요청 중 문제가 발생했습니다.");
     }
   };
 
   if (!recipe) {
-    return <div className="loading-message">레시피 정보를 불러오는 중입니다...</div>; // 로딩 상태
+    return <div className="loading-message">레시피 정보를 불러오는 중입니다...</div>;
   }
 
   return (
       <div className="rdetail-container">
         <div className="rdetail-header">
-          <img
-              src={recipe.imagePath}
-              alt={recipe.recipeName}
-              className="rdetail-image"
-          />
+          <img src={recipe.imagePath} alt={recipe.recipeName} className="rdetail-image" />
           <h2 className="rdetail-title">{recipe.recipeName}</h2>
           <hr className="divider-line" />
           <div className="rdetail-icons">
@@ -90,14 +99,14 @@ const Rdetail = () => {
               </div>
               <div className="icon-item">
                 <img src={조회수} alt="조회수 아이콘" className="icon-image" />
-                <span className="icon-text">조회수 {recipe.viewCount}</span>
+                <span className="icon-text">{recipe.viewCount}</span>
               </div>
             </div>
             <div className="favorite-container">
               <button className="favorite-button" onClick={handleScrapClick}>
                 <img
-                    src={isScrapped ? filledHeartImg : emptyHeartImg}
-                    alt="스크랩 버튼"
+                    src={scrapped ? filledHeartImg : emptyHeartImg}
+                    alt={scrapped ? "스크랩됨" : "스크랩하기"}
                     className="heart-image"
                 />
               </button>
