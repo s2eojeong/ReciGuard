@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import Select from "react-select";
 import "./Regis2.css";
 
-const Regis2 = () => {
+const Regis2 = ({ onDataUpdate = () => {} }) => {
     const availableIngredients = [
-        { value: "돼지고기 앞다리살", label: "돼지고기 앞다리살" },
         { value: "양파", label: "양파" },
         { value: "신김치", label: "신김치" },
         { value: "두부", label: "두부" },
@@ -18,6 +17,7 @@ const Regis2 = () => {
         { id: 1, selectedIngredient: null, quantity: "", isExample: true },
     ]);
 
+    // 재료 추가
     const addIngredient = () => {
         setIngredients([
             ...ingredients,
@@ -25,28 +25,54 @@ const Regis2 = () => {
         ]);
     };
 
+    // Select 변경 핸들러
     const handleSelectChange = (id, selectedOption) => {
-        setIngredients((prevIngredients) =>
-            prevIngredients.map((ingredient) =>
-                ingredient.id === id
-                    ? { ...ingredient, selectedIngredient: selectedOption }
-                    : ingredient
-            )
+        const updatedIngredients = ingredients.map((ingredient) =>
+            ingredient.id === id
+                ? { ...ingredient, selectedIngredient: selectedOption }
+                : ingredient
         );
+        setIngredients(updatedIngredients);
+        onDataUpdate({ ingredients: updatedIngredients });
     };
 
+    // Input 변경 핸들러
     const handleInputChange = (id, field, value) => {
-        setIngredients((prevIngredients) =>
-            prevIngredients.map((ingredient) =>
-                ingredient.id === id ? { ...ingredient, [field]: value } : ingredient
-            )
+        const updatedIngredients = ingredients.map((ingredient) =>
+            ingredient.id === id ? { ...ingredient, [field]: value } : ingredient
         );
+        setIngredients(updatedIngredients);
+        onDataUpdate({ ingredients: updatedIngredients });
     };
 
+    // 재료 삭제
     const removeIngredient = (id) => {
-        setIngredients((prevIngredients) =>
-            prevIngredients.filter((ingredient) => ingredient.id !== id)
+        const updatedIngredients = ingredients.filter(
+            (ingredient) => ingredient.id !== id
         );
+        setIngredients(updatedIngredients);
+        onDataUpdate({ ingredients: updatedIngredients });
+    };
+
+    // 전체 재료 데이터 반환
+    const getIngredientsData = () => {
+        return ingredients.map((ingredient) => ({
+            ingredient: ingredient.selectedIngredient?.value || "",
+            quantity: ingredient.quantity,
+        }));
+    };
+
+    // Select 스타일
+    const customStyles = {
+        control: (base) => ({
+            ...base,
+            width: "230px",
+            backgroundColor: "#E4E3E3",
+            border: "1px solid #ccc",
+            color: "#858585",
+            height: "36px",
+            minHeight: "36px",
+        }),
     };
 
     return (
@@ -66,14 +92,18 @@ const Regis2 = () => {
                                 onChange={(selectedOption) =>
                                     handleSelectChange(ingredient.id, selectedOption)
                                 }
-                                className="ingredient-select"
+                                styles={customStyles}
                             />
                             <input
                                 type="text"
                                 placeholder="계량"
                                 value={ingredient.quantity}
                                 onChange={(e) =>
-                                    handleInputChange(ingredient.id, "quantity", e.target.value)
+                                    handleInputChange(
+                                        ingredient.id,
+                                        "quantity",
+                                        e.target.value
+                                    )
                                 }
                             />
                             <button
