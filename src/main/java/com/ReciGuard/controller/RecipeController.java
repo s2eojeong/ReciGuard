@@ -173,7 +173,8 @@ public class RecipeController {
             @PathVariable Long recipeId,
             @RequestPart("recipeForm") String recipeFormJson,
             @RequestPart(value = "recipeImage", required = false) MultipartFile recipeImage,
-            @RequestPart(value = "instructionImageFiles", required = false) Map<String, MultipartFile> instructionImageFiles) throws JsonProcessingException {
+            @RequestPart(value = "instructionImageFiles", required = false) Map<String, MultipartFile> instructionImageFiles,
+            HttpServletRequest request) throws JsonProcessingException {
 
         // 인증된 사용자 정보 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -187,7 +188,7 @@ public class RecipeController {
             // JSON 데이터를 객체로 변환
             MyRecipeFormEdit recipeForm = objectMapper.readValue(recipeFormJson, MyRecipeFormEdit.class);
 
-            recipeService.updateMyRecipe(recipeId, userId, recipeForm, recipeImage, instructionImageFiles);
+            recipeService.updateMyRecipe(recipeId, userId, recipeForm, recipeImage, instructionImageFiles, request);
 
             return ResponseEntity.ok("레시피가 수정되었습니다.");
         } catch (Exception e) {

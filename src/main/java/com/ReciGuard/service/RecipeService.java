@@ -543,7 +543,8 @@ public class RecipeService {
             Long userId,
             MyRecipeFormEdit recipeForm,
             MultipartFile recipeImage,
-            Map<String, MultipartFile> instructionImageFiles) {
+            Map<String, MultipartFile> instructionImageFiles,
+            HttpServletRequest request) {
 
         // 1. 레시피 ID로 영속 상태의 Recipe 엔티티 조회
         Recipe recipe = recipeRepository.findById(recipeId)
@@ -628,6 +629,17 @@ public class RecipeService {
             });
         }
 
+        if (request instanceof MultipartHttpServletRequest) {
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            Map<String, MultipartFile> parsedInstructionFiles = new HashMap<>();
+            multipartRequest.getFileMap().forEach((key, value) -> {
+                if (key.startsWith("instructionImageFiles[")) {
+                    parsedInstructionFiles.put(key, value);
+                }
+            });
+            instructionImageFiles = parsedInstructionFiles;
+        }
+
         // 5. 조리 과정 수정
         if (recipeForm.getInstructions() != null) {
             List<Instruction> existingInstructions = recipe.getInstructions();
@@ -647,6 +659,7 @@ public class RecipeService {
 
             List<Instruction> updatedInstructions = new ArrayList<>();
 
+            Map<String, MultipartFile> finalInstructionImageFiles = instructionImageFiles;
             recipeForm.getInstructions().forEach(instructionDto -> {
                 if (instructionDto.getInstructionId() == null) {
                     instructionDto.setInstructionId(instructionCounter.getAndIncrement());
@@ -662,8 +675,8 @@ public class RecipeService {
                 instruction.setInstruction(instructionDto.getInstruction());
 
                 String key = "instructionImageFiles[" + instructionDto.getInstructionId() + "]";
-                if (instructionImageFiles != null && instructionImageFiles.containsKey(key)) {
-                    handleInstructionImage(instruction, instructionImageFiles.get(key));
+                if (finalInstructionImageFiles != null && finalInstructionImageFiles.containsKey(key)) {
+                    handleInstructionImage(instruction, finalInstructionImageFiles.get(key));
                 } else if (instructionDto.isImageRemoved()) {
                     handleInstructionImage(instruction, null);
                 }
