@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -118,13 +119,7 @@ public class RecipeController {
             @RequestPart(value = "instructionImageFiles", required = false) Map<String, MultipartFile> instructionImageFiles,
             HttpServletRequest request) {
 
-        // recipeImage 로깅
-        if (recipeImage != null && !recipeImage.isEmpty()) {
-            log.info("Received recipeImage: {}, size: {}", recipeImage.getOriginalFilename(), recipeImage.getSize());
-        } else {
-            log.info("No recipeImage provided.");
-        }
-        // 로그 추가: instructionImageFiles 확인
+        // instructionImageFiles 확인
         log.info("Received instructionImageFiles: {}", instructionImageFiles);
 
         // 로그 추가: 각 파일 정보 확인
@@ -163,25 +158,42 @@ public class RecipeController {
         return ResponseEntity.ok("레시피가 성공적으로 등록되었습니다.");
     }
 
-
     // 나만의 레시피 수정 폼
     @GetMapping("/myrecipe/{recipeId}/edit")
-    public MyRecipeFormEdit UpdateMyRecipeForm(@PathVariable Long recipeId) {
+    public MyRecipeForm UpdateMyRecipeForm(@PathVariable Long recipeId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userService.findUserIdByUsername(username);
 
-        return recipeService.getRecipeFormEdit(userId, recipeId);
+        return recipeService.getRecipeFormEdit(recipeId, userId);
     }
 
     // 나만의 레시피 수정
-    @PostMapping("/myrecipe/{recipeId}/edit")
+    @PostMapping(value = "/myrecipe/{recipeId}/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> updateMyRecipe(
             @PathVariable Long recipeId,
-            @RequestBody MyRecipeForm recipeForm) {
+            @RequestPart("recipeForm") String recipeFormJson,
+            @RequestPart(value = "recipeImage", required = false) MultipartFile recipeImage,
+            @RequestPart(value = "instructionImageFiles", required = false) Map<String, MultipartFile> instructionImageFiles,
+            HttpServletRequest request) throws JsonProcessingException {
+
+        // 인증된 사용자 정보 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userService.findUserIdByUsername(username);
 
-        recipeService.updateMyRecipe(recipeId, userId, recipeForm);
-        return ResponseEntity.ok("레시피가 수정되었습니다.");
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+
+        try {
+            // JSON 데이터를 객체로 변환
+            MyRecipeFormEdit recipeForm = objectMapper.readValue(recipeFormJson, MyRecipeFormEdit.class);
+
+            recipeService.updateMyRecipe(recipeId, userId, recipeForm, recipeImage, instructionImageFiles, request);
+
+            return ResponseEntity.ok("레시피가 수정되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("JSON 파싱 오류: " + e.getMessage());
+        }
     }
 }
+

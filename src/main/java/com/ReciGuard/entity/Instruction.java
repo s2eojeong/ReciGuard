@@ -15,7 +15,7 @@ public class Instruction {
     private Long id;
 
     @Column(name = "instruction_id")
-    private int instructionId;
+    private Integer instructionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
