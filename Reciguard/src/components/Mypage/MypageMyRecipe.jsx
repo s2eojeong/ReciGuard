@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // useNavigate 추가
 import 스크랩 from "../../assets/allscraps.png"; // 스크랩 상태
-import 스크랩전 from "../../assets/allscrap.png"; //스크랩전 상태
+import 스크랩전 from "../../assets/allscrap.png"; // 스크랩 전 상태
 
 const MypageMyRecipe = () => {
     const [myRecipes, setMyRecipes] = useState([]); // 나만의 레시피 상태
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const navigate = useNavigate(); // useNavigate 사용
 
     // 나만의 레시피 불러오기
     useEffect(() => {
@@ -75,6 +78,11 @@ const MypageMyRecipe = () => {
         }
     };
 
+    const handleEdit = (recipeId) => {
+        // 수정 폼으로 이동
+        navigate(`/recipes/edit/${recipeId}`);
+    };
+
     if (loading) {
         return <p className="loading-text">나만의 레시피를 불러오는 중입니다...</p>;
     }
@@ -109,6 +117,12 @@ const MypageMyRecipe = () => {
                             alt={recipe.recipeName}
                             className="my-recipe-image"
                         />
+                        <button
+                            className="edit-recipe-button" // CSS 클래스
+                            onClick={() => handleEdit(recipe.recipeId)}
+                        >
+                            수정
+                        </button>
                     </div>
                 ))}
             </div>
