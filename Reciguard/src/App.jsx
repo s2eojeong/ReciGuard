@@ -12,27 +12,33 @@ import MypageRecipe from "./pages/Mypage/MypageRecipe";
 import MypageScrap from "./pages/Mypage/MypageScrap";
 import InfoUpdate from "./pages/Mypage/InfoUpdate";
 import AllergyUpdate from "./pages/Mypage/AllergyUpdate";
+import PasswordUpdate from "./pages/Mypage/PasswordUpdate.jsx";
 import AllRecipes from "./pages/AllRecipes";
+import SearchPage from "./pages/SearchPage";
+import RegisterUpdate from "./pages/RegisterUpdate.jsx";
 
 function App() {
   return (
-    <>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/auth/login" element={<Login />} />
-        <Route path="/auth/register" element={<Signup />} />
-        <Route path="/recipes" element={<Realmain />} />
-        <Route path="/users/recipe-form" element={<Register />} />
-        <Route path="/recipes/:recipeId" element={<Recipedetail />} />
-        <Route path="/users/:userid" element={<MypageHome />} />
-        <Route path="/users/info" element={<InfoUpdate />} />
-        <Route path="/users/allergy" element={<AllergyUpdate />} />
-        <Route path="/users/myrecipes" element={<MypageRecipe />} />
-        <Route path="/users/scraps" element={<MypageScrap />} />
-        <Route path="/recipes/all" element={<AllRecipes />} />
-      </Routes>
-    </>
+      <>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/register" element={<Signup />} />
+          <Route path="/recipes" element={<Realmain />} />
+          <Route path="/users/recipe-form" element={<Register />} />
+            <Route path="/recipes/edit/:recipeId" element={<RegisterUpdate />} />
+          <Route path="/recipes/:recipeId" element={<Recipedetail />} />
+          <Route path="/users/:userid" element={<MypageHome />} />
+          <Route path="/users/info" element={<InfoUpdate />} />
+          <Route path="/users/password" element={<PasswordUpdate />} />
+          <Route path="/users/allergy" element={<AllergyUpdate />} />
+          <Route path="/users/myrecipes" element={<MypageRecipe />} />
+          <Route path="/users/scraps" element={<MypageScrap />} />
+          <Route path="/recipes/all" element={<AllRecipes />} />
+          <Route path="/search" element={<SearchPage />} />
+        </Routes>
+      </>
   );
 }
 

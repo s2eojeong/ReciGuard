@@ -47,12 +47,12 @@
 }
 
 .regis2-form input[type="text"] {
-    width: 200px;
+    width: 230px;
     padding: 8px;
     border: none;
     border-radius: 4px; /* 모서리 둥글게 */
     background-color: #E4E3E3;
-    font-size: 14px;
+    font-size: 16px;
     color: #858585;
     box-sizing: border-box; /* 패딩 포함한 너비 계산 */
     position: relative;

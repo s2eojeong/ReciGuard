@@ -4,6 +4,7 @@ import com.ReciGuard.dto.ScrapRecipeDTO;
 import com.ReciGuard.entity.Recipe;
 import com.ReciGuard.entity.User;
 import com.ReciGuard.entity.UserScrap;
+import com.ReciGuard.repository.RecipeRepository;
 import com.ReciGuard.repository.UserScrapRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class UserScrapService {
 
     private final UserScrapRepository userScrapRepository;
     private final RecipeStatsService recipeStatsService;
+    private final RecipeRepository recipeRepository;
 
     public boolean toggleScrap(Long userId, Long recipeId) {
         boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipeId);
@@ -46,10 +48,16 @@ public class UserScrapService {
 
         // DTO로 변환하여 반환
         return userScraps.stream()
-                .map(scrap -> new ScrapRecipeDTO(
-                        scrap.getRecipe().getId(),
-                        scrap.getRecipe().getRecipeName(), // Recipe 엔티티의 이름 필드
-                        scrap.getCreatedAt()))
+                .map(scrap -> {
+                    boolean scrapped = userScrapRepository.existsUserScrap(userId, scrap.getRecipe().getId());
+                    return new ScrapRecipeDTO(
+                            scrap.getRecipe().getId(),
+                            scrap.getRecipe().getRecipeName(),
+                            scrap.getCreatedAt(),
+                            scrapped,
+                            scrap.getRecipe().getImagePath()
+                            );
+                })
                 .collect(Collectors.toList());
     }
 }
