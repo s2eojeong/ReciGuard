@@ -121,13 +121,25 @@ public class S3Uploader {
         return uploadedUrls;
     }
     public void deleteFile(String fileUrl) {
-        // S3의 파일 경로 추출
-        String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            throw new IllegalArgumentException("File URL cannot be null or empty");
+        }
+
+        int lastIndex = fileUrl.lastIndexOf("/");
+        if (lastIndex == -1 || lastIndex == fileUrl.length() - 1) {
+            throw new IllegalArgumentException("Invalid file URL: " + fileUrl);
+        }
+
+        String fileName = fileUrl.substring(lastIndex + 1);
 
         try {
-            amazonS3.deleteObject(bucket, fileName); // S3에서 파일 삭제
+            log.info("Attempting to delete file from S3. Bucket: {}, File: {}", bucket, fileName);
+            amazonS3.deleteObject(bucket, fileName);
+            log.info("File deleted successfully from S3. Bucket: {}, File: {}", bucket, fileName);
         } catch (AmazonServiceException e) {
-            throw new RuntimeException("Failed to delete file from S3", e);
+            log.error("Failed to delete file from S3. Bucket: {}, File: {}, Error: {}", bucket, fileName, e.getMessage());
+            throw new RuntimeException(
+                    String.format("Failed to delete file '%s' from bucket '%s'", fileName, bucket), e);
         }
     }
 }
