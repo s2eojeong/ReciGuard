@@ -39,11 +39,14 @@ const AlleUpdate = () => {
       const { userid } = userInfo;
 
       axios
-        .get(`https://reciguard.com/api/users/allergy/${userid}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+        .get(
+          `https://reciguard.comhttps://reciguard.com/users/allergy/${userid}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         .then((response) => {
           console.log("서버 응답 데이터:", response.data);
 
@@ -82,7 +85,7 @@ const AlleUpdate = () => {
 
       axios
         .post(
-          `https://reciguard.com/api/users/allergy/${userid}`,
+          `https://reciguard.comhttps://reciguard.com/users/allergy/${userid}`,
           userIngredientListDTO,
           {
             headers: {
