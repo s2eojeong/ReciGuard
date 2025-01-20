@@ -50,13 +50,16 @@ const Sidebar1 = () => {
     if (!confirmed) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/users/${userid}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // 인증 헤더에 토큰 추가
-        },
-      });
+      const response = await fetch(
+        `https://reciguard.com/api/users/${userid}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // 인증 헤더에 토큰 추가
+          },
+        }
+      );
 
       if (response.ok) {
         alert("회원 탈퇴가 완료되었습니다.");
@@ -72,59 +75,59 @@ const Sidebar1 = () => {
   };
 
   return (
-      <div className="sidebar-container">
-        <div className="menu-group">
-          <div className="menu-item-hover">
-            <Link to="/users/{userid}" className="menu-link">
-              <img
-                  src={회원정보호버} // 항상 호버 이미지를 사용
-                  alt="회원 정보"
-                  className="menu-icon"
-              />
-              <span>회원 정보</span>
-            </Link>
-          </div>
-          <div
-              className="menu-item"
-              onMouseEnter={() => setHoveredItem("스크랩")}
-              onMouseLeave={() => setHoveredItem(null)}
-          >
-            <Link to="/users/scraps" className="menu-link">
-              <img
-                  src={hoveredItem === "스크랩" ? 스크랩호버 : 스크랩}
-                  alt="스크랩"
-                  className="menu-icon"
-              />
-              <span>스크랩 레시피</span>
-            </Link>
-          </div>
-          <div
-              className="menu-item"
-              onMouseEnter={() => setHoveredItem("마이레시피")}
-              onMouseLeave={() => setHoveredItem(null)}
-          >
-            <Link to="/users/myrecipes" className="menu-link">
-              <img
-                  src={hoveredItem === "마이레시피" ? 마이레시피호버 : 마이레시피}
-                  alt="My 레시피"
-                  className="menu-icon"
-              />
-              <span>My 레시피</span>
-            </Link>
-          </div>
+    <div className="sidebar-container">
+      <div className="menu-group">
+        <div className="menu-item-hover">
+          <Link to="/users/{userid}" className="menu-link">
+            <img
+              src={회원정보호버} // 항상 호버 이미지를 사용
+              alt="회원 정보"
+              className="menu-icon"
+            />
+            <span>회원 정보</span>
+          </Link>
         </div>
-
-        <div className="menu-footer">
-          <div className="menu-item2" onClick={handleLogout}>
-            <img src={로그아웃} alt="로그아웃" className="menu-icon2" />
-            <span>로그아웃</span>
-          </div>
-          <div className="menu-item2" onClick={handleDeleteAccount}>
-            <img src={회원탈퇴} alt="회원탈퇴" className="menu-icon2" />
-            <span>회원탈퇴</span>
-          </div>
+        <div
+          className="menu-item"
+          onMouseEnter={() => setHoveredItem("스크랩")}
+          onMouseLeave={() => setHoveredItem(null)}
+        >
+          <Link to="/users/scraps" className="menu-link">
+            <img
+              src={hoveredItem === "스크랩" ? 스크랩호버 : 스크랩}
+              alt="스크랩"
+              className="menu-icon"
+            />
+            <span>스크랩 레시피</span>
+          </Link>
+        </div>
+        <div
+          className="menu-item"
+          onMouseEnter={() => setHoveredItem("마이레시피")}
+          onMouseLeave={() => setHoveredItem(null)}
+        >
+          <Link to="/users/myrecipes" className="menu-link">
+            <img
+              src={hoveredItem === "마이레시피" ? 마이레시피호버 : 마이레시피}
+              alt="My 레시피"
+              className="menu-icon"
+            />
+            <span>My 레시피</span>
+          </Link>
         </div>
       </div>
+
+      <div className="menu-footer">
+        <div className="menu-item2" onClick={handleLogout}>
+          <img src={로그아웃} alt="로그아웃" className="menu-icon2" />
+          <span>로그아웃</span>
+        </div>
+        <div className="menu-item2" onClick={handleDeleteAccount}>
+          <img src={회원탈퇴} alt="회원탈퇴" className="menu-icon2" />
+          <span>회원탈퇴</span>
+        </div>
+      </div>
+    </div>
   );
 };
 
