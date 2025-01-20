@@ -13,13 +13,16 @@ const Recommend = () => {
     const token = localStorage.getItem("jwtToken");
     const fetchRecommendRecipe = async () => {
       try {
-        const response = await fetch(`https://reciguard.com/api/recipes/recommend`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `https://reciguard.com/api/recipes/recommend`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         if (!response.ok) {
           throw new Error(`HTTP 에러 상태: ${response.status}`);
         }
@@ -50,24 +53,24 @@ const Recommend = () => {
   const { recipe_id, imagePath, recipeName } = recommendData; // recipeId 추가
 
   return (
-      <div className="recommend-container">
-        <div className="recommend-tit show">
-          <img className="fork" src={fork} alt="fork" />
-          <h2 className="recommend-title">오늘의 추천 레시피</h2>
-        </div>
-        <div className="recommend-card show">
-          <img src={imagePath} className="recommend-image" alt={recipeName} />
-          <div className="recommend-content">
-            <h3 className="recommend-dish-name">"{recipeName}"</h3>
-            <button
-                className="recommend-button"
-                onClick={() => navigate(`/recipes/${recipe_id}`)} // 버튼 클릭 시 경로 이동
-            >
-              레시피 보기
-            </button>
-          </div>
+    <div className="recommend-container">
+      <div className="recommend-tit show">
+        <img className="fork" src={fork} alt="fork" />
+        <h2 className="recommend-title">오늘의 추천 레시피</h2>
+      </div>
+      <div className="recommend-card show">
+        <img src={imagePath} className="recommend-image" alt={recipeName} />
+        <div className="recommend-content">
+          <h3 className="recommend-dish-name">"{recipeName}"</h3>
+          <button
+            className="recommend-button"
+            onClick={() => navigate(`/recipes/${recipe_id}`)} // 버튼 클릭 시 경로 이동
+          >
+            레시피 보기
+          </button>
         </div>
       </div>
+    </div>
   );
 };
 
