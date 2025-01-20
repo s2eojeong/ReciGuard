@@ -91,48 +91,50 @@ const PasswordUpdate = () => {
     };
 
     return (
-        <div>
-            <h1>비밀번호 변경</h1>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {message && <p style={{ color: "green" }}>{message}</p>}
-            {!error && (
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="username">사용자 이름</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="currentPassword">현재 비밀번호</label>
-                        <input
-                            type="password"
-                            id="currentPassword"
-                            name="currentPassword"
-                            value={formData.currentPassword || ""}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="newPassword">새 비밀번호</label>
-                        <input
-                            type="password"
-                            id="newPassword"
-                            name="newPassword"
-                            value={formData.newPassword || ""}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-                    <button type="submit">변경하기</button>
-                </form>
-            )}
+            <div className="password-update-container">
+                {error && <p className="error-message">{error}</p>}
+                {message && <p className="success-message">{message}</p>}
+                {!error && (
+                    <form onSubmit={handleSubmit} className="password-update-form">
+                        <div className="form-group-pass">
+                            <label htmlFor="username" className="form-label-pass">아이디</label>
+                            <input
+                                type="text"
+                                id="username"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                required
+                                className="form-input-pass"
+                            />
+                        </div>
+                        <div className="form-group-pass">
+                            <label htmlFor="currentPassword" className="form-label-pass">현재 비밀번호</label>
+                            <input
+                                type="password"
+                                id="currentPassword"
+                                name="currentPassword"
+                                value={formData.currentPassword || ""}
+                                onChange={handleChange}
+                                required
+                                className="form-input-pass"
+                            />
+                        </div>
+                        <div className="form-group-pass">
+                            <label htmlFor="newPassword" className="form-label-pass">새 비밀번호</label>
+                            <input
+                                type="password"
+                                id="newPassword"
+                                name="newPassword"
+                                value={formData.newPassword || ""}
+                                onChange={handleChange}
+                                required
+                                className="form-input-pass"
+                            />
+                        </div>
+                        <button type="submit" className="form-button-pass">변경하기</button>
+                    </form>
+                )}
         </div>
     );
 };

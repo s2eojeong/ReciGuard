@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import "./UserInfo.css"
+import "./UserInfo.css";
 
 const UserInfo = () => {
-    const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [userData, setUserData] = useState(null); // 초기 상태 null
     const [error, setError] = useState(null);
 
     // JWT 토큰에서 username과 userid를 추출하는 함수
@@ -22,7 +21,6 @@ const UserInfo = () => {
         const token = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 JWT 토큰 가져오기
         if (!token) {
             setError('로그인이 필요합니다.');
-            setLoading(false);
             return;
         }
 
@@ -38,21 +36,22 @@ const UserInfo = () => {
                 })
                 .then((response) => {
                     console.log("응답 데이터:", response.data);
-                    setUserData(response.data);
-                    setLoading(false);
+                    setUserData(response.data); // 데이터 설정
                 })
                 .catch((err) => {
                     setError('사용자 정보를 불러오지 못했습니다.');
-                    setLoading(false);
                 });
         } else {
             setError('잘못된 토큰입니다.');
-            setLoading(false);
         }
     }, []);
 
-    if (loading) return ;
     if (error) return <p>{error}</p>;
+
+    // 데이터가 로드되지 않았을 경우 기본 UI 처리
+    if (!userData) {
+        return <div className="userinfo-container"></div>;
+    }
 
     return (
         <div className="userinfo-container">
@@ -86,8 +85,8 @@ const UserInfo = () => {
                     <label>체중</label>
                     <span>{userData.weight}kg</span>
                 </div>
-                </div>
             </div>
+        </div>
     );
 };
 
