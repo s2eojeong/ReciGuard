@@ -301,4 +301,33 @@
   width: 85%;
 }
 
+.similar-section {
+  margin: 7px 0px -10px 0;
+}
+
+.similar-icon1 {
+  width:27px;
+  height: 23px;
+  margin-left: 4px;
+  margin-right: 6px;
+  position: relative;
+  top: 4px;
+}
+
+.similar-list {
+    display: flex; /* 가로 정렬 */
+    flex-wrap: wrap;
+    gap: 10px; /* 항목 간 간격 설정 */
+    justify-content: flex-start;
+    margin-left: 20px;
+  }
+
+.similar-list span {
+  padding: 5px 10px;
+  border: 1px solid #f2f2f2;
+  border-radius: 5px;
+  background-color: #3e5944;
+  color: #f2f2f2;
+  font-size: 18px;
+}
   
