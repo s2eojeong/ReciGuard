@@ -36,7 +36,7 @@
     padding: 10px;
     border-radius: 5px;
     flex: 1;
-    text-align: center;
+    text-align: left;
     position: relative;
     width: 200px;
     right: 40px;
@@ -63,7 +63,7 @@
     padding: 10px;
     border-radius: 5px;
     flex: 1;
-    text-align: center;
+    text-align: left;
     position: relative;
     width: 200px;
     right: 55px;

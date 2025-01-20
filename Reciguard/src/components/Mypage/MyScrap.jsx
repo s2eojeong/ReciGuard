@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 추가
 import 스크랩 from "../../assets/allscraps.png"; // 스크랩 상태
-import 스크랩전 from "../../assets/allscrap.png"; //스크랩전 상태
+import 스크랩전 from "../../assets/allscrap.png"; // 스크랩전 상태
+import "./MyScrap.css";
 
 const MyScrap = () => {
     const [scrapRecipes, setScrapRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // useNavigate 훅 초기화
 
     useEffect(() => {
         const fetchScrapRecipes = async () => {
@@ -36,7 +39,6 @@ const MyScrap = () => {
         fetchScrapRecipes();
     }, []);
 
-
     const handleScrapToggle = async (recipeId, currentScrapped) => {
         try {
             const token = localStorage.getItem("jwtToken");
@@ -45,7 +47,7 @@ const MyScrap = () => {
                 {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
@@ -83,8 +85,12 @@ const MyScrap = () => {
         }
     };
 
+    const goToRecipeDetail = (recipeId) => {
+        navigate(`/recipes/${recipeId}`); // 상세 페이지 경로로 이동
+    };
+
     if (loading) {
-        return <p className="loading-text">스크랩한 레시피를 불러오는 중입니다...</p>;
+        return <p className="loading-text"></p>;
     }
 
     if (error) {
@@ -118,6 +124,13 @@ const MyScrap = () => {
                             alt={recipe.recipeName}
                             className="scrap-recipe-image"
                         />
+                        {/* 상세 페이지 이동 버튼 추가 */}
+                        <button
+                            className="detail-button"
+                            onClick={() => goToRecipeDetail(recipe.recipeId)}
+                        >
+                            레시피
+                        </button>
                     </div>
                 ))}
             </div>
