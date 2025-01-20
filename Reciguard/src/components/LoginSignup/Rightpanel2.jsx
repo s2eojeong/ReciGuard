@@ -78,8 +78,8 @@ function Rightpanel2() {
       password: preferences.password || "",
       ingredients: preferences.ingredients || [], // 알레르기 리스트 배열
       userCookingStyle: preferences.cookingStyle || [],
-      userCuisine: preferences.mealType || [],
-      userFoodType: preferences.country || [],
+      userCuisine: preferences.country || [],
+      userFoodType: preferences.mealType || [],
     };
 
     console.log("전송 데이터:", requestData);

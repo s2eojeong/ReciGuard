@@ -58,7 +58,7 @@ const Recommend = () => {
         <div className="recommend-card show">
           <img src={imagePath} className="recommend-image" alt={recipeName} />
           <div className="recommend-content">
-            <h3 className="recommend-dish-name">{recipeName}</h3>
+            <h3 className="recommend-dish-name">"{recipeName}"</h3>
             <button
                 className="recommend-button"
                 onClick={() => navigate(`/recipes/${recipe_id}`)} // 버튼 클릭 시 경로 이동
