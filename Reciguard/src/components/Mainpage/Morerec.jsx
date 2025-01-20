@@ -1,11 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./Morerec.css";
-import 한식 from "../../assets/한식 대표 사진.jpg";
-import 중식 from "../../assets/중식 대표 사진.png";
-import 일식 from "../../assets/일식 대표 사진.png";
+import 한식 from "../../assets/korea.jpg";
+import 중식 from "../../assets/china.png";
+import 일식 from "../../assets/japan.png";
 import 양식 from "../../assets/pasta.png";
-import 아시안 from "../../assets/아시안 대표 사진.jpg";
+import 아시안 from "../../assets/asian.jpg";
 
 const Morerec = () => {
   const navigate = useNavigate();
