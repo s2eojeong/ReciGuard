@@ -53,7 +53,7 @@ const Sidebar2 = () => {
 
     try {
       const response = await fetch(
-        `https://reciguard.com/api/users/${userid}`,
+        `https://reciguard.comhttps://reciguard.com/users/${userid}`,
         {
           method: "DELETE",
           headers: {
