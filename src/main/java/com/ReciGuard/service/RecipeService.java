@@ -46,7 +46,7 @@ public class RecipeService {
     @Value("http://15.164.219.9:8000/recommend")
     private String recipeRecommendApiUrl;
 
-    @Value("http://localhost:8000/check_allergy")
+    @Value("http://54.180.85.44:8000/check_allergy")
     private String similarAllergyApiUrl;
 
     public RecipeRecommendResponseDTO getTodayRecipe(Long userId) {
