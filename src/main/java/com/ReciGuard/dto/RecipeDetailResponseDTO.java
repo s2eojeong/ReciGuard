@@ -4,7 +4,6 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-
 public class RecipeDetailResponseDTO {
     private String imagePath;
     private String recipeName;
