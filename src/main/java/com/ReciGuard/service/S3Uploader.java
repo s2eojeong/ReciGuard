@@ -1,10 +1,10 @@
 package com.ReciGuard.service;
 
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 @Slf4j
@@ -28,35 +30,6 @@ public class S3Uploader {
 
     @Value("${spring.servlet.multipart.max-file-size}")
     private String maxSizeString;
-
-    private void clear() {
-        uploadedFileNames.clear();
-        uploadedFileSizes.clear();
-    }
-
-    //중복 사진 여부 확인
-    private boolean isDuplicate(MultipartFile multipartFile) {
-        String fileName = multipartFile.getOriginalFilename();
-        Long fileSize = multipartFile.getSize();
-
-        if (uploadedFileNames.contains(fileName) && uploadedFileSizes.contains(fileSize)) {
-            return true;
-        }
-
-        uploadedFileNames.add(fileName);
-        uploadedFileSizes.add(fileSize);
-
-        return false;
-    }
-
-    // 사진 파일 명 중복 방지
-    private String generateRandomFilename(MultipartFile multipartFile) {
-        String originalFilename = multipartFile.getOriginalFilename();
-        String fileExtension = validateFileExtension(originalFilename);
-        String randomFilename = UUID.randomUUID() + "." + fileExtension; // 중복 방지
-
-        return randomFilename;
-    }
 
     // 파일 확장자 체크
     private String validateFileExtension(String originalFilename) {
@@ -78,6 +51,14 @@ public class S3Uploader {
         return fileExtension;
     }
 
+    // 파일 해시 계산
+    public String calculateFileHash(MultipartFile file) throws IOException, NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] fileBytes = file.getBytes();
+        byte[] hash = digest.digest(fileBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hash); // URL-safe 해시값 생성
+    }
+
     //단일 사진 저장
     public String saveFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
@@ -86,9 +67,22 @@ public class S3Uploader {
 
         log.info("Uploading single file: {}", file.getOriginalFilename());
 
-        // 파일 확장자 검증 및 이름 생성
+        // 파일 확장자 검증 및 해시 기반 이름 생성
         String fileExtension = validateFileExtension(file.getOriginalFilename());
-        String randomFilename = UUID.randomUUID() + "." + fileExtension;
+        String fileHash;
+        try {
+            fileHash = calculateFileHash(file); // 파일 해시값 계산
+        } catch (IOException | NoSuchAlgorithmException e) {
+            log.error("Failed to calculate file hash for: {}", file.getOriginalFilename(), e);
+            throw new RuntimeException("File hash calculation failed", e);
+        }
+        String hashedFilename = fileHash + "." + fileExtension;
+
+        // S3에 동일한 파일이 있는지 확인
+        if (amazonS3.doesObjectExist(bucket, hashedFilename)) {
+            log.info("File already exists in S3: {}", hashedFilename);
+            return amazonS3.getUrl(bucket, hashedFilename).toString(); // 기존 파일 URL 반환
+        }
 
         // 메타데이터 설정
         ObjectMetadata metadata = new ObjectMetadata();
@@ -97,29 +91,18 @@ public class S3Uploader {
 
         // S3에 파일 업로드
         try {
-            amazonS3.putObject(bucket, randomFilename, file.getInputStream(), metadata);
+            amazonS3.putObject(bucket, hashedFilename, file.getInputStream(), metadata);
         } catch (IOException e) {
             log.error("File upload failed for file: {}", file.getOriginalFilename(), e);
             throw new RuntimeException("File upload failed", e);
         }
 
         // 업로드된 파일의 URL 반환
-        String uploadedUrl = amazonS3.getUrl(bucket, randomFilename).toString();
+        String uploadedUrl = amazonS3.getUrl(bucket, hashedFilename).toString();
         log.info("Uploaded file URL: {}", uploadedUrl);
         return uploadedUrl;
     }
 
-    // 여러 사진 저장 (1장도 가능)
-    public Map<String, String> saveFiles(Map<String, MultipartFile> multipartFiles) {
-        Map<String, String> uploadedUrls = new HashMap<>();
-
-        multipartFiles.forEach((key, file) -> {
-            String uploadedUrl = saveFile(file);
-            uploadedUrls.put(key, uploadedUrl);
-        });
-
-        return uploadedUrls;
-    }
     public void deleteFile(String fileUrl) {
         if (fileUrl == null || fileUrl.isEmpty()) {
             throw new IllegalArgumentException("File URL cannot be null or empty");
@@ -140,6 +123,18 @@ public class S3Uploader {
             log.error("Failed to delete file from S3. Bucket: {}, File: {}, Error: {}", bucket, fileName, e.getMessage());
             throw new RuntimeException(
                     String.format("Failed to delete file '%s' from bucket '%s'", fileName, bucket), e);
+        }
+    }
+
+    public byte[] downloadFile(String s3FilePath) {
+        // S3에서 파일 가져오기
+        try (S3Object s3Object = amazonS3.getObject(bucket, s3FilePath)) {
+            // 파일 내용을 바이트 배열로 변환
+            return IOUtils.toByteArray(s3Object.getObjectContent());
+        } catch (Exception e) {
+            // 예외 발생 시 로그 출력 및 null 반환
+            System.err.println("Failed to download file from S3: " + e.getMessage());
+            return null;
         }
     }
 }

@@ -29,7 +29,6 @@ public class RecipeController {
     private final RecipeStatsService recipeStatsService;
     private final UserScrapService userScrapService;
     private final UserService userService;
-    private final S3Uploader s3Uploader;
 
     // 오늘의 추천 레시피
     @GetMapping("/recommend")
@@ -124,9 +123,7 @@ public class RecipeController {
 
         // 로그 추가: 각 파일 정보 확인
         if (instructionImageFiles != null) {
-            instructionImageFiles.forEach((key, file) -> {
-                log.info("Key: {}, File Name: {}", key, file.getOriginalFilename());
-            });
+            instructionImageFiles.forEach((key, file) -> log.info("Key: {}, File Name: {}", key, file.getOriginalFilename()));
         }
 
         // instructionImageFiles가 null일 경우 빈 Map으로 초기화
@@ -145,9 +142,7 @@ public class RecipeController {
             throw new IllegalArgumentException("Invalid JSON format: " + e.getMessage());
         }
         log.info("Instruction Image Files: {}", instructionImageFiles);
-        instructionImageFiles.forEach((key, file) -> {
-            log.info("Key: {}, File Name: {}", key, file.getOriginalFilename());
-        });
+        instructionImageFiles.forEach((key, file) -> log.info("Key: {}, File Name: {}", key, file.getOriginalFilename()));
 
         log.info("Received recipeForm: {}", recipeForm);
         log.info("Received instructionImageFiles: {}", instructionImageFiles);
@@ -174,11 +169,7 @@ public class RecipeController {
             @RequestPart("recipeForm") String recipeFormJson,
             @RequestPart(value = "recipeImage", required = false) MultipartFile recipeImage,
             @RequestPart(value = "instructionImageFiles", required = false) Map<String, MultipartFile> instructionImageFiles,
-            HttpServletRequest request) throws JsonProcessingException {
-
-        // 인증된 사용자 정보 가져오기
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long userId = userService.findUserIdByUsername(username);
+            HttpServletRequest request) {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -188,7 +179,7 @@ public class RecipeController {
             // JSON 데이터를 객체로 변환
             MyRecipeFormEdit recipeForm = objectMapper.readValue(recipeFormJson, MyRecipeFormEdit.class);
 
-            recipeService.updateMyRecipe(recipeId, userId, recipeForm, recipeImage, instructionImageFiles, request);
+            recipeService.updateMyRecipe(recipeId, recipeForm, recipeImage, instructionImageFiles, request);
 
             return ResponseEntity.ok("레시피가 수정되었습니다.");
         } catch (Exception e) {
