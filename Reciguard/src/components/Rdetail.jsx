@@ -6,7 +6,7 @@ import 국가별 from "../assets/국가별.png";
 import 조회수 from "../assets/조회수.png";
 import filledHeartImg from "../assets/heart1.png";
 import emptyHeartImg from "../assets/heart.png";
-import 경고등 from "../assets/경고등.png";
+import 경고등 from "../assets/warning.png";
 
 const Rdetail = () => {
   const { recipeId } = useParams();
