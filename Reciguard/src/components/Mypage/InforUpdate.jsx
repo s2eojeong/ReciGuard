@@ -6,7 +6,7 @@ import "./InforUpdate.css";
 const InforUpdate = () => {
   const navigate = useNavigate();
   const passwordUp = () => {
-    navigate("/users/password");
+    navigate("/password");
   };
 
   const [userData, setUserData] = useState({
