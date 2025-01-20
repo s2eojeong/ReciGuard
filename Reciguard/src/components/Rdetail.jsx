@@ -6,6 +6,7 @@ import 국가별 from "../assets/국가별.png";
 import 조회수 from "../assets/조회수.png";
 import filledHeartImg from "../assets/heart1.png";
 import emptyHeartImg from "../assets/heart.png";
+import 경고등 from "../assets/경고등.png"
 
 const Rdetail = () => {
   const { recipeId } = useParams();
@@ -115,7 +116,26 @@ const Rdetail = () => {
           </div>
         </div>
 
+
         <div className="ingredient-stpes">
+          <h3 className="similar-h3">
+            <img className="similar-icon1" src={경고등}/>
+            알레르기 유발 가능성 재료
+          </h3>
+          <div className="ingredient-container">
+            <section className="similar-section">
+              <div className="similar-list">
+                {recipe.similarAllergyIngredients && recipe.similarAllergyIngredients.length > 0 ? (
+                    recipe.similarAllergyIngredients.map((ingredient, index) => (
+                        <span key={index}>{ingredient}</span>
+                    ))
+                ) : (
+                    <span>없음</span>
+                )}
+              </div>
+            </section>
+          </div>
+
           <h3>재료</h3>
           <div className="ingredient-container">
             <section className="ingredient-section">
@@ -126,7 +146,7 @@ const Rdetail = () => {
                         <span className="ingredient-name">{ingredient.ingredient}</span>
                         <span className="ingredient-quantity">{ingredient.quantity}</span>
                       </div>
-                      <hr />
+                      <hr/>
                     </div>
                 ))}
               </div>
@@ -171,7 +191,7 @@ const Rdetail = () => {
                     <span className="nutrition-name">칼로리</span>
                     <span className="nutrition-quantity">{recipe.calories} kcal</span>
                   </div>
-                  <hr />
+                  <hr/>
                 </div>
                 <div className="nutrition1-row">
                   <div className="nutrition-texts">
