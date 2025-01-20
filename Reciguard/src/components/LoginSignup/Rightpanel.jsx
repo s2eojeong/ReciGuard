@@ -80,7 +80,7 @@ function Rightpanel() {
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       <div>
         <p className="sign-up">
-          Don’t have an account? <Link to="/auth/register">Sign Up</Link>
+          Don’t have an account? <Link to="/register">Sign Up</Link>
         </p>
       </div>
     </div>

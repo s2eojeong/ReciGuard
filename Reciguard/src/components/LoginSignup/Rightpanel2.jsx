@@ -106,7 +106,7 @@ function Rightpanel2() {
         alert(responseText); // 성공 메시지 표시
         setIsPopupOpen(false); // 팝업 닫기
         setPreferences({}); // 입력값 초기화
-        navigate("/auth/login");
+        navigate("/login");
       } else {
         console.error("오류 응답:", responseText);
         alert(responseText || "서버 오류가 발생했습니다.");
@@ -214,7 +214,7 @@ function Rightpanel2() {
       </form>
       <div>
         <p className="log-in">
-          Already have an account? <a href="/auth/login">Log in</a>
+          Already have an account? <a href="/login">Log in</a>
         </p>
       </div>
 
