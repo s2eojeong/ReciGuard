@@ -6,13 +6,12 @@ const Header = () => {
   return (
     <nav className="navbar">
       <div className="navbar-logo">ReciGuard</div>
-      <ul className="navbar-menu">
-      </ul>
+      <ul className="navbar-menu"></ul>
       <div className="rightnav">
-        <Link to="/auth/register ">
+        <Link to="/register ">
           <button className="signup-btn">Sign Up</button>
         </Link>
-        <Link to="/auth/login ">
+        <Link to="/login ">
           <button className="login-btn">Log In</button>
         </Link>
       </div>
