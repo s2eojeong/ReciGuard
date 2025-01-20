@@ -13,7 +13,7 @@ const Recommend = () => {
     const token = localStorage.getItem("jwtToken");
     const fetchRecommendRecipe = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/recipes/recommend`, {
+        const response = await fetch(`https://reciguard.com/api/recipes/recommend`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
