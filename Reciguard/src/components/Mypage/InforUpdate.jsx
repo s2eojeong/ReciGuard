@@ -49,14 +49,11 @@ const InforUpdate = () => {
       const { userid } = userInfo;
 
       axios
-        .get(
-          `https://reciguard.comhttps://reciguard.com/users/info/${userid}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // 이 헤더가 포함되어야 합니다.
-            },
-          }
-        )
+        .get(`https://reciguard.com/users/info/${userid}`, {
+          headers: {
+            Authorization: `Bearer ${token}`, // 이 헤더가 포함되어야 합니다.
+          },
+        })
         .then((response) => {
           console.log("서버 응답 데이터:", response.data);
           setUserData(response.data);
@@ -84,7 +81,7 @@ const InforUpdate = () => {
 
       axios
         .put(
-          `https://reciguard.comhttps://reciguard.com/users/info/${userid}`,
+          `https://reciguard.com/users/info/${userid}`,
           userData, // 업데이트할 데이터
           {
             headers: {

@@ -29,7 +29,7 @@ const UserInfo = () => {
     if (userInfo) {
       const { userid } = userInfo;
       axios
-        .get(`https://reciguard.comhttps://reciguard.com/users/${userid}`, {
+        .get(`https://reciguard.com/users/${userid}`, {
           headers: {
             Authorization: `Bearer ${token}`, // 인증 헤더에 토큰 포함
           },
