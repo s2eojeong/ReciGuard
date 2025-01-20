@@ -1,0 +1,100 @@
+.my-scrap-container {
+    margin: 20px;
+    padding: 0px 10px 10px 10px;
+}
+
+.my-scrap-header {
+    font-size: 40px;
+    font-weight: bold;
+    color: #3e5944;
+    margin-bottom: 30px;
+}
+
+.scrap-recipe-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px; /* 카드 간 간격 */
+    justify-items: center;
+}
+
+.scrap-recipe-card {
+    width: 200px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 10px 10px 20px;
+}
+
+.scrap-recipe-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f2f2f2;
+}
+
+.scrap-recipe-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #542825;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 2px;
+}
+
+.scrap-heart-icon {
+    width: 20px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.scrap-recipe-cuisine {
+    font-size: 14px;
+    color: #666;
+    margin: 10px 0;
+}
+
+.scrap-recipe-image {
+    width: 90%;
+    height: 150px;
+    object-fit: cover;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.detail-button {
+    margin-top: 5px;
+    padding: 6px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #263629;
+    background-color: #C9D2CB;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 110px;
+}
+
+.detail-button:hover {
+    background-color: #3e5944;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+.loading-text,
+.error-text,
+.no-scrap-text {
+    font-size: 20px;
+    font-weight: bolder;
+    color: #3e5944;
+    text-align: center;
+    margin: 30px;
+}
+

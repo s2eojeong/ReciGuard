@@ -1,0 +1,70 @@
+.alleupdate-container {
+    padding: 30px;
+    width: 800px;
+}
+
+.alleupdate-h1 {
+    font-size: 40px;
+    color: #3e5944;
+    margin-bottom: 40px;
+    margin-left: 20px;
+    text-align: left;
+}
+
+.allergy-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 한 줄에 2개의 카테고리 */
+    gap: 20px; /* 카테고리 간 간격 */
+}
+
+.allergy-container legend {
+    font-size: 14px;
+    color: #425466;
+    margin-bottom: 5px;
+}
+
+.allergy-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* 체크박스 그룹 간 간격 */
+}
+
+.allergy-category {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2d572c;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; /* 체크박스 간 간격 */
+}
+
+.checkbox-group label {
+    font-size: 14px;
+    color: #425466;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    accent-color: #3e5944; /* 체크박스 색상 */
+    width: 14px;
+    height: 14px;
+    margin-right: 5px;
+}
+
+.update-button {
+    background-color: #3e5944;
+    color: #ffffff;
+    padding: 7px 30px;
+    font-weight: bolder;
+    border: none;
+    border-radius: 5px;
+    margin: 25px 0px 0px 640px;
+}

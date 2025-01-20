@@ -1,0 +1,221 @@
+.inforupdate-container {
+    padding: 30px;
+    width: 800px;
+}
+
+.userinfo-container1 {
+    display: flex;
+}
+
+.inforupdate-h1 {
+    font-size: 40px;
+    color: #3e5944;
+    margin-bottom: 40px;
+    margin-left: 20px;
+    text-align: left;
+}
+
+.inforupdate-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.inforupdate-item label {
+    font-size: 14px;
+    color: #425466;
+    width: 100px;
+    margin-left: 50px;
+    align-items: center;
+}
+
+.inforupdate-item span {
+    font-size: 16px;
+    background-color: #E4E3E3;
+    color: #7A828A;
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1;
+    text-align: left;
+    position: relative;
+    width: 200px;
+    right: 40px;
+}
+
+.inforupdate-item2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.inforupdate-item2 label {
+    font-size: 14px;
+    color: #425466;
+    width: 100px;
+    margin-left: 50px;
+    align-items: center;
+}
+
+.inforupdate-item2 span {
+    font-size: 16px;
+    background-color: #E4E3E3;
+    color: #7A828A;
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1;
+    text-align: left;
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 200px;
+    right: 40px;
+}
+
+.inforupdate-item2 span button {
+    padding: 3px 10px;
+    font-size: 10px;
+    color: #666666;
+    background-color: #ffffff;
+    border: 0.5px solid #C8C7C7;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.inforupdate-item2 span button:hover {
+    background-color: #ecebeb;
+}
+
+.inforupdate-gender {
+    font-size: 14px;
+    width: 200px;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.inforupdate-gender label {
+    font-size: 14px;
+    color: #425466;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.inforupdate-radio {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* 라디오 버튼과 텍스트 간 간격 */
+}
+
+.inforupdate-radio input[type="radio"] {
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    margin-bottom: 3px;
+}
+
+.inforupdate-item3 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #425466;
+    font-size: 14px;
+}
+
+.inforupdate-item3 label {
+    font-size: 14px;
+    color: #425466;
+    width: 40px;
+    margin-left: 20px;
+    align-items: center;
+}
+
+.inforupdate-item3 input {
+    width: 60px;
+    margin-right:5px;
+}
+
+.preferences-container {
+    padding: 10px 30px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 450px;
+    margin-left: 50px;
+    margin-top: 10px;
+}
+
+.preferences-container-write {
+    color: #425466;
+    font-size: 14px;
+    margin: 0 5px;
+}
+
+.preference-group {
+    margin-bottom: 15px;
+    display: flex;
+}
+
+.preference-group-head {
+    font-size: 16px;
+    color: #3e5944;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.checkbox-group2 {
+    display: flex;
+    gap: 15px;
+    margin-left: 13px;
+    margin-bottom: 5px;
+}
+
+.checkbox-group2 label {
+    font-size: 15px;
+    color: #425466;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.checkbox-group2 input[type="checkbox"] {
+    accent-color: #3e5944; /* 체크박스 색상 */
+    width: 13px;
+    height: 13px;
+}
+
+.checkbox-group2-country {
+    display: flex;
+    gap: 15px;
+    margin-left: 31px;
+}
+
+.checkbox-group2-country input[type="checkbox"] {
+    accent-color: #3e5944; /* 체크박스 색상 */
+    width: 13px;
+    height: 13px;
+}
+
+.checkbox-group2-country label {
+    font-size: 15px;
+    margin-bottom: 5px;
+    color: #425466;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.inforupdate-update {
+    background-color: #3e5944;
+    color: #ffffff;
+    padding: 7px 30px;
+    font-weight: bolder;
+    border: none;
+    border-radius: 5px;
+    margin: 25px 0px 0px 450px;
+}

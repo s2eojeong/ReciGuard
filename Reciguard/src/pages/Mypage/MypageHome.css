@@ -1,6 +1,7 @@
  .MypageHome-Container {
     display: flex; /* Flexbox 사용 */
     flex-direction: row; /* 가로로 배치 */
-    height: 90vh; /* 전체 화면 높이 */
+    height: 100%; /* 전체 화면 높이 */
+     min-height: 90vh;
     background-color: #FCFCFD; /* 배경 색상 */
 }
