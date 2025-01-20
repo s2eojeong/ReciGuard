@@ -1,7 +1,7 @@
 .sidebar-container {
     width: 120px;
     background-color: #ddd;
-    height: 90vh; /* 화면 전체 높이 */
+    min-height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./PassUpadate.css"
 
 const PasswordUpdate = () => {
     const [formData, setFormData] = useState({

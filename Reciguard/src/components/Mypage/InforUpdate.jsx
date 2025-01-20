@@ -16,9 +16,9 @@ const InforUpdate = () => {
         age: '',
         weight: '',
         email: '',
-        userCookingStyle: [],
         userCuisine: [],
         userFoodType: [],
+        userCookingStyle: [],
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -117,106 +117,157 @@ const InforUpdate = () => {
         }));
     };
 
-
+    if (loading) return <p></p>;
     if (error) return <p>{error}</p>;
 
     return (
         <div className="inforupdate-container">
             <h1 className="inforupdate-h1">회원정보 수정</h1>
-            <div>
-                <label>이름:</label>
-                <input
-                    type="text"
-                    name="username"
-                    value={userData.username}
-                    readOnly
-                />
+            <div className="userinfo-container1">
+                <div className="inforupdate-item">
+                    <label>아이디</label>
+                    <span>{userData.username}</span>
+                </div>
+                <div className="inforupdate-gender">
+                    <label>성별</label>
+                    <label className="inforupdate-radio">
+                        <input
+                            type="radio"
+                            name="gender"
+                            value="남성"
+                            checked={userData.gender === '남성'}
+                            onChange={handleChange}
+                        />
+                        남성
+                    </label>
+                    <label className="inforupdate-radio">
+                        <input
+                            type="radio"
+                            name="gender"
+                            value="여성"
+                            checked={userData.gender === '여성'}
+                            onChange={handleChange}
+                        />
+                        여성
+                    </label>
+                </div>
             </div>
-            <div onClick={passwordUp}>
-                비밀번호:******** <button>수정</button>
+            <div className="userinfo-container1">
+                <div className="inforupdate-item">
+                    <label>이메일</label>
+                    <span>{userData.email}</span>
+                </div>
+                <div className="inforupdate-item3">
+                    <label>나이</label>
+                    <input
+                        type="number"
+                        name="age"
+                        value={userData.age}
+                        onChange={handleChange}
+                    />
+                    년생
+                </div>
             </div>
-            <div>
-                <label>성별:</label>
-                <input
-                    type="text"
-                    name="gender"
-                    value={userData.gender}
-                    onChange={handleChange}
-                />
+            <div className="userinfo-container1">
+                <div className="inforupdate-item2">
+                    <label>비밀번호</label>
+                    <span>********
+                        <button onClick={passwordUp}>수정</button>
+                    </span>
+                </div>
+                <div className="inforupdate-item3">
+                    <label>체중</label>
+                    <input
+                        type="number"
+                        name="weight"
+                        value={userData.weight}
+                        onChange={handleChange}
+                    />
+                    kg
+                </div>
             </div>
-            <div>
-                <label>나이:</label>
-                <input
-                    type="number"
-                    name="age"
-                    value={userData.age}
-                    onChange={handleChange}
-                />
-            </div>
-            <div>
-                <label>체중:</label>
-                <input
-                    type="number"
-                    name="weight"
-                    value={userData.weight}
-                    onChange={handleChange}
-                />
-            </div>
-            <div>
-                <label>이메일:</label>
-                <input
-                    type="email"
-                    name="email"
-                    value={userData.email}
-                    readOnly
-                />
-            </div>
-            <div>
-                <label>국가별:</label>
-                <input
-                    type="text"
-                    name="userCookingStyle"
-                    value={userData.userCookingStyle.join(", ")} // 배열 데이터를 문자열로 변환
-                    onChange={(e) => {
-                        const value = e.target.value.split(",").map((item) => item.trim()); // 쉼표로 구분된 문자열을 배열로 변환
-                        setUserData((prevData) => ({
-                            ...prevData,
-                            userCookingStyle: value,
-                        }));
-                    }}
-                />
-            </div>
-            <div>
-                <label>식사 유형:</label>
-                <input
-                    type="text"
-                    name="userCuisine"
-                    value={userData.userCuisine.join(", ")} // 배열 데이터를 문자열로 변환
-                    onChange={(e) => {
-                        const value = e.target.value.split(",").map((item) => item.trim()); // 쉼표로 구분된 문자열을 배열로 변환
-                        setUserData((prevData) => ({
-                            ...prevData,
-                            userCuisine: value,
-                        }));
-                    }}
-                />
-            </div>
-            <div>
-                <label>조리 방식:</label>
-                <input
-                    type="text"
-                    name="userFoodType"
-                    value={userData.userFoodType.join(", ")} // 배열 데이터를 문자열로 변환
-                    onChange={(e) => {
-                        const value = e.target.value.split(",").map((item) => item.trim()); // 쉼표로 구분된 문자열을 배열로 변환
-                        setUserData((prevData) => ({
-                            ...prevData,
-                            userFoodType: value,
-                        }));
-                    }}
-                />
-            </div>
-            <button onClick={handleUpdate}>정보 업데이트</button>
+
+            <fieldset className="preferences-container">
+                <legend>
+                    <span className="preferences-container-write">선호도</span>
+                </legend>
+                <div className="preference-group">
+                    <label className="preference-group-head">국가별</label>
+                    <div className="checkbox-group2-country">
+                        {["한식", "중식", "일식", "양식", "아시안"].map((style) => (
+                            <label key={style}>
+                                <input
+                                    type="checkbox"
+                                    value={style}
+                                    checked={userData.userCuisine.includes(style.trim())} // 국가별은 userCuisine과 매칭
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        const updatedCuisine = e.target.checked
+                                            ? [...userData.userCuisine, value]
+                                            : userData.userCuisine.filter((item) => item !== value);
+                                        setUserData((prevData) => ({
+                                            ...prevData,
+                                            userCuisine: updatedCuisine,
+                                        }));
+                                    }}
+                                />
+                                {style}
+                            </label>
+                        ))}
+                    </div>
+                </div>
+                <div className="preference-group">
+                    <label className="preference-group-head">식사 유형</label>
+                    <div className="checkbox-group2">
+                        {["밥", "면", "떡", "죽", "반찬"].map((type) => (
+                            <label key={type}>
+                                <input
+                                    type="checkbox"
+                                    value={type}
+                                    checked={userData.userFoodType.includes(type.trim())} // 배열에 선택된 항목이 있는지 확인
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        const updatedFoodTypes = e.target.checked
+                                            ? [...userData.userFoodType, value] // 선택된 항목 추가
+                                            : userData.userFoodType.filter((item) => item !== value); // 선택 해제된 항목 제거
+                                        setUserData((prevData) => ({
+                                            ...prevData,
+                                            userFoodType: updatedFoodTypes, // 업데이트된 배열로 상태 변경
+                                        }));
+                                    }}
+                                />
+                                {type}
+                            </label>
+                        ))}
+                    </div>
+                </div>
+                <div className="preference-group">
+                    <label className="preference-group-head">조리 방식</label>
+                    <div className="checkbox-group2">
+                        {["찌기", "끓이기", "굽기", "볶기", "튀기기", "기타"].map((method) => (
+                            <label key={method}>
+                                <input
+                                    type="checkbox"
+                                    value={method}
+                                    checked={userData.userCookingStyle.includes(method.trim())} // 조리 방식은 userCookingStyle과 매칭
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        const updatedMethods = e.target.checked
+                                            ? [...userData.userCookingStyle, value]
+                                            : userData.userCookingStyle.filter((item) => item !== value);
+                                        setUserData((prevData) => ({
+                                            ...prevData,
+                                            userCookingStyle: updatedMethods,
+                                        }));
+                                    }}
+                                />
+                                {method}
+                            </label>
+                        ))}
+                    </div>
+                </div>
+            </fieldset>
+            <button onClick={handleUpdate} className="inforupdate-update">수정하기</button>
         </div>
     );
 };
