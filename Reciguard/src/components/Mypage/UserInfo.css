@@ -1,0 +1,70 @@
+.userinfo-container {
+    padding: 30px;
+    width: 800px;
+}
+
+.userinfo-h1 {
+    font-size: 40px;
+    color: #3e5944;
+    margin-bottom: 40px;
+    margin-left: 20px;
+    text-align: left;
+}
+
+.userinfo-container1 {
+    display: flex; /* 수평 배열 */
+}
+
+.userinfo-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.userinfo-item label {
+    font-size: 14px;
+    color: #425466;
+    width: 100px;
+    margin-left: 50px;
+    align-items: center;
+}
+
+.userinfo-item span {
+    font-size: 16px;
+    background-color: #E4E3E3;
+    color: #7A828A;
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1;
+    text-align: center;
+    position: relative;
+    width: 200px;
+    right: 40px;
+}
+
+.userinfo-item2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.userinfo-item2 label {
+    font-size: 14px;
+    color: #425466;
+    width: 100px;
+    margin-left: 20px;
+    align-items: center;
+}
+
+.userinfo-item2 span {
+    font-size: 16px;
+    background-color: #E4E3E3;
+    color: #7A828A;
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1;
+    text-align: center;
+    position: relative;
+    width: 200px;
+    right: 55px;
+}

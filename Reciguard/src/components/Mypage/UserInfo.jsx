@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import "./UserInfo.css"
 
 const UserInfo = () => {
     const [userData, setUserData] = useState(null);
@@ -50,18 +51,43 @@ const UserInfo = () => {
         }
     }, []);
 
-    if (loading) return <p>로딩 중...</p>;
+    if (loading) return <p></p>;
     if (error) return <p>{error}</p>;
 
     return (
-        <div>
-            <h1>나의 계정</h1>
-            <p><strong>이름:</strong> {userData.username}</p>
-            <p><strong>성별:</strong> {userData.gender}</p>
-            <p><strong>나이:</strong> {userData.age}년생</p>
-            <p><strong>체중:</strong> {userData.weight}kg</p>
-            <p><strong>이메일:</strong> {userData.email}</p>
-        </div>
+        <div className="userinfo-container">
+            <h1 className="userinfo-h1">나의 계정</h1>
+            <div className="userinfo-container1">
+                <div className="userinfo-item">
+                    <label>이름</label>
+                    <span>{userData.username}</span>
+                </div>
+                <div className="userinfo-item2">
+                    <label>성별</label>
+                    <span>{userData.gender}</span>
+                </div>
+            </div>
+            <div className="userinfo-container1">
+                <div className="userinfo-item">
+                    <label>이메일</label>
+                    <span>{userData.email}</span>
+                </div>
+                <div className="userinfo-item2">
+                    <label>나이</label>
+                    <span>{userData.age}년생</span>
+                </div>
+            </div>
+            <div className="userinfo-container1">
+                <div className="userinfo-item">
+                    <label>비밀번호</label>
+                    <span>********</span>
+                </div>
+                <div className="userinfo-item2">
+                    <label>체중</label>
+                    <span>{userData.weight}kg</span>
+                </div>
+                </div>
+            </div>
     );
 };
 
