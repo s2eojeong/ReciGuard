@@ -14,16 +14,13 @@ const MyScrap = () => {
     const fetchScrapRecipes = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        const response = await fetch(
-          "https://reciguard.comhttps://reciguard.com/users/scraps",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch("https://reciguard.com/users/scraps", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error("스크랩한 레시피를 불러오는 데 실패했습니다.");
@@ -46,7 +43,7 @@ const MyScrap = () => {
     try {
       const token = localStorage.getItem("jwtToken");
       const response = await fetch(
-        `https://reciguard.comhttps://reciguard.com/recipes/scrap/${recipeId}`,
+        `https://reciguard.com/recipes/scrap/${recipeId}`,
         {
           method: "POST",
           headers: {

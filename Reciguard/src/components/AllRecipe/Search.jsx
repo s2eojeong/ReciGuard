@@ -14,7 +14,7 @@ const RecipeCard = ({ recipe }) => {
 
     try {
       const response = await fetch(
-        `https://reciguard.comhttps://reciguard.com/recipes/scrap/${recipe.recipeId}`,
+        `https://reciguard.com/recipes/scrap/${recipe.recipeId}`,
         {
           method: "POST",
           headers: {
@@ -96,7 +96,7 @@ const Search = () => {
 
       try {
         const response = await fetch(
-          `https://reciguard.comhttps://reciguard.com/recipes/search?query=${searchQuery}&filter=${filterEnabled}`,
+          `https://reciguard.com/recipes/search?query=${searchQuery}&filter=${filterEnabled}`,
           {
             method: "GET",
             headers: {

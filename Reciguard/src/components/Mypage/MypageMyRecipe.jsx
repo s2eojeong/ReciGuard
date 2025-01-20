@@ -17,7 +17,7 @@ const MypageMyRecipe = () => {
       try {
         const token = localStorage.getItem("jwtToken");
         const response = await fetch(
-          "https://reciguard.comhttps://reciguard.com/recipes/myrecipes",
+          "https://reciguard.com/recipes/myrecipes",
           {
             method: "GET",
             headers: {
@@ -48,7 +48,7 @@ const MypageMyRecipe = () => {
     try {
       const token = localStorage.getItem("jwtToken");
       const response = await fetch(
-        `https://reciguard.comhttps://reciguard.com/recipes/scrap/${recipeId}`,
+        `https://reciguard.com/recipes/scrap/${recipeId}`,
         {
           method: "POST",
           headers: {
