@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./Rdetail.css";
-import 몇인분 from "../assets/serving";
+import 몇인분 from "../assets/serving.png";
 import 국가별 from "../assets/cuisine.png";
 import 조회수 from "../assets/count.png";
 import filledHeartImg from "../assets/heart1.png";
