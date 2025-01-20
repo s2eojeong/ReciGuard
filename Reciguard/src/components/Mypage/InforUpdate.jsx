@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import "./InforUpdate.css"
+import "./InforUpdate.css";
 
 const InforUpdate = () => {
-
-    const navigate=useNavigate();
+    const navigate = useNavigate();
     const passwordUp = () => {
-        navigate("/users/password")
-    }
+        navigate("/users/password");
+    };
 
     const [userData, setUserData] = useState({
         username: '',
@@ -20,7 +19,6 @@ const InforUpdate = () => {
         userFoodType: [],
         userCookingStyle: [],
     });
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     // JWT 토큰에서 username과 userid를 추출하는 함수
@@ -38,12 +36,10 @@ const InforUpdate = () => {
         }
     };
 
-
     useEffect(() => {
         const token = localStorage.getItem('jwtToken'); // 로컬 스토리지에서 JWT 토큰 가져오기
         if (!token) {
             setError('로그인이 필요합니다.');
-            setLoading(false);
             return;
         }
 
@@ -61,17 +57,13 @@ const InforUpdate = () => {
                 .then((response) => {
                     console.log('서버 응답 데이터:', response.data);
                     setUserData(response.data);
-                    setLoading(false);
                 })
                 .catch((err) => {
                     console.error('GET 요청 에러:', err.response || err.message);
                     setError('사용자 정보를 가져오지 못했습니다.');
-                    setLoading(false);
                 });
-
         } else {
             setError('잘못된 토큰입니다.');
-            setLoading(false);
         }
     }, []);
 
@@ -117,8 +109,13 @@ const InforUpdate = () => {
         }));
     };
 
-    if (loading) return <p></p>;
+    // 에러가 있을 경우 에러 메시지 출력
     if (error) return <p>{error}</p>;
+
+    // 데이터가 로드되지 않았을 경우 기본 메시지 출력
+    if (!userData.username) {
+        return  <div className="userinfo-container"></div>;
+    }
 
     return (
         <div className="inforupdate-container">
@@ -199,7 +196,7 @@ const InforUpdate = () => {
                                 <input
                                     type="checkbox"
                                     value={style}
-                                    checked={userData.userCuisine.includes(style.trim())} // 국가별은 userCuisine과 매칭
+                                    checked={userData.userCuisine.includes(style.trim())}
                                     onChange={(e) => {
                                         const value = e.target.value;
                                         const updatedCuisine = e.target.checked
@@ -224,15 +221,15 @@ const InforUpdate = () => {
                                 <input
                                     type="checkbox"
                                     value={type}
-                                    checked={userData.userFoodType.includes(type.trim())} // 배열에 선택된 항목이 있는지 확인
+                                    checked={userData.userFoodType.includes(type.trim())}
                                     onChange={(e) => {
                                         const value = e.target.value;
                                         const updatedFoodTypes = e.target.checked
-                                            ? [...userData.userFoodType, value] // 선택된 항목 추가
-                                            : userData.userFoodType.filter((item) => item !== value); // 선택 해제된 항목 제거
+                                            ? [...userData.userFoodType, value]
+                                            : userData.userFoodType.filter((item) => item !== value);
                                         setUserData((prevData) => ({
                                             ...prevData,
-                                            userFoodType: updatedFoodTypes, // 업데이트된 배열로 상태 변경
+                                            userFoodType: updatedFoodTypes,
                                         }));
                                     }}
                                 />
@@ -249,7 +246,7 @@ const InforUpdate = () => {
                                 <input
                                     type="checkbox"
                                     value={method}
-                                    checked={userData.userCookingStyle.includes(method.trim())} // 조리 방식은 userCookingStyle과 매칭
+                                    checked={userData.userCookingStyle.includes(method.trim())}
                                     onChange={(e) => {
                                         const value = e.target.value;
                                         const updatedMethods = e.target.checked
