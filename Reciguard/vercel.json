@@ -2,6 +2,9 @@
   "redirects": [
     {
       "source": "/:path*",
+      "has": [
+        { "type": "host", "value": "reciguard.com" }
+      ],
       "destination": "https://www.reciguard.com/:path*",
       "permanent": true
     }
