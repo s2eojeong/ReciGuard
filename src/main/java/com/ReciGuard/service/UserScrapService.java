@@ -20,7 +20,6 @@ public class UserScrapService {
 
     private final UserScrapRepository userScrapRepository;
     private final RecipeStatsService recipeStatsService;
-    private final RecipeRepository recipeRepository;
 
     public boolean toggleScrap(Long userId, Long recipeId) {
         boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipeId);

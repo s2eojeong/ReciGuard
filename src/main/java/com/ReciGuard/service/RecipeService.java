@@ -20,6 +20,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -41,7 +43,7 @@ public class RecipeService {
     private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;
 
-    @Value("http://54.180.96.1:8000/recommend") // 나중에 ai 모델 완성 후 수정
+    @Value("http://15.164.219.9:8000/recommend")
     private String recipeRecommendApiUrl;
 
     @Value("http://localhost:8000/check_allergy")
@@ -57,14 +59,15 @@ public class RecipeService {
                     recipeRecommendApiUrl,
                     HttpMethod.POST,
                     new HttpEntity<>(requestPayload),
-                    new ParameterizedTypeReference<Map<String, Object>>() {}
+                    new ParameterizedTypeReference<>() {
+                    }
             );
 
             log.info("AI 모델 응답: {}", response.getBody());
             log.info("Calling AI model with userId: {}", userId);
 
             Map<String, Object> responseBody = response.getBody();
-            if (responseBody == null || !responseBody.containsKey("recipe_id")) {
+            if (!responseBody.containsKey("recipe_id")) {
                 log.error("AI 모델 응답에 recipeId가 없습니다.");
                 return new RecipeRecommendResponseDTO(null, null, null);
             }
@@ -274,7 +277,8 @@ public class RecipeService {
             log.info("Calling AI model with recipeId: {} and userId: {}", recipeId, userId);
 
             // 응답 본문 반환 (null 체크)
-            return response.getBody() != null ? response.getBody() : new SimilarAllergyIngredientDTO(Collections.emptyList());
+            response.getBody();
+            return response.getBody();
         } catch (Exception e) {
             log.error("AI 모델 호출 실패: {}", e.getMessage());
             log.info("Calling AI model with recipeId: {} and userId: {}", recipeId, userId);
@@ -348,7 +352,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public Recipe saveMyRecipe(MyRecipeForm recipeForm, MultipartFile recipeImage, Map<String, MultipartFile> instructionImageFiles, HttpServletRequest request) {
+    public void saveMyRecipe(MyRecipeForm recipeForm, MultipartFile recipeImage, Map<String, MultipartFile> instructionImageFiles, HttpServletRequest request) {
 
         // 1. 현재 인증된 사용자의 username 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -401,8 +405,7 @@ public class RecipeService {
         recipe.setRecipeIngredients(ingredients);
 
         // 5. Instructions 저장
-        if (request instanceof MultipartHttpServletRequest) {
-            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        if (request instanceof MultipartHttpServletRequest multipartRequest) {
             Map<String, MultipartFile> parsedInstructionFiles = new HashMap<>();
             multipartRequest.getFileMap().forEach((key, value) -> {
                 if (key.startsWith("instructionImageFiles[")) {
@@ -483,7 +486,7 @@ public class RecipeService {
         recipe.setRecipeStats(stats);
 
         // 7. Recipe 저장
-        return recipeRepository.save(recipe);
+        recipeRepository.save(recipe);
     }
 
     public List<RecipeListResponseDTO> findMyRecipes(Long userId) { // 리스트로 반환 (간단 조회)
@@ -538,9 +541,8 @@ public class RecipeService {
     }
 
     @Transactional
-    public RecipeDetailResponseDTO updateMyRecipe(
+    public void updateMyRecipe(
             Long recipeId,
-            Long userId,
             MyRecipeFormEdit recipeForm,
             MultipartFile recipeImage,
             Map<String, MultipartFile> instructionImageFiles,
@@ -562,12 +564,36 @@ public class RecipeService {
             log.info("Removing existing recipe image for recipeId: {}", recipeId);
             s3Uploader.deleteFile(recipe.getImagePath()); // 기존 이미지 삭제
             recipe.setImagePath(null); // 이미지 경로 제거
-        }
-        if (recipeImage != null && !recipeImage.isEmpty()) {
-            log.info("Uploading new recipe image for recipeId: {}", recipeId);
-            String uploadedImagePath = s3Uploader.saveFile(recipeImage); // 새 이미지 업로드
-            recipe.setImagePath(uploadedImagePath); // 새 이미지 경로 저장
-            log.info("Uploaded new recipe image: {}", uploadedImagePath);
+        } else if (recipeImage != null && !recipeImage.isEmpty()) {
+            try {
+                // 새 이미지 해시값 계산
+                String newImageHash = s3Uploader.calculateFileHash(recipeImage);
+
+                // 기존 이미지 해시값 계산
+                String existingImageHash = null;
+                if (recipe.getImagePath() != null) {
+                    existingImageHash = calculateFileHashFromS3(recipe.getImagePath());
+                }
+                // 새 이미지와 기존 이미지 비교
+                if (!newImageHash.equals(existingImageHash)) {
+                    log.info("New recipe image is different from existing image. Proceeding with upload.");
+
+                    // 기존 이미지 삭제
+                    if (recipe.getImagePath() != null) {
+                        log.info("Deleting existing recipe image: {}", recipe.getImagePath());
+                        s3Uploader.deleteFile(recipe.getImagePath());
+                    }
+                    // 새 이미지 업로드 및 경로 저장
+                    String uploadedImagePath = s3Uploader.saveFile(recipeImage);
+                    recipe.setImagePath(uploadedImagePath);
+                    log.info("Uploaded new recipe image: {}", uploadedImagePath);
+                } else {
+                    log.info("New recipe image is identical to existing image. No changes made.");
+                }
+            } catch (Exception e) {
+                log.error("Failed to handle recipe image: {}", e.getMessage());
+                throw new RuntimeException("Failed to handle recipe image", e);
+            }
         }
 
         // 4. 재료 수정
@@ -629,8 +655,7 @@ public class RecipeService {
             });
         }
 
-        if (request instanceof MultipartHttpServletRequest) {
-            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        if (request instanceof MultipartHttpServletRequest multipartRequest) {
             Map<String, MultipartFile> parsedInstructionFiles = new HashMap<>();
             multipartRequest.getFileMap().forEach((key, value) -> {
                 if (key.startsWith("instructionImageFiles[")) {
@@ -692,71 +717,74 @@ public class RecipeService {
             existingInstructions.addAll(updatedInstructions);
         }
 
-        // 6. AI 모델 호출
-        SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
-        List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
-
-        // 스크랩 여부 확인
-        boolean isScrapped = userScrapRepository.existsUserScrap(userId, recipeId);
-
-        // 7. 수정된 레시피를 RecipeDetailResponseDTO로 변환 & 리턴
-        return new RecipeDetailResponseDTO(
-                recipe.getImagePath(),
-                recipe.getRecipeName(),
-                recipe.getServing(),
-                recipe.getCuisine(),
-                recipe.getFoodType(),
-                recipe.getCookingStyle(),
-                recipe.getNutrition() != null ? (int) recipe.getNutrition().getCalories() : 0,
-                recipe.getNutrition() != null ? (int) recipe.getNutrition().getSodium() : 0,
-                recipe.getNutrition() != null ? (int) recipe.getNutrition().getCarbohydrate() : 0,
-                recipe.getNutrition() != null ? (int) recipe.getNutrition().getFat() : 0,
-                recipe.getNutrition() != null ? (int) recipe.getNutrition().getProtein() : 0,
-                isScrapped,
-                recipe.getRecipeStats().getViewCount(),
-                recipe.getRecipeStats().getScrapCount(),
-                recipe.getRecipeIngredients() != null ? recipe.getRecipeIngredients().stream()
-                        .map(ingredient -> new IngredientResponseDTO(
-                                ingredient.getIngredient().getIngredient(),
-                                ingredient.getQuantity()
-                        ))
-                        .collect(Collectors.toList()) : Collections.emptyList(),
-                recipe.getInstructions() != null ? recipe.getInstructions().stream()
-                        .map(instruction -> new InstructionResponseDTO(
-                                instruction.getInstructionId(),
-                                instruction.getInstructionImage(),
-                                instruction.getInstruction()
-                        ))
-                        .collect(Collectors.toList()) : Collections.emptyList(),
-                similarAllergyIngredients
-        );
+        // 6. 수정된 레시피를 RecipeDetailResponseDTO로 변환 & 리턴
+        if (recipe.getRecipeIngredients() != null) {
+            recipe.getRecipeIngredients().stream()
+                    .map(ingredient -> new IngredientResponseDTO(
+                            ingredient.getIngredient().getIngredient(),
+                            ingredient.getQuantity()
+                    ))
+                    .collect(Collectors.toList());
+        }
+        if (recipe.getInstructions() != null) {
+            recipe.getInstructions().stream()
+                    .map(instruction -> new InstructionResponseDTO(
+                            instruction.getInstructionId(),
+                            instruction.getInstructionImage(),
+                            instruction.getInstruction()
+                    ))
+                    .collect(Collectors.toList());
+        }
     }
 
     // 이미지 처리 메서드
     private void handleInstructionImage(Instruction instruction, MultipartFile newImageFile) {
-        if (newImageFile != null && !newImageFile.isEmpty()) {
-            // 새 이미지를 업로드하는 로직
-            try {
-                String uploadedImageUrl = s3Uploader.saveFile(newImageFile); // S3에 이미지 업로드
-                log.info("Uploaded image to S3: {}", uploadedImageUrl);
+        try {
+            if (newImageFile != null && !newImageFile.isEmpty()) {
+                // 새 이미지의 해시값 계산
+                String newImageHash = s3Uploader.calculateFileHash(newImageFile);
 
-                // 기존 이미지 삭제
+                // 기존 이미지가 있는 경우 기존 이미지의 해시값 계산
+                String existingImageHash = null;
                 if (instruction.getInstructionImage() != null) {
-                    log.info("Deleting existing image from S3: {}", instruction.getInstructionImage());
-                    s3Uploader.deleteFile(instruction.getInstructionImage());
+                    existingImageHash = calculateFileHashFromS3(instruction.getInstructionImage());
                 }
 
-                instruction.setInstructionImage(uploadedImageUrl); // 새 이미지 URL 저장
-            } catch (Exception e) {
-                log.error("Failed to upload image for instruction: {}", e.getMessage());
-                throw new RuntimeException("Failed to upload image", e);
+                if (!newImageHash.equals(existingImageHash)) {
+                    log.info("New image is different from existing image. Proceeding with upload.");
+
+                    // 기존 이미지 삭제
+                    if (instruction.getInstructionImage() != null) {
+                        log.info("Deleting existing image from S3: {}", instruction.getInstructionImage());
+                        s3Uploader.deleteFile(instruction.getInstructionImage());
+                    }
+
+                    // 새 이미지 업로드 및 경로 저장
+                    String uploadedImageUrl = s3Uploader.saveFile(newImageFile);
+                    instruction.setInstructionImage(uploadedImageUrl);
+                    log.info("Uploaded new image to S3: {}", uploadedImageUrl);
+                } else {
+                    log.info("New image is identical to existing image. No changes made.");
+                }
+            } else if (instruction.getInstructionImage() != null) {
+                // 이미지를 삭제하는 경우
+                log.info("Deleting existing image from S3 for instructionId {}: {}", instruction.getInstructionId(), instruction.getInstructionImage());
+                s3Uploader.deleteFile(instruction.getInstructionImage());
+                instruction.setInstructionImage(null);
             }
-        } else if (instruction.getInstructionImage() != null) {
-            // 이미지를 삭제하는 경우
-            log.info("Deleting existing image from S3 for instructionId {}: {}", instruction.getInstructionId(), instruction.getInstructionImage());
-            s3Uploader.deleteFile(instruction.getInstructionImage());
-            instruction.setInstructionImage(null); // 이미지 필드 null 처리
+        } catch (Exception e) {
+            log.error("Failed to handle instruction image: {}", e.getMessage());
+            throw new RuntimeException("Failed to handle instruction image", e);
         }
     }
 
+    private String calculateFileHashFromS3(String s3FilePath) throws NoSuchAlgorithmException {
+        byte[] fileBytes = s3Uploader.downloadFile(s3FilePath); // S3에서 파일 다운로드
+        if (fileBytes == null) {
+            return null;
+        }
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(fileBytes);
+        return Base64.getEncoder().encodeToString(hash); // 해시값을 Base64로 인코딩
+    }
 }
