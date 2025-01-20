@@ -5,8 +5,8 @@ import 회원정보 from "../../assets/회원정보.png";
 import 회원정보호버 from "../../assets/회원정보호버.png";
 import 스크랩 from "../../assets/스크랩.png";
 import 스크랩호버 from "../../assets/스크랩호버.png";
-import 마이레시피 from "../../assets/마이레시피.png";
-import 마이레시피호버 from "../../assets/마이레시피호버.png";
+import 마이레시피 from "../../assets/myrecipe.png";
+import 마이레시피호버 from "../../assets/myrecipehover.png";
 import 로그아웃 from "../../assets/로그아웃.png";
 import 회원탈퇴 from "../../assets/회원탈퇴.png";
 
