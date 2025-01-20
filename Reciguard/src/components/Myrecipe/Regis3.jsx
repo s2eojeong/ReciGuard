@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import image2 from "../../assets/요리순서업로드.png";
+import image2 from "../../assets/foodupload.png";
 import "./Regis3.css";
 
 const Regis3 = ({ onDataUpdate = () => {} }) => {
@@ -7,7 +7,7 @@ const Regis3 = ({ onDataUpdate = () => {} }) => {
     {
       id: 1,
       description:
-          "예) 닭은 껍데기에 지방이 붙어있어 지방 섭취가 싫으신 분들은 미리 닭껍질을 손질해서 준비해주세요.",
+        "예) 닭은 껍데기에 지방이 붙어있어 지방 섭취가 싫으신 분들은 미리 닭껍질을 손질해서 준비해주세요.",
       image: image2,
       imageRemoved: false,
       isExample: true,
@@ -15,7 +15,8 @@ const Regis3 = ({ onDataUpdate = () => {} }) => {
   ]);
 
   const addStep = () => {
-    const maxId = steps.length > 0 ? Math.max(...steps.map((step) => step.id)) : 0;
+    const maxId =
+      steps.length > 0 ? Math.max(...steps.map((step) => step.id)) : 0;
     const updatedSteps = [
       ...steps,
       {
@@ -32,7 +33,7 @@ const Regis3 = ({ onDataUpdate = () => {} }) => {
 
   const handleInputChange = (id, field, value) => {
     const updatedSteps = steps.map((step) =>
-        step.id === id ? { ...step, [field]: value } : step
+      step.id === id ? { ...step, [field]: value } : step
     );
     setSteps(updatedSteps);
     sendDataToParent(updatedSteps); // 부모로 데이터 전달
@@ -40,7 +41,7 @@ const Regis3 = ({ onDataUpdate = () => {} }) => {
 
   const handleInputFocus = (id, field) => {
     const updatedSteps = steps.map((step) =>
-        step.id === id && step.isExample ? { ...step, [field]: "" } : step
+      step.id === id && step.isExample ? { ...step, [field]: "" } : step
     );
     setSteps(updatedSteps);
     sendDataToParent(updatedSteps); // 부모로 데이터 전달
@@ -108,53 +109,58 @@ const Regis3 = ({ onDataUpdate = () => {} }) => {
   };
 
   return (
-      <div className="regis3-wrapper">
-        <div className="regis3-container">
-          <div className="regis3-header">요리순서</div>
-          <div className="regis3-note">
-            요리 맛이 좌우될 수 있는 중요한 부분을 빠짐없이 적어주세요.
-          </div>
-          <div className="regis3-form">
-            {steps.map((step, index) => (
-                <div key={step.id} className="step-row">
-                  <div className="step-number">Step {index + 1}</div>
-                  <textarea
-                      className="step-description"
-                      placeholder="순서 설명을 작성해주세요."
-                      value={step.description}
-                      onFocus={() => handleInputFocus(step.id, "description")}
-                      onChange={(e) =>
-                          handleInputChange(step.id, "description", e.target.value)
-                      }
-                  />
-                  <div className="step-image-upload" onClick={() => handleImageClick(step.id)}>
-                    <img
-                        src={renderImage(step)}
-                        alt="Uploaded"
-                        className="step-image"
-                    />
-                    <input
-                        id={`file-upload-${step.id}`}
-                        type="file"
-                        accept="image/*"
-                        style={{display: "none"}}
-                        onChange={(e) => handleImageUpload(step.id, e.target.files[0])}
-                    />
-                  </div>
-                  <button
-                      className="step-delete"
-                      onClick={() => removeStep(step.id)}
-                  >
-                    X
-                  </button>
-                </div>
-            ))}
-          </div>
-          <button className="step-add" onClick={addStep}>
-            추가
-          </button>
+    <div className="regis3-wrapper">
+      <div className="regis3-container">
+        <div className="regis3-header">요리순서</div>
+        <div className="regis3-note">
+          요리 맛이 좌우될 수 있는 중요한 부분을 빠짐없이 적어주세요.
         </div>
+        <div className="regis3-form">
+          {steps.map((step, index) => (
+            <div key={step.id} className="step-row">
+              <div className="step-number">Step {index + 1}</div>
+              <textarea
+                className="step-description"
+                placeholder="순서 설명을 작성해주세요."
+                value={step.description}
+                onFocus={() => handleInputFocus(step.id, "description")}
+                onChange={(e) =>
+                  handleInputChange(step.id, "description", e.target.value)
+                }
+              />
+              <div
+                className="step-image-upload"
+                onClick={() => handleImageClick(step.id)}
+              >
+                <img
+                  src={renderImage(step)}
+                  alt="Uploaded"
+                  className="step-image"
+                />
+                <input
+                  id={`file-upload-${step.id}`}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={(e) =>
+                    handleImageUpload(step.id, e.target.files[0])
+                  }
+                />
+              </div>
+              <button
+                className="step-delete"
+                onClick={() => removeStep(step.id)}
+              >
+                X
+              </button>
+            </div>
+          ))}
+        </div>
+        <button className="step-add" onClick={addStep}>
+          추가
+        </button>
       </div>
+    </div>
   );
 };
 
