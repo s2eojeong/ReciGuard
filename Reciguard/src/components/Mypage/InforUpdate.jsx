@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {useNavigate} from "react-router-dom";
 import axios from 'axios';
+import "./InforUpdate.css"
 
 const InforUpdate = () => {
 
@@ -116,12 +117,12 @@ const InforUpdate = () => {
         }));
     };
 
-    if (loading) return <p>로딩 중...</p>;
+
     if (error) return <p>{error}</p>;
 
     return (
-        <div>
-            <h1>나의 계정</h1>
+        <div className="inforupdate-container">
+            <h1 className="inforupdate-h1">회원정보 수정</h1>
             <div>
                 <label>이름:</label>
                 <input

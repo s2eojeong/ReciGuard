@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import "./AlleUpdate.css"
 
 const AlleUpdate = () => {
     const [userData, setUserData] = useState({
@@ -112,12 +113,12 @@ const AlleUpdate = () => {
         }));
     };
 
-    if (loading) return <p>로딩 중...</p>;
+    if (loading) return <p></p>;
     if (error) return <p>{error}</p>;
 
     return (
-        <div>
-            <h1>나의 계정</h1>
+        <div className="alleupdate-container">
+            <h1 className="alleupdate-h1">알레르기 정보 수정</h1>
             <div>
                 <label>알레르기</label>
                 <input
