@@ -163,7 +163,7 @@ public class RecipeController {
     }
 
     // 나만의 레시피 수정
-    @PostMapping(value = "/myrecipe/{recipeId}/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/myrecipe/{recipeId}/edit")
     public ResponseEntity<String> updateMyRecipe(
             @PathVariable Long recipeId,
             @RequestPart("recipeForm") String recipeFormJson,
