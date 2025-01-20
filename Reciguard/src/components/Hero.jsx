@@ -9,7 +9,7 @@ const Hero = () => {
       <p className="hero-subtitle">
         알레르기를 가진 당신에게 안전한 레시피를 제공합니다
       </p>
-      <Link to="/auth/login">
+      <Link to="/login">
         <button className="hero-button">Get Started</button>
       </Link>
     </div>
