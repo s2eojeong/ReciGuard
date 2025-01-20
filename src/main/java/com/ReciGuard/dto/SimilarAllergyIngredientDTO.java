@@ -14,6 +14,6 @@ import java.util.List;
 @Builder
 public class SimilarAllergyIngredientDTO {
 
-    @JsonProperty("ingredient")
+    @JsonProperty("ingredients")
     private List<String> similarIngredient;
 }

@@ -3,7 +3,7 @@
     background-color: #ffffff;
     padding: 0;
     border-right: 2px solid #ddd;
-    height: 90vh;
+   min-height: 100%;
   }
   
   .menu-group11 {
