@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import "./AlleUpdate.css"
+import "./AlleUpdate.css";
 
 const AlleUpdate = () => {
     const [userData, setUserData] = useState({
-        ingredients: "",
+        ingredients: [], // 배열로 초기화
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -26,7 +26,6 @@ const AlleUpdate = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("jwtToken"); // 로컬 스토리지에서 JWT 토큰 가져오기
-        console.log("사용 중인 토큰:", token);
 
         if (!token) {
             setError("로그인이 필요합니다.");
@@ -42,17 +41,13 @@ const AlleUpdate = () => {
             axios
                 .get(`http://localhost:8080/api/users/allergy/${userid}`, {
                     headers: {
-                        Authorization: `Bearer ${token}`, // 이 헤더가 포함되어야 합니다.
+                        Authorization: `Bearer ${token}`,
                     },
                 })
                 .then((response) => {
                     console.log("서버 응답 데이터:", response.data);
 
-                    // ingredientName만 추출하여 문자열로 변환
-                    const ingredients = response.data
-                        .map((item) => item.ingredientName.trim()) // ingredientName만 추출
-                        .join(", "); // 문자열로 변환
-
+                    const ingredients = response.data.map((item) => item.ingredientName.trim()); // 배열로 변환
                     setUserData({ ingredients });
                     setLoading(false);
                 })
@@ -80,7 +75,7 @@ const AlleUpdate = () => {
             const { userid } = userInfo;
 
             const userIngredientListDTO = {
-                ingredients: userData.ingredients.split(",").map((item) => item.trim()), // 쉼표로 구분된 문자열을 배열로 변환
+                ingredients: userData.ingredients, // 이미 배열이므로 변환 불필요
             };
 
             axios
@@ -105,30 +100,51 @@ const AlleUpdate = () => {
         }
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setUserData((prevData) => ({
-            ...prevData,
-            [name]: value, // 문자열 그대로 설정
-        }));
-    };
-
-    if (loading) return <p></p>;
     if (error) return <p>{error}</p>;
 
     return (
         <div className="alleupdate-container">
             <h1 className="alleupdate-h1">알레르기 정보 수정</h1>
-            <div>
-                <label>알레르기</label>
-                <input
-                    type="text"
-                    name="ingredients"
-                    value={userData.ingredients}
-                    onChange={handleChange}
-                />
-            </div>
-            <button onClick={handleUpdate}>정보 업데이트</button>
+            <fieldset className="allergy-container">
+                <legend>알레르기</legend>
+                {[
+                    { category: "유제품", items: ["우유"] },
+                    { category: "곡물류", items: ["밀가루", "귀리", "호밀가루"] },
+                    { category: "견과류", items: ["호두", "아몬드", "땅콩", "참깨"] },
+                    { category: "콩류", items: ["대두"] },
+                    { category: "육류", items: ["돼지고기", "닭고기", "소고기", "계란"] },
+                    { category: "해산물", items: ["고등어", "연어", "참치", "꽃게", "새우", "오징어", "굴", "전복", "홍합", "조개"] },
+                    { category: "과일류", items: ["복숭아", "키위"] },
+                    { category: "해당없음", items: ["해당없음"] },
+                ].map((group) => (
+                    <div key={group.category} className="allergy-group">
+                        <label className="allergy-category">{group.category}</label>
+                        <div className="checkbox-group">
+                            {group.items.map((item) => (
+                                <label key={item}>
+                                    <input
+                                        type="checkbox"
+                                        value={item}
+                                        checked={userData.ingredients.includes(item)}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            const updatedIngredients = e.target.checked
+                                                ? [...userData.ingredients, value]
+                                                : userData.ingredients.filter((ingredient) => ingredient !== value);
+                                            setUserData((prevData) => ({
+                                                ...prevData,
+                                                ingredients: updatedIngredients,
+                                            }));
+                                        }}
+                                    />
+                                    {item}
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </fieldset>
+            <button onClick={handleUpdate} className="update-button">수정하기</button>
         </div>
     );
 };

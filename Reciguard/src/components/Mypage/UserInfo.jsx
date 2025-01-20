@@ -51,7 +51,7 @@ const UserInfo = () => {
         }
     }, []);
 
-    if (loading) return <p></p>;
+    if (loading) return ;
     if (error) return <p>{error}</p>;
 
     return (
@@ -59,7 +59,7 @@ const UserInfo = () => {
             <h1 className="userinfo-h1">나의 계정</h1>
             <div className="userinfo-container1">
                 <div className="userinfo-item">
-                    <label>이름</label>
+                    <label>아이디</label>
                     <span>{userData.username}</span>
                 </div>
                 <div className="userinfo-item2">
