@@ -52,13 +52,16 @@ const Sidebar3 = () => {
     if (!confirmed) return;
 
     try {
-      const response = await fetch(`https://reciguard.com/users/${userid}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`, // 인증 헤더 추가
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `https://reciguard.com/api/users/${userid}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`, // 인증 헤더 추가
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         alert("회원 탈퇴가 완료되었습니다.");

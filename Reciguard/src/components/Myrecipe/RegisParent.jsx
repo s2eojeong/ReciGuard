@@ -115,7 +115,7 @@ const RegisParent = () => {
 
       // API 요청
       const response = await fetch(
-        "https://reciguard.com/recipes/myrecipe/save",
+        "https://reciguard.com/api/recipes/myrecipe/save",
         {
           method: "POST",
           headers: {
