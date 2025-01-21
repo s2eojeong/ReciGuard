@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {useNavigate} from "react-router-dom";
 import "./RegisParent.css";
 import Regis1 from "./Regis1";
 import Regis2 from "./Regis2";
 import Regis3 from "./Regis3";
 
 const RegisParent = () => {
-  const navigate = useNavigate();
   useEffect(() => {
     console.log("로컬 스토리지 토큰:", localStorage.getItem("jwtToken"));
   }, []);
@@ -144,8 +142,6 @@ const RegisParent = () => {
         const resultText = await response.text();
         alert(resultText); // 텍스트 응답 처리
       }
-
-      navigate("/users/myrecipes");
     } catch (error) {
       console.error("에러 발생:", error.message);
       alert(`요청 중 오류가 발생했습니다: ${error.message}`);
