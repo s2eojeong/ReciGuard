@@ -212,8 +212,8 @@
 
 .close-popup {
     position: fixed;
-    top: 30px;
-    right: 140px;
+    top: 50px;
+    right: 250px;
     background: none;
     border: none;
     border-radius: 5px;

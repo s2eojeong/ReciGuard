@@ -1,0 +1,73 @@
+.password-update-container {
+    width: 300px;
+    height: 300px;
+    margin: 90px auto;
+    padding: 20px;
+    border: 1px solid #B0B0B0;
+    border-radius: 8px;
+    background-color: #f6f6f6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.error-message {
+    text-align: center;
+    color: red;
+    margin-bottom: 20px;
+}
+
+.success-message {
+    text-align: center;
+    color: #3e5944;
+    margin-bottom: 20px;
+}
+
+.password-update-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-group-pass {
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.form-label-pass {
+    display: block;
+    font-size: 14px;
+    color: #425466;
+    margin-bottom: 8px;
+}
+
+.form-input-pass {
+    width: 95%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    background-color: #E4E3E3;
+    border: none;
+}
+
+.form-input-pass:focus {
+    background-color: #fff;
+}
+
+.form-button-pass {
+    width: 40%;
+    padding: 8px 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #3e5944;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-button-pass:hover {
+    background-color: #2e3b2c;
+}
