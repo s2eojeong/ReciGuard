@@ -2,14 +2,17 @@ package com.ReciGuard.controller;
 
 import java.util.Map;
 
-import com.ReciGuard.dto.UserPasswordDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ReciGuard.JWT.JWTUtil;
+import com.ReciGuard.dto.UserPasswordDTO;
 import com.ReciGuard.dto.UserResponseDTO;
 import com.ReciGuard.service.UserService;
 
@@ -21,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://www.reciguard.com")
 public class AuthController {
 
     private final UserService userService;
@@ -77,7 +80,6 @@ public class AuthController {
     }
 
      */
-
     @PostMapping("/password")
     public ResponseEntity<String> changePassword(@RequestBody UserPasswordDTO passwordDTO) {
         try {

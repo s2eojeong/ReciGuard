@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./HomeSide.css";
-import 나의계정 from "../../assets/나의계정.png";
-import 회원정보수정 from "../../assets/회원정보수정.png";
-import 알레르기정보수정 from "../../assets/알레르기정보수정.png";
+import 나의계정 from "../../assets/myaccount.png";
+import 회원정보수정 from "../../assets/userupdate.png";
+import 알레르기정보수정 from "../../assets/allupdate.png";
 
 const HomeSide1 = () => {
   return (

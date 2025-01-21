@@ -11,13 +11,12 @@
     border-radius: 16px;
     text-align: center;
     padding: 40px;
-    width: 80%; /* 박스의 너비 */
-    max-width: 600px; /* 최대 너비 */
+    width: 60%; /* 박스의 너비 */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 살짝 그림자 */
 }
 
 .myrec-subtitle {
-    font-size: 17px;
+    font-size: 19px;
     color: #757575;
     font-style: italic;
     position: relative;
@@ -25,19 +24,20 @@
 }
 
 .myrec-title {
-    font-size: 26px;
+    font-size: 30px;
     font-weight: bold;
     color: #3e5944; /* 메인 텍스트 색상 */
     margin-bottom: 20px;
     position: relative;
-    top: -8px;
+    top: -15px;
+    line-height: 0.5;
 }
 
 .myrec-button {
     background-color: #3e5944; /* 버튼 배경 */
     color: #ffffff; /* 버튼 텍스트 색상 */
     border: none;
-    padding: 8px 20px;
+    padding: 8px 23px;
     font-size: 16px;
     font-weight: bolder;
     border-radius: 8px;
