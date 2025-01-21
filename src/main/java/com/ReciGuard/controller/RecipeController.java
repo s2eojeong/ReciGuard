@@ -1,28 +1,41 @@
 package com.ReciGuard.controller;
 
-import com.ReciGuard.dto.*;
-import com.ReciGuard.service.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.ReciGuard.dto.MyRecipeForm;
+import com.ReciGuard.dto.MyRecipeFormEdit;
+import com.ReciGuard.dto.RecipeDetailResponseDTO;
+import com.ReciGuard.dto.RecipeListResponseDTO;
+import com.ReciGuard.dto.RecipeRecommendResponseDTO;
+import com.ReciGuard.service.RecipeService;
+import com.ReciGuard.service.RecipeStatsService;
+import com.ReciGuard.service.UserScrapService;
+import com.ReciGuard.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/recipes")
+@RequestMapping("//apirecipes")
 public class RecipeController {
 
     private final RecipeService recipeService;
@@ -187,4 +200,3 @@ public class RecipeController {
         }
     }
 }
-

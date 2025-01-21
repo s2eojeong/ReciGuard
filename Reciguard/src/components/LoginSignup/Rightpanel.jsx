@@ -52,11 +52,11 @@ function Rightpanel() {
       <p className="meet">Meet the good taste today</p>
       <form className="login-form" onSubmit={handleLogin}>
         <div className="form-group">
-          <label htmlFor="username">이름</label>
+          <label htmlFor="username">아이디</label>
           <input
             type="text"
             id="username"
-            placeholder="Type your name"
+            placeholder="Type your Id"
             required
             value={username}
             onChange={(e) => setUsername(e.target.value)}

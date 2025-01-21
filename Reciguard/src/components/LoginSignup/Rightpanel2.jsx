@@ -168,12 +168,12 @@ function Rightpanel2() {
       <p className="easy">It's easy and free</p>
       <form className="login-form" onSubmit={handlePopupOpen}>
         <div className="form-group">
-          <label htmlFor="name">이름</label>
+          <label htmlFor="name">Id</label>
           <input
             type="text"
             id="name"
             name="name"
-            placeholder="Enter your name"
+            placeholder="4~16자리로 작성해주세요."
             required
             onChange={handleInputChange}
           />
@@ -184,7 +184,7 @@ function Rightpanel2() {
             type="email"
             id="email"
             name="email"
-            placeholder="Type your e-mail"
+            placeholder="정확한 이메일 형태로 작성해주세요"
             required
             onChange={handleInputChange}
           />
@@ -196,7 +196,7 @@ function Rightpanel2() {
               type="password"
               id="password"
               name="password"
-              placeholder="Type your password"
+              placeholder="영문,숫자,특수기호를 모두 포함해야 합니다."
               required
               onChange={handleInputChange}
             />
