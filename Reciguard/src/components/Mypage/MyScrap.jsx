@@ -14,7 +14,7 @@ const MyScrap = () => {
     const fetchScrapRecipes = async () => {
       try {
         const token = localStorage.getItem("jwtToken");
-        const response = await fetch("https://reciguard.com/users/scraps", {
+        const response = await fetch("https://reciguard.com/api/users/scraps", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const MyScrap = () => {
     try {
       const token = localStorage.getItem("jwtToken");
       const response = await fetch(
-        `https://reciguard.com/recipes/scrap/${recipeId}`,
+        `https://reciguard.com/api/recipes/scrap/${recipeId}`,
         {
           method: "POST",
           headers: {

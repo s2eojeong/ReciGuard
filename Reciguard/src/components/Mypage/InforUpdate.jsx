@@ -49,7 +49,7 @@ const InforUpdate = () => {
       const { userid } = userInfo;
 
       axios
-        .get(`https://reciguard.com/users/info/${userid}`, {
+        .get(`https://reciguard.com/api/users/info/${userid}`, {
           headers: {
             Authorization: `Bearer ${token}`, // 이 헤더가 포함되어야 합니다.
           },
@@ -81,7 +81,7 @@ const InforUpdate = () => {
 
       axios
         .put(
-          `https://reciguard.com/users/info/${userid}`,
+          `https://reciguard.com/api/users/info/${userid}`,
           userData, // 업데이트할 데이터
           {
             headers: {
