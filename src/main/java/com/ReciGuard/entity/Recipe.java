@@ -39,7 +39,7 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeIngredient> recipeIngredients;
 
-    @OneToOne(mappedBy = "recipe", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "recipe",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Nutrition nutrition;
 
     @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
