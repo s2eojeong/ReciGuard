@@ -14,7 +14,7 @@ const Recommend = () => {
     const fetchRecommendRecipe = async () => {
       try {
         const response = await fetch(
-          `https://reciguard.com/recipes/recommend`,
+          `https://reciguard.com/api/recipes/recommend`,
           {
             method: "GET",
             headers: {
