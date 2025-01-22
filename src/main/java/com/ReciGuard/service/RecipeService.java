@@ -333,6 +333,7 @@ public class RecipeService {
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
+                recipe.getUser().getUserid(),
                 recipe.getServing(),
                 recipe.getCuisine(),
                 recipe.getFoodType(),
@@ -786,5 +787,13 @@ public class RecipeService {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(fileBytes);
         return Base64.getEncoder().encodeToString(hash); // 해시값을 Base64로 인코딩
+    }
+
+    @Transactional
+    public void deleteMyRecipe(Long recipeId){
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 레시피입니다."));
+
+        recipeRepository.delete(recipe);
     }
 }
