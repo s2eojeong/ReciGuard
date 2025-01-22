@@ -7,6 +7,7 @@ import java.util.List;
 public class RecipeDetailResponseDTO {
     private String imagePath;
     private String recipeName;
+    private Long userId;
     private int serving;
 
     private String cuisine;
@@ -29,6 +30,7 @@ public class RecipeDetailResponseDTO {
 
     public RecipeDetailResponseDTO(String imagePath,
                                    String recipeName,
+                                   Long userId,
                                    int serving,
                                    String cuisine,
                                    String foodType,
@@ -40,6 +42,7 @@ public class RecipeDetailResponseDTO {
                                    List<String> similarAllergyIngredients) {
         this.imagePath = imagePath;
         this.recipeName = recipeName;
+        this.userId = userId;
         this.serving = serving;
         this.cuisine = cuisine;
         this.foodType = foodType;
