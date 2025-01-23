@@ -196,3 +196,49 @@
     text-align: center;
     margin-top: 20px;
 }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* 버튼 간 간격 */
+    margin: 20px 0;
+    margin-top: 40px;
+    padding: 10px;
+    border-radius: 8px; /* 둥근 모서리 */
+}
+
+.page-btn,
+.group-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px; /* 버튼 크기 */
+    height: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #9C9C9C;
+    background-color: white;
+    border: 1px solid #9C9C9C;
+    border-radius: 4px; /* 버튼 둥근 모서리 */
+    cursor: pointer;
+    transition: all 0.3s ease; /* 버튼 전환 효과 */
+}
+
+.page-btn.active {
+    color: white;
+    background-color: #3e5944; /* 활성화된 버튼 색 (진한 초록색) */
+    border-color: #3e5944;
+}
+
+.page-btn:hover,
+.group-btn:hover {
+    background-color: #3e5944;
+    color: #ffffff;
+    border: none;
+}
+
+.group-btn {
+    width: 40px;
+    height: 40px;
+}
