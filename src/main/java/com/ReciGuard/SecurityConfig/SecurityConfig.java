@@ -79,7 +79,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);  // 인증 정보 포함 허용
-        configuration.setAllowedOrigins(List.of("https://reciguard.com", "https://www.reciguard.com", "http://localhost:5173"));  // 허용할 프론트엔드 URL
+        configuration.setAllowedOrigins(List.of("https://reciguard.com","https://www.reciguard.com"));  // 허용할 프론트엔드 URL
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));  // 허용할 HTTP 메서드
         configuration.setAllowedHeaders(List.of("*"));  // 모든 헤더 허용
         configuration.setExposedHeaders(List.of("Authorization"));  // 클라이언트가 응답에서 `Authorization` 헤더 확인 가능
