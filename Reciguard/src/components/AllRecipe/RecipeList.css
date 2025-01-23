@@ -85,7 +85,7 @@
 .tab-btn.active::after {
     content: "";
     display: block;
-    width: 230px; /* 밑줄 길이를 요소 너비의 130%로 설정 */
+    width: 240px;
     height: 3px;
     background-color: #3e5944;
     position: absolute;
