@@ -12,7 +12,7 @@
 
 .my-recipe-list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px; /* 카드 간 간격 */
     justify-items: center;
 }
