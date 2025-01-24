@@ -64,6 +64,13 @@
     border-radius: 5px;
 }
 
+.my-recipe-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
 .view-recipe-button {
     margin-top: 5px;
     padding: 6px 15px;
@@ -74,7 +81,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-left: 110px;
+    margin-left: 45px;
 }
 
 .view-recipe-button:hover {
@@ -82,6 +89,25 @@
     color: #ffffff;
     border: 1px solid #ffffff;
 }
+
+.delete-recipe-button {
+    margin-top: 5px;
+    padding: 6px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #263629;
+    background-color: #C9D2CB;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.delete-recipe-button:hover {
+    background-color: #3e5944;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
 
 .loading-text,
 .error-text,
