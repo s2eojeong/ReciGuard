@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Header2.css";
 import mypage from "../assets/mypage.png";
+import search from "../assets/search.png"
 import { Link, useNavigate } from "react-router-dom";
 
 const Header2 = () => {
@@ -31,20 +32,27 @@ const Header2 = () => {
         </Link>
       </ul>
       <div className="rightnav2">
-        <form onSubmit={handleSearch} style={{ display: "flex" }}>
-          <input
-            className="navbar-search2"
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button type="submit" style={{ display: "none" }}>
-            Search
-          </button>
-        </form>
-        <img className="mypage-image2" src={mypage} alt="마이페이지" />
-        <Link to="/users/{userid}" style={{ textDecoration: "none" }}>
+          <form onSubmit={handleSearch} style={{display: "flex", alignItems: "center"}}>
+            <div className="search-container" style={{position: "relative", flex: 1}}>
+              <img
+                  src={search}
+                  alt="search icon"
+                  className="search-icon"
+              />
+              <input
+                  className="navbar-search2"
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <button type="submit" style={{display: "none"}}>
+              Search
+            </button>
+          </form>
+        <img className="mypage-image2" src={mypage} alt="마이페이지"/>
+        <Link to="/users/{userid}" style={{textDecoration: "none"}}>
           <h1 className="mypage-letter">마이페이지</h1>
         </Link>
       </div>
