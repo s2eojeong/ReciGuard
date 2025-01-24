@@ -45,6 +45,9 @@ public class Recipe {
     @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private RecipeStats recipeStats;
 
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<UserScrap> userScraps;
+
     public Recipe(Long id) {
         this.id = id;
     }
