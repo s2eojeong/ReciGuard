@@ -14,21 +14,21 @@ const RecipeCard = ({ recipe }) => {
 
     try {
       const response = await fetch(
-          `https://reciguard.com/api/recipes/scrap/${recipe.recipeId}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        `https://reciguard.com/api/recipes/scrap/${recipe.recipeId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       const contentType = response.headers.get("content-type");
       const data =
-          contentType && contentType.includes("application/json")
-              ? await response.json()
-              : await response.text();
+        contentType && contentType.includes("application/json")
+          ? await response.json()
+          : await response.text();
 
       if (!response.ok) {
         throw new Error(data.message || "스크랩 요청 실패");
@@ -43,37 +43,37 @@ const RecipeCard = ({ recipe }) => {
   };
 
   return (
-      <div className="recipe-card">
-        <div className="recipe-header">
-          <h3>{recipe.recipeName}</h3>
-          <button className="scrap-btn" onClick={handleScrap}>
-            <img
-                src={scrapped ? 스크랩후 : 스크랩전}
-                alt={scrapped ? "스크랩됨" : "스크랩하기"}
-                className="scrap-icon"
-            />
-          </button>
-        </div>
-        <div className="recipe-image-div">
+    <div className="recipe-card">
+      <div className="recipe-header">
+        <h3>{recipe.recipeName}</h3>
+        <button className="scrap-btn" onClick={handleScrap}>
           <img
-              src={recipe.imagePath}
-              alt={recipe.recipeName}
-              className="recipe-image-real"
+            src={scrapped ? 스크랩후 : 스크랩전}
+            alt={scrapped ? "스크랩됨" : "스크랩하기"}
+            className="scrap-icon"
           />
-        </div>
-        <div className="recipe-info">
-          <p>
-            <img className="recipe-info-person" src={인분} alt="인분 아이콘" />
-            {recipe.serving}인분
-          </p>
-          <button
-              className="recipe-btn"
-              onClick={() => navigate(`/recipes/${recipe.recipeId}`)}
-          >
-            레시피 보기
-          </button>
-        </div>
+        </button>
       </div>
+      <div className="recipe-image-div">
+        <img
+          src={recipe.imagePath}
+          alt={recipe.recipeName}
+          className="recipe-image-real"
+        />
+      </div>
+      <div className="recipe-info">
+        <p>
+          <img className="recipe-info-person" src={인분} alt="인분 아이콘" />
+          {recipe.serving}인분
+        </p>
+        <button
+          className="recipe-btn"
+          onClick={() => navigate(`/recipes/${recipe.recipeId}`)}
+        >
+          레시피 보기
+        </button>
+      </div>
+    </div>
   );
 };
 
@@ -98,14 +98,14 @@ const Search = () => {
 
       try {
         const response = await fetch(
-            `https://reciguard.com/api/recipes/search?query=${searchQuery}&filter=${filterEnabled}`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
+          `https://reciguard.com/api/recipes/search?query=${searchQuery}&filter=${filterEnabled}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
 
         if (!response.ok || response.status === 204) {
@@ -152,17 +152,17 @@ const Search = () => {
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     return (
-        <div className="pagination">
-          {pageNumbers.map((page) => (
-              <button
-                  key={page}
-                  className={`page-btn ${currentPage === page ? "active" : ""}`}
-                  onClick={() => handlePageChange(page)}
-              >
-                {page}
-              </button>
-          ))}
-        </div>
+      <div className="pagination">
+        {pageNumbers.map((page) => (
+          <button
+            key={page}
+            className={`page-btn ${currentPage === page ? "active" : ""}`}
+            onClick={() => handlePageChange(page)}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
     );
   };
 
@@ -171,44 +171,44 @@ const Search = () => {
   }
 
   return (
-      <div className="recipe-list-container">
-        <h2 className="allrecipes-header">
-          {query ? `"${query}"의 검색 결과입니다.` : "검색 결과"}
-        </h2>
+    <div className="recipe-list-container">
+      <h2 className="allrecipes-header">
+        {query ? `"${query}"의 검색 결과입니다.` : "검색 결과"}
+      </h2>
 
-        <div className="filter-buttons">
-          <div className="filter-header">알레르기 유발 음식 필터링</div>
-          <div className="filter-btn-group">
-            <button
-                className={`filter-btn ${!filterEnabled ? "active" : ""}`}
-                onClick={() => setFilterEnabled(false)}
-            >
-              OFF
-            </button>
-            <button
-                className={`filter-btn ${filterEnabled ? "active" : ""}`}
-                onClick={() => setFilterEnabled(true)}
-            >
-              ON
-            </button>
-          </div>
+      <div className="filter-buttons">
+        <div className="filter-header">알레르기 유발 음식 필터링</div>
+        <div className="filter-btn-group">
+          <button
+            className={`filter-btn ${!filterEnabled ? "active" : ""}`}
+            onClick={() => setFilterEnabled(false)}
+          >
+            OFF
+          </button>
+          <button
+            className={`filter-btn ${filterEnabled ? "active" : ""}`}
+            onClick={() => setFilterEnabled(true)}
+          >
+            ON
+          </button>
         </div>
-
-        <div className="recipe-list">
-          {noResults ? (
-              <p className="no-results-text">검색 결과가 없습니다.</p>
-          ) : currentResults.length > 0 ? (
-              currentResults.map((recipe, index) => (
-                  <RecipeCard key={index} recipe={recipe} />
-              ))
-          ) : (
-              <p className="no-results-text">검색 결과가 없습니다.</p>
-          )}
-        </div>
-
-        {/* 페이지네이션 */}
-        {results.length > 0 && renderPagination()}
       </div>
+
+      <div className="recipe-list">
+        {noResults ? (
+          <p className="no-results-text">검색 결과가 없습니다.</p>
+        ) : currentResults.length > 0 ? (
+          currentResults.map((recipe, index) => (
+            <RecipeCard key={index} recipe={recipe} />
+          ))
+        ) : (
+          <p className="no-results-text">검색 결과가 없습니다.</p>
+        )}
+      </div>
+
+      {/* 페이지네이션 */}
+      {results.length > 0 && renderPagination()}
+    </div>
   );
 };
 
