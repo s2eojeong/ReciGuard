@@ -515,6 +515,7 @@ public class RecipeService {
         // 3. MyRecipeForm 생성 및 데이터 매핑
         MyRecipeForm form = new MyRecipeForm();
         form.setRecipeName(recipe.getRecipeName());
+        form.setImagePath(recipe.getImagePath());
         form.setServing(recipe.getServing());
         form.setCuisine(recipe.getCuisine());
         form.setFoodType(recipe.getFoodType());
