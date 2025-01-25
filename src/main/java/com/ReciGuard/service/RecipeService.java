@@ -333,7 +333,7 @@ public class RecipeService {
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
-                recipe.getUser().getUserid(),
+                recipe.getUser() != null ? recipe.getUser().getUserid() : null,
                 recipe.getServing(),
                 recipe.getCuisine(),
                 recipe.getFoodType(),
