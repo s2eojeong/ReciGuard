@@ -21,10 +21,15 @@ const Header2 = () => {
   return (
     <nav className="navbar2">
       <Link className="logolink" to="/recipes">
-        <div className="navbar-logo2">ReciGuard</div>
+        <div className="navbar-logo2">
+          <span className="footer-logo">
+          <span style={{color: "#EDBCBE", fontWeight: "bold"}}>Reci</span>
+          <span style={{color: "#3E5944", fontWeight: "bold"}}>Guard</span>
+        </span>
+        </div>
       </Link>
       <ul className="navbar-menu2">
-        <Link to="/recipes/all" style={{ textDecoration: "none" }}>
+        <Link to="/recipes/all" style={{textDecoration: "none"}}>
           <li>분류</li>
         </Link>
         <Link to="/users/recipe-form" style={{ textDecoration: "none" }}>
