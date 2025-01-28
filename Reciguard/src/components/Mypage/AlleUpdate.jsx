@@ -39,7 +39,7 @@ const AlleUpdate = () => {
       const { userid } = userInfo;
 
       axios
-        .get(`https://reciguard.com/api/users/allergy/${userid}`, {
+        .get(`http://localhost:8080/api/users/allergy/${userid}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -82,7 +82,7 @@ const AlleUpdate = () => {
 
       axios
         .post(
-          `https://reciguard.com/api/users/allergy/${userid}`,
+          `http://localhost:8080/api/users/allergy/${userid}`,
           userIngredientListDTO,
           {
             headers: {

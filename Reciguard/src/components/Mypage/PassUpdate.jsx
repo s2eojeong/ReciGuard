@@ -63,7 +63,7 @@ const PasswordUpdate = () => {
 
     try {
       const response = await axios.post(
-        "https://reciguard.com/password", // 경로 확인
+        "http://localhost:8080/password", // 경로 확인
         {
           username: formData.username,
           currentPassword: formData.currentPassword,

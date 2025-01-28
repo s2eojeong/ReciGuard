@@ -17,7 +17,7 @@ const MypageMyRecipe = () => {
       try {
         const token = localStorage.getItem("jwtToken");
         const response = await fetch(
-            "https://reciguard.com/api/recipes/myrecipes",
+            "http://localhost:8080/api/recipes/myrecipes",
             {
               method: "GET",
               headers: {
@@ -48,7 +48,7 @@ const MypageMyRecipe = () => {
     try {
       const token = localStorage.getItem("jwtToken");
       const response = await fetch(
-          `https://reciguard.com/api/recipes/scrap/${recipeId}`,
+          `http://localhost:8080/api/recipes/scrap/${recipeId}`,
           {
             method: "POST",
             headers: {
@@ -67,7 +67,12 @@ const MypageMyRecipe = () => {
         throw new Error(data.message || "스크랩 요청 실패");
       }
 
-      alert(data.message || "스크랩 상태가 변경되었습니다.");
+      // 스크랩 상태에 따른 메시지
+      const message = currentScrapped
+          ? "레시피가 스크랩 취소 되었습니다."
+          : "레시피가 성공적으로 스크랩되었습니다.";
+
+      alert(message);
 
       // 상태 업데이트
       setMyRecipes((prevRecipes) =>
@@ -83,6 +88,7 @@ const MypageMyRecipe = () => {
     }
   };
 
+
   // 레시피 삭제
   const handleDeleteRecipe = async (recipeId) => {
     try {
@@ -94,7 +100,7 @@ const MypageMyRecipe = () => {
 
       const token = localStorage.getItem("jwtToken");
       const response = await fetch(
-          `https://reciguard.com/api/recipes/myrecipe/${recipeId}/delete`,
+          `http://localhost:8080/api/recipes/myrecipe/${recipeId}/delete`,
           {
             method: "DELETE",
             headers: {
@@ -126,6 +132,23 @@ const MypageMyRecipe = () => {
   };
 
   const handleViewRecipe = (recipeId) => {
+    navigate(`/users/myrecipes/edit/${recipeId}`);
+  };
+
+  if (loading) {
+    return <p className="loading-text"></p>;
+  }
+
+  if (error) {
+    return <p className="error-text">{error}</p>;
+  }
+
+  if (myRecipes.length === 0) {
+    return <p className="no-recipes-text">나만의 레시피가 없습니다.</p>;
+  }
+
+  // 레시피 상세 보기로 이동
+  const handleViewRecipeDetail = (recipeId) => {
     navigate(`/recipes/${recipeId}`);
   };
 
@@ -148,7 +171,9 @@ const MypageMyRecipe = () => {
           {myRecipes.map((recipe, index) => (
               <div key={index} className="my-recipe-card">
                 <div className="my-recipe-info">
-                  <h3 className="my-recipe-title">{recipe.recipeName}</h3>
+                  <h3 className="my-recipe-title"
+                      onClick={() => handleViewRecipeDetail(recipe.recipeId)}
+                  >{recipe.recipeName}</h3>
                   <img
                       src={recipe.scrapped ? 스크랩 : 스크랩전}
                       alt={recipe.scrapped ? "스크랩됨" : "스크랩하기"}
@@ -165,16 +190,16 @@ const MypageMyRecipe = () => {
                 />
                 <div className="my-recipe-actions">
                   <button
+                      className="view-recipe-button"
+                      onClick={() => handleViewRecipe(recipe.recipeId)}
+                  >
+                    수정
+                  </button>
+                  <button
                       className="delete-recipe-button"
                       onClick={() => handleDeleteRecipe(recipe.recipeId)}
                   >
                     삭제
-                  </button>
-                  <button
-                      className="view-recipe-button"
-                      onClick={() => handleViewRecipe(recipe.recipeId)}
-                  >
-                    레시피
                   </button>
                 </div>
               </div>
@@ -185,3 +210,4 @@ const MypageMyRecipe = () => {
 };
 
 export default MypageMyRecipe;
+

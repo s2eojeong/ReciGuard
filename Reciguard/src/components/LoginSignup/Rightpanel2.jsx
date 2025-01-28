@@ -92,7 +92,7 @@ function Rightpanel2() {
     console.log("전송 데이터:", requestData);
 
     try {
-      const response = await fetch("https://reciguard.com/register", {
+      const response = await fetch("http://localhost:8080/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

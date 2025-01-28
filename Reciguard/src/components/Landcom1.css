@@ -64,7 +64,7 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    width: 60%;
+    width: 70%;
     margin-bottom: 30px;
     transition: opacity 1s ease, transform 1s ease;
     transition-delay: 0.3s;

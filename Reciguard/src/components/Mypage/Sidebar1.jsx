@@ -51,7 +51,7 @@ const Sidebar1 = () => {
 
     try {
       const response = await fetch(
-        `https://reciguard.com/api/users/${userid}`,
+        `http://localhost:8080/api/users/${userid}`,
         {
           method: "DELETE",
           headers: {

@@ -1,0 +1,136 @@
+/* RegisParent.css */
+
+/* 전체 컨테이너 스타일 */
+.recipe-edit-container {
+    background-color: #D9E0DB;
+    padding: 30px;
+    font-family: Arial, sans-serif;
+}
+
+.regis-label-1 {
+    font-size: 16px;
+    margin-top: 8px;
+    margin-left: -30px;
+    color: #425466;
+    font-weight: bold;
+}
+
+.regis-input-1 {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #E4E3E3;
+    width: 300px;
+    font-size: 14px;
+    margin-left: 60px;
+    color: #757575;
+}
+
+/* 제목 스타일 */
+.recipe-edit-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #4a774f;
+    margin-bottom: 20px;
+}
+
+/* 폼 스타일 */
+.recipe-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 메인 이미지 스타일 */
+.recipe-main-image {
+    margin-top: 10px;
+    max-width: 150px;
+    max-height: 162px;
+    object-fit: cover;
+    margin-left: 50px;
+}
+
+.form-input {
+    margin-left: 50px;
+}
+
+.regis-container-1 {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    border: 1px solid #e0e0e0;
+    margin-top: 10px;
+}
+
+.ingredient-add-1 {
+    margin: 0 auto;
+    margin-top: 10px;
+    padding: 4px 16px;
+    border: 2px solid #3E5944;
+    background-color: white;
+    color: #3E5944;
+    font-size: 14px;
+    font-weight: bolder;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ingredient-add-1:hover {
+    background-color: #3E5944;
+    color: white;
+}
+
+.myrecipe-edit {
+    background-color: #3e5944;
+    color: white;
+    padding: 10px 70px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: bold;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.delete-step-button {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    position: relative;
+    left: 11px;
+    background-color: #E4E3E3;
+    border: 1px solid #8e8c8c;
+    color: #616161;
+    border-radius: 4px;
+}
+
+.instruction-section:hover .delete-step-button{
+    opacity: 1;
+    visibility: visible;
+}
+
+.add-step-button {
+    margin: 0 auto;
+    margin-top: 10px;
+    padding: 4px 16px;
+    border: 2px solid #3E5944;
+    background-color: white;
+    color: #3E5944;
+    font-size: 14px;
+    font-weight: bolder;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-step-button:hover {
+    background-color: #3E5944;
+    color: white;
+}
+

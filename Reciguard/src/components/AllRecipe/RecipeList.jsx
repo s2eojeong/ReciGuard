@@ -14,7 +14,7 @@ const RecipeCard = ({ recipe }) => {
 
     try {
       const response = await fetch(
-        `https://reciguard.com/api/recipes/scrap/${recipe.recipeId}`,
+        `http://localhost:8080/api/recipes/scrap/${recipe.recipeId}`,
         {
           method: "POST",
           headers: {
@@ -99,8 +99,8 @@ const RecipeList = () => {
       const token = localStorage.getItem("jwtToken"); // 로그인 시 저장된 JWT 토큰
       let url =
         selectedCuisine === "전체"
-          ? `https://reciguard.com/api/recipes/all?filter=${filterEnabled}`
-          : `https://reciguard.com/api/recipes?cuisine=${selectedCuisine}&filter=${filterEnabled}`;
+          ? `http://localhost:8080/api/recipes/all?filter=${filterEnabled}`
+          : `http://localhost:8080/api/recipes?cuisine=${selectedCuisine}&filter=${filterEnabled}`;
 
       const response = await fetch(url, {
         method: "GET",

@@ -47,6 +47,11 @@
     overflow: hidden;
     text-overflow: ellipsis;
     margin-left: 2px;
+    cursor: pointer;
+}
+
+.my-recipe-title:hover {
+    font-size: 17px;
 }
 
 .scrap-heart-icon {
@@ -66,9 +71,8 @@
 
 .my-recipe-actions {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     gap: 10px;
+    margin-left: 50px;
 }
 
 .view-recipe-button {
@@ -81,7 +85,6 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-left: 45px;
 }
 
 .view-recipe-button:hover {
@@ -118,3 +121,4 @@
     text-align: center;
     margin: 30px;
 }
+
