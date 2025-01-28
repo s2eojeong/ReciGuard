@@ -37,6 +37,7 @@ function App() {
         <Route path="/users/scraps" element={<MypageScrap />} />
         <Route path="/recipes/all" element={<AllRecipes />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/users/myrecipes/edit/:recipeId" element={<RegisterUpdate />} />
       </Routes>
     </>
   );
