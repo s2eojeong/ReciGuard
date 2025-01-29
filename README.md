@@ -8,6 +8,7 @@
 ### 🔗 **배포 링크**
 [www.reciguard.com](https://reciguard.com)
 
+<img width="513" alt="Image" src="https://github.com/user-attachments/assets/ce1c1940-ce77-4cef-b2ce-7bb06269e382" />
 
 ### 📹 **시연 영상**
 [![Video Label](http://img.youtube.com/vi/8BFe5Di_Nco/0.jpg)](https://youtu.be/8BFe5Di_Nco)
@@ -27,8 +28,8 @@ ReciGuard는 식품 알레르기 정보를 기반으로 한 레시피 추천 서
 ## <span id="2">🏃 2. 팀원 소개</span>
 
 | 팀장 | 팀원 | 팀원 |
-| :----------------------------------------------------: | :--------------------------------------------------------------: | :------------------------------------------------------: |
-| <img src="https://github.com/" width="120px;" alt=""/> |      <img src="https://github.com/" width="120px;" alt=""/>      |  <img src="https://github.com/" width="120px;" alt=""/>  |
+| :-----------------------------------------------------------------: | :--------------------------------------------------------------: | :------------------------------------------------------: |
+| <img src="https://github.com/user-attachments/assets/e4c85b47-43bb-44e8-97e5-75ef7845d509" width="120px;" alt=""/> |      <img src="https://github.com/user-attachments/assets/379f4d65-e4ed-4d5e-a6af-ee21c287d3cd" width="120px;" alt=""/>      |  <img src="https://github.com/user-attachments/assets/e73dc212-db23-40f3-b993-2050097539a8" width="120px;" alt=""/>  |
 |        [BE 조서정](https://github.com/s2eojeong)         |           [BE 한동범](https://github.com/Handongbeom)              |          [FE 김민주](https://github.com/juzzing)           |
 
 
