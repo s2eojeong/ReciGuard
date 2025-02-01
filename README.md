@@ -6,13 +6,12 @@
 > 프로젝트 개발 기간: 2024.12.14 - 2025.01.21
 
 ### 🔗 **배포 링크**
-[www.reciguard.com](https://reciguard.com)
+[~~www.reciguard.com~~](https://reciguard.com) -> 현재 배포는 중단된 상태이며 클론 받아서 로컬에서 실행하실 수 있습니다. ! ☺️
 
 <img width="513" alt="Image" src="https://github.com/user-attachments/assets/ce1c1940-ce77-4cef-b2ce-7bb06269e382" />
 
 ### 📹 **시연 영상**
 [![Video Label](http://img.youtube.com/vi/8BFe5Di_Nco/0.jpg)](https://youtu.be/8BFe5Di_Nco)
-
 
 ## <span id="1">🍽️ 1. 프로젝트 소개</span>
 
