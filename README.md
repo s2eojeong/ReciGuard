@@ -26,7 +26,7 @@
 
 ### 📒 **ReciGuard 프로젝트 노션**
 <a href="https://silk-desk-56e.notion.site/ReciGuard-Dash-board-1426a1f0a45f80868fa6e679de8522d3">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg" alt="Notion Logo" width="60" />
+    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg" alt="Notion Logo" width="80" />
 </a>
 
 📌 **노션에서 개발 일정, API 명세서, 회의록 등을 확인할 수 있습니다.**
