@@ -8,7 +8,7 @@
 ### 🔗 **배포 링크**
 [~~www.reciguard.com~~](https://reciguard.com) -> 현재 배포는 중단된 상태이며 클론 받아서 로컬에서 실행하실 수 있습니다. ! ☺️
 
-<img width="513" alt="Image" src="https://github.com/user-attachments/assets/2dd6d881-9696-4de8-b19a-44b0fa27e9fe" />
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/2dd6d881-9696-4de8-b19a-44b0fa27e9fe" />
 
 ### 📹 **시연 영상**
 
@@ -18,25 +18,11 @@
 
 > Recipe(레시피)와 Guard(지키다, 보호하다)를 결합한 이름으로 알레르기를 가진 사람들에게 안전한 레시피를 제공하고 보호한다는 의미
 
-### 주요 제공 서비스
+### 제공 서비스
 
-🍚 1. 다양한 레시피 제공
-
-- 1,253개의 기존 레시피 데이터 확보
-
-- 나만의 레시피 등록을 통한 추가 레시피 데이터 확보
-
-⚠️ 2. 알레르기 성분 탐지
-
-- 1차 필터링: "우유"를 기준으로 레시피 재료에서 정확히 일치하거나 해당 단어가 포함된 재료를 탐지 (예: "저지방우유")
-
-- 2차 필터링: "우유"가 포함되지 않지만, 잠재적으로 관련이 있는 재료를 추가로 탐지 (예: "생크림", "버터", "치즈", "밀크" 등)
-
-🤖 3. AI 기반 레시피 추천 알고리즘
-
-- 사용자 프로필 기반 선호에 따른 맞춤형 레시피 추천
-
-- 최신 트렌드에 따른 맞춤형 레시피 추천
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/9add59ae-85cb-41f0-8a3a-c0f541b48b63" />
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/00c56ad0-0716-4d8b-8e9a-e256dd146488" />
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/b061bead-fe8c-4fe7-9a30-11995c9afe84" />
 
 ### 📒 **ReciGuard 프로젝트 노션**
 <a href="https://silk-desk-56e.notion.site/ReciGuard-Dash-board-1426a1f0a45f80868fa6e679de8522d3">
