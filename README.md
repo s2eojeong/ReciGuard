@@ -1,5 +1,6 @@
 #  **🥨 ReciGuard**
 ### **식품 알레르기 기반 레시피 추천 서비스**
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/2dd6d881-9696-4de8-b19a-44b0fa27e9fe" />
 
 ### **📅 개발 기간**
 
@@ -8,11 +9,17 @@
 ### 🔗 **배포 링크**
 [~~www.reciguard.com~~](https://reciguard.com) -> 현재 배포는 중단된 상태이며 클론 받아서 로컬에서 실행하실 수 있습니다. ! ☺️
 
-<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/2dd6d881-9696-4de8-b19a-44b0fa27e9fe" />
-
 ### 📹 **시연 영상**
 
 [![Video Label](http://img.youtube.com/vi/8BFe5Di_Nco/0.jpg)](https://youtu.be/8BFe5Di_Nco)
+
+### 🏃 **팀원 소개**
+
+| 팀장 | 팀원 | 팀원 |
+| :-----------------------------------------------------------------: | :--------------------------------------------------------------: | :------------------------------------------------------: |
+| <img src="https://github.com/user-attachments/assets/e4c85b47-43bb-44e8-97e5-75ef7845d509" width="120px;" alt=""/> |      <img src="https://github.com/user-attachments/assets/379f4d65-e4ed-4d5e-a6af-ee21c287d3cd" width="120px;" alt=""/>      |  <img src="https://github.com/user-attachments/assets/e73dc212-db23-40f3-b993-2050097539a8" width="120px;" alt=""/>  |
+|        [BE 조서정](https://github.com/s2eojeong)         |           [BE 한동범](https://github.com/Handongbeom)              |          [FE 김민주](https://github.com/juzzing)           |
+
 
 ## <span id="1">🍽️ 1. 프로젝트 소개</span>
 
@@ -31,16 +38,11 @@
 
 📌 **노션에서 개발 일정, API 명세서, 회의록 등을 확인할 수 있습니다.**
 
-## <span id="2">🏃 2. 팀원 소개</span>
-
-| 팀장 | 팀원 | 팀원 |
-| :-----------------------------------------------------------------: | :--------------------------------------------------------------: | :------------------------------------------------------: |
-| <img src="https://github.com/user-attachments/assets/e4c85b47-43bb-44e8-97e5-75ef7845d509" width="120px;" alt=""/> |      <img src="https://github.com/user-attachments/assets/379f4d65-e4ed-4d5e-a6af-ee21c287d3cd" width="120px;" alt=""/>      |  <img src="https://github.com/user-attachments/assets/e73dc212-db23-40f3-b993-2050097539a8" width="120px;" alt=""/>  |
-|        [BE 조서정](https://github.com/s2eojeong)         |           [BE 한동범](https://github.com/Handongbeom)              |          [FE 김민주](https://github.com/juzzing)           |
-
-
-## <span id="3">🛠️ 3. 기술 스택</span>
+## <span id="2">🛠️ 2. 기술 스택</span>
 ### ✔️Frond-end
 <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"><img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"><img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black"><img src="https://img.shields.io/badge/vercel-000000?style=for-the-badge&logo=vercel&logoColor=white">
 ### ✔️Back-end
 <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=spring boot&logoColor=white"><img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=spring security&logoColor=white"><img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"><img src="https://img.shields.io/badge/amazon s3-569A31?style=for-the-badge&logo=amazon s3&logoColor=white"><img src="https://img.shields.io/badge/amazon RDS-527FFF?style=for-the-badge&logo=amazon RDS&logoColor=white"><img src="https://img.shields.io/badge/amazon EC2-FF9900?style=for-the-badge&logo=amazon EC2&logoColor=white">
+
+## <span id="3">🛠️ 3. 시스템 아키텍처</span>
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/505dff23-d4de-4eec-8235-e2f01ba7ce62" />
