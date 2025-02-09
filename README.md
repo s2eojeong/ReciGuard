@@ -15,10 +15,10 @@
 
 ### 🏃 **팀원 소개**
 
-| 팀장 | 팀원 | 팀원 |
-| :-------------------------------------------------: | :------------------------------------------------------------: | :------------------------------------------------------: |
-|<img src="https://github.com/user-attachments/assets/760d9718-5fc1-4b99-a552-63020749a286" width="120px;" alt=""/>|<img src="https://github.com/user-attachments/assets/379f4d65-e4ed-4d5e-a6af-ee21c287d3cd" width="120px;" alt=""/>|<img src="https://github.com/user-attachments/assets/e73dc212-db23-40f3-b993-2050097539a8" width="120px;" alt=""/>|
-|        [BE 조서정](https://github.com/s2eojeong)         |           [BE 한동범](https://github.com/Handongbeom)              |          [FE 김민주](https://github.com/juzzing)     |
+| 팀장 |                                                        팀원                                                         |                                                         팀원                                                         |
+| :-------------------------------------------------: |:-----------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------:|
+|<img src="https://github.com/user-attachments/assets/760d9718-5fc1-4b99-a552-63020749a286" width="120px;" alt=""/>|<img src="https://github.com/user-attachments/assets/379f4d65-e4ed-4d5e-a6af-ee21c287d3cd" width="120px;" alt=""/> | <img src="https://github.com/user-attachments/assets/e73dc212-db23-40f3-b993-2050097539a8" width="120px;" alt=""/> |
+|        [BE 조서정](https://github.com/s2eojeong)         |                                     [BE 한동범](https://github.com/Handongbeom)                                      |                                        [FE 김민주](https://github.com/juzzing)                                        |
 
 
 ## <span id="1">🍽️ 1. 프로젝트 소개</span>
@@ -45,4 +45,4 @@
 <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=spring boot&logoColor=white"><img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=spring security&logoColor=white"><img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"><img src="https://img.shields.io/badge/amazon s3-569A31?style=for-the-badge&logo=amazon s3&logoColor=white"><img src="https://img.shields.io/badge/amazon RDS-527FFF?style=for-the-badge&logo=amazon RDS&logoColor=white"><img src="https://img.shields.io/badge/amazon EC2-FF9900?style=for-the-badge&logo=amazon EC2&logoColor=white">
 
 ## <span id="3">⚙️ 3. 시스템 아키텍처</span>
-<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/1dfdc720-7dfa-4e40-a292-7b76353d8a01" />
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/504a903d-7966-497b-8d94-ece59442775d" />
