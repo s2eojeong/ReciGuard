@@ -1,6 +1,6 @@
 #  **🥨 ReciGuard**
 ### **식품 알레르기 기반 레시피 추천 서비스**
-<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/2dd6d881-9696-4de8-b19a-44b0fa27e9fe" />
+<img width="80%" alt="Image" src="https://github.com/user-attachments/assets/c9dee004-b267-441f-8c54-9f81bc08c068" />
 
 ### **📅 개발 기간**
 
