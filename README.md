@@ -7,7 +7,7 @@
 > 프로젝트 개발 기간: 2024.12.14 - 2025.01.21
 
 ### 🔗 **배포 링크**
-[~~www.reciguard.com~~](https://reciguard.com) -> 현재 배포는 중단된 상태이며 클론 받아서 로컬에서 실행하실 수 있습니다. ! ☺️
+[~~www.reciguard.com~~](https://reciguard.com) -> 현재 배포는 중단된 상태이며 클론 받아서 로컬에서 실행하실 수 있습니다 ! ☺️
 
 ### 📹 **시연 영상**
 
@@ -16,9 +16,9 @@
 ### 🏃 **팀원 소개**
 
 | 팀장 | 팀원 | 팀원 |
-| :-----------------------------------------------------------------: | :--------------------------------------------------------------: | :------------------------------------------------------: |
-| <img src="https://github.com/user-attachments/assets/e4c85b47-43bb-44e8-97e5-75ef7845d509" width="120px;" alt=""/> |      <img src="https://github.com/user-attachments/assets/379f4d65-e4ed-4d5e-a6af-ee21c287d3cd" width="120px;" alt=""/>      |  <img src="https://github.com/user-attachments/assets/e73dc212-db23-40f3-b993-2050097539a8" width="120px;" alt=""/>  |
-|        [BE 조서정](https://github.com/s2eojeong)         |           [BE 한동범](https://github.com/Handongbeom)              |          [FE 김민주](https://github.com/juzzing)           |
+| :-------------------------------------------------: | :------------------------------------------------------------: | :------------------------------------------------------: |
+|<img src="https://github.com/user-attachments/assets/760d9718-5fc1-4b99-a552-63020749a286" width="120px;" alt=""/>|<img src="https://github.com/user-attachments/assets/379f4d65-e4ed-4d5e-a6af-ee21c287d3cd" width="120px;" alt=""/>|<img src="https://github.com/user-attachments/assets/e73dc212-db23-40f3-b993-2050097539a8" width="120px;" alt=""/>|
+|        [BE 조서정](https://github.com/s2eojeong)         |           [BE 한동범](https://github.com/Handongbeom)              |          [FE 김민주](https://github.com/juzzing)     |
 
 
 ## <span id="1">🍽️ 1. 프로젝트 소개</span>
@@ -31,7 +31,7 @@
 <img width="100%" alt="Image" src="https://github.com/user-attachments/assets/00c56ad0-0716-4d8b-8e9a-e256dd146488" />
 <img width="100%" alt="Image" src="https://github.com/user-attachments/assets/b061bead-fe8c-4fe7-9a30-11995c9afe84" />
 
-### 📒 **ReciGuard 프로젝트 노션**
+### **ReciGuard 프로젝트 노션**
 <a href="https://silk-desk-56e.notion.site/ReciGuard-Dash-board-1426a1f0a45f80868fa6e679de8522d3">
     <img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Notion-logo.svg" alt="Notion Logo" width="80" />
 </a>
@@ -44,5 +44,5 @@
 ### ✔️Back-end
 <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=spring boot&logoColor=white"><img src="https://img.shields.io/badge/spring security-6DB33F?style=for-the-badge&logo=spring security&logoColor=white"><img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"><img src="https://img.shields.io/badge/amazon s3-569A31?style=for-the-badge&logo=amazon s3&logoColor=white"><img src="https://img.shields.io/badge/amazon RDS-527FFF?style=for-the-badge&logo=amazon RDS&logoColor=white"><img src="https://img.shields.io/badge/amazon EC2-FF9900?style=for-the-badge&logo=amazon EC2&logoColor=white">
 
-## <span id="3">🛠️ 3. 시스템 아키텍처</span>
-<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/505dff23-d4de-4eec-8235-e2f01ba7ce62" />
+## <span id="3">⚙️ 3. 시스템 아키텍처</span>
+<img width="100%" alt="Image" src="https://github.com/user-attachments/assets/1dfdc720-7dfa-4e40-a292-7b76353d8a01" />
