@@ -9,6 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@Table(name = "recipe_ingredient", indexes = @Index(name = "idx_recipe_ingredient_recipe_id", columnList = "recipe_id, ingredient_id"))
 public class RecipeIngredient {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_ingredient_id")

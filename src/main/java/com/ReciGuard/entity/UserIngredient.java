@@ -6,9 +6,8 @@ import lombok.*;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@Table(name = "user_ingredient")
-@Builder
 @AllArgsConstructor
+@Table(name = "user_ingredient", indexes = @Index(name = "idx_user_ingredient_recipe_id", columnList = "user_id, ingredient_id"))
 public class UserIngredient {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,9 +18,7 @@ public class UserIngredient {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredient_id", nullable = false)
-    private Ingredient ingredient; // 나중에 ingredient로 바꾸어 주어야함
-
+    private Ingredient ingredient;
 }

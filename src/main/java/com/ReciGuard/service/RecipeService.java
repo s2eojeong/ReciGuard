@@ -122,15 +122,7 @@ public class RecipeService {
 
     // 전체 레시피 리스트 -> 필터링 후
     public List<RecipeListResponseDTO> getAllFilteredRecipes(Long userId) {
-
-        List<String> allergyIngredients = userIngredientRepository.findAllergyIngredientsByUserId(userId);
-
-        if (allergyIngredients.isEmpty()) {
-            throw new EntityNotFoundException("사용자의 알레르기 정보가 없습니다.");
-        }
-
-        // 사용자 알레르기 정보를 제외한 레시피 필터링
-        List<Recipe> recipes = recipeRepository.findAllFilteredRecipes(userId, allergyIngredients);
+        List<Recipe> recipes = recipeRepository.findAllFilteredRecipes(userId);
 
         if (recipes.isEmpty()) {
             throw new EntityNotFoundException("조건에 맞는 레시피가 없습니다.");
@@ -176,14 +168,8 @@ public class RecipeService {
     // cuisine 별 레시피 리스트 -> 필터링 후
     public List<RecipeListResponseDTO> getFilteredRecipesByCuisine(Long userId, String cuisine) {
 
-        List<String> allergyIngredients = userIngredientRepository.findAllergyIngredientsByUserId(userId);
-
-        if (allergyIngredients.isEmpty()) {
-            throw new EntityNotFoundException("사용자의 알레르기 정보가 없습니다.");
-        }
-
         // 사용자 알레르기 정보를 제외한 레시피 필터링
-        List<Recipe> recipes = recipeRepository.findCuisineFilteredRecipes(userId, cuisine, allergyIngredients);
+        List<Recipe> recipes = recipeRepository.findCuisineFilteredRecipes(userId, cuisine);
 
         if (recipes.isEmpty()) {
             throw new EntityNotFoundException("사용자 알레르기 정보를 바탕으로 " + cuisine + "에 해당하는 레시피가 없습니다.");
@@ -228,15 +214,8 @@ public class RecipeService {
 
     // 검색 단어와 사용자 알레르기 정보를 기반으로 필터링된 레시피 리스트 검색
     public List<RecipeListResponseDTO> getFilteredRecipesByQuery(Long userId, String query) {
-
-        List<String> allergyIngredients = userIngredientRepository.findAllergyIngredientsByUserId(userId);
-
-        if (allergyIngredients.isEmpty()) {
-            throw new EntityNotFoundException("사용자의 알레르기 정보가 없습니다.");
-        }
-
         // 사용자 알레르기 정보를 제외한 레시피 필터링
-        List<Recipe> recipes = recipeRepository.findQueryFilteredRecipes(userId, query, allergyIngredients);
+        List<Recipe> recipes = recipeRepository.findQueryFilteredRecipes(userId, query);
 
         if (recipes.isEmpty()) {
             throw new EntityNotFoundException("사용자 알레르기 정보를 바탕으로 " + query + "로 검색된 레시피가 없습니다.");
@@ -299,8 +278,8 @@ public class RecipeService {
                 .orElseThrow(() -> new EntityNotFoundException("RecipeStats 데이터를 찾을 수 없습니다."));
 
         // 4. Instructions와 RecipeIngredients 로드
-        List<Instruction> instructions = recipeRepository.findInstructionsByRecipeId(recipeId);
-        List<RecipeIngredient> recipeIngredients = recipeRepository.findRecipeIngredientsByRecipeId(recipeId);
+        List<Instruction> instructions = instructionRepository.findInstructionsByRecipeId(recipeId);
+        List<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findRecipeIngredientsByRecipeId(recipeId);
 
         // 5. Nutrition 정보 가져오기 (null 가능)
         Nutrition nutrition = recipe.getNutrition();

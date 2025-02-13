@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
+@Table(name = "recipe", indexes = @Index(name = "idx_recipe_cuisine", columnList = "cuisine"))
 public class Recipe {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_id")
@@ -50,11 +51,5 @@ public class Recipe {
 
     public Recipe(Long id) {
         this.id = id;
-    }
-
-    // 연관관계 메서드
-    public void setRecipeStats(RecipeStats stats) {
-        this.recipeStats = stats;
-        stats.setRecipe(this); // 양방향 연관관계 설정
     }
 }
