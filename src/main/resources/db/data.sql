@@ -519,7 +519,7 @@ INSERT INTO recipe (user_id, image_path, recipe_name, serving, cuisine, food_typ
     (NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00465_2.png', '치킨완자스프', 1, '양식', '국', '끓이기'),
     (NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00466_2.png', '돼지고기말이튀김', 1, '한식', '반찬', '튀기기'),
     (NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00467_2.png', '단호박피자', 1, '양식', '반찬', '굽기'),
-    (NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00468_2.png', 'L..A갈비구이', 1, '한식', '반찬', '굽기'),
+    (NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00468_2.png', 'LA갈비구이', 1, '한식', '반찬', '굽기'),
     (NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00469_2.png', '닭고기파스타', 1, '양식', '면', '끓이기'),
     (NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00619_2.png', '동글동글도넛', 1, '양식', '반찬', '굽기'),
     (NULL, 'http://www.foodsafetykorea.go.kr/uploadimg/cook/10_00620_2.png', '된장크림소스 잡곡 오므라이스', 1, '한식', '밥', '끓이기'),
@@ -2420,8 +2420,7 @@ INSERT INTO instruction (recipe_id, instruction_id, instruction, instruction_ima
     (231, 3, '3. 삶아진 고구마를 으깨어 생크림을 넣어 골고루 섞는다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00475_3.png'),
     (231, 4, '4. 오렌지는 즙을 짜 놓는다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00475_4.png'),
     (231, 5, '5. 숙성된 삼겹살은 오븐에 굽고, 브로컬리는 살짝 데쳐 올리브오일에 볶아놓는다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00475_5.png'),
-    (231, 6, '6. 팬에 오렌지즙과 설탕, 정종, 소금을 넣고 바글바글 졸인 후 와사비를 넣어 소스를 만들고, 오븐에 구어진 삼겹살을 잘라 접시에 담고 그 위에 소스를 살짝 올리고, 한쪽에는 감자튀김(②),
-    고구마무스(③), 브로컬리(⑤)를 곁들여 완성한다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00475_6.png'),
+    (231, 6, '6. 팬에 오렌지즙과 설탕, 정종, 소금을 넣고 바글바글 졸인 후 와사비를 넣어 소스를 만들고, 오븐에 구어진 삼겹살을 잘라 접시에 담고 그 위에 소스를 살짝 올리고, 한쪽에는 감자튀김(②),고구마무스(③), 브로컬리(⑤)를 곁들여 완성한다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00475_6.png'),
     (232, 1, '1. 마늘과 양파를 입자있게 다져 팬에 볶아 식혀 준비하고 파프리카는 다져 놓는다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00476_1.png'),
     (232, 2, '2. 다진 소고기에 준비한 채소(①)와 빵가루, 후춧가루, 소금 넣고 골고루 치 대어 소고기 볼을 만든 후 후라이팬에 버터와 식용유를 두르고 소고기볼을 속까지 익혀 준비한다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00476_2.png'),
     (232, 3, '3. 바나나는 작게 깍뚝 모양으로 썰고, 게맛살은 약 3cm 길이로 찢어 준비 한다.', 'http://www.foodsafetykorea.go.kr/uploadimg/cook/20_00476_3.png'),
@@ -25188,8 +25187,6 @@ INSERT INTO user_scrap (user_id, recipe_id, created_at) VALUES
     (63, 737, NOW()),
     (122, 781, NOW()),
     (105, 621, NOW());
-
-
 
 
 

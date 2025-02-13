@@ -58,7 +58,7 @@ public class UserUpdateDTO {
         /* DTO -> Entity */
         public User toEntity() {
             User user = User.builder()
-                    .userid(id)
+                    .userId(id)
                     .username(username)
                     .gender(gender)
                     .age(age)
@@ -95,7 +95,7 @@ public class UserUpdateDTO {
 
         /* Entity -> DTO */
         public Response(User user) {
-            this.id = user.getUserid();
+            this.id = user.getUserId();
             this.username = user.getUsername();
             this.email = user.getEmail();
             this.gender = user.getGender();
@@ -117,7 +117,7 @@ public class UserUpdateDTO {
     //dto로 변경
     public static UserUpdateDTO.Request toUserDTO(User userEntity) {
         return UserUpdateDTO.Request.builder()
-                .id(userEntity.getUserid())
+                .id(userEntity.getUserId())
                 .username(userEntity.getUsername())
                 .gender(userEntity.getGender())
                 .age(userEntity.getAge())

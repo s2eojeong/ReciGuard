@@ -109,7 +109,7 @@ public class UserService {
     //회원 정보 수정(비밀번호)
     @Transactional
     public void modify(UserResponseDTO.Request userDTO) {
-        User user = userRepository.findById(userDTO.toEntity().getUserid()).orElseThrow(() ->
+        User user = userRepository.findById(userDTO.toEntity().getUserId()).orElseThrow(() ->
                 new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
 
         String encPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
@@ -159,7 +159,7 @@ public class UserService {
     public Long findUserIdByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사용자입니다."))
-                .getUserid();
+                .getUserId();
     }
 
     @Transactional
@@ -193,7 +193,7 @@ public class UserService {
         user.setAge(userDTO.getAge());
         user.setWeight(userDTO.getWeight());
 
-        userCookingStyleRepository.deleteByUserId(user.getUserid());
+        userCookingStyleRepository.deleteByUserId(user.getUserId());
         List<UserCookingStyle> cookingStyles = userDTO.getUserCookingStyle().stream()
                 .map(style -> UserCookingStyle.builder()
                         .cookingsStyle(style)
@@ -203,7 +203,7 @@ public class UserService {
         userCookingStyleRepository.saveAll(cookingStyles);
 
         // Step 4: Cuisine 업데이트
-        userCuisineRepository.deleteByUserId(user.getUserid());
+        userCuisineRepository.deleteByUserId(user.getUserId());
         List<UserCuisine> cuisines = userDTO.getUserCuisine().stream()
                 .map(cuisine -> UserCuisine.builder()
                         .cuisine(cuisine)
@@ -213,7 +213,7 @@ public class UserService {
         userCuisineRepository.saveAll(cuisines);
 
         // Step 5: Food Type 업데이트
-        userFoodTypeRepository.deleteByUserId(user.getUserid());
+        userFoodTypeRepository.deleteByUserId(user.getUserId());
         List<UserFoodType> foodTypes = userDTO.getUserFoodType().stream()
                 .map(foodType -> UserFoodType.builder()
                         .foodType(foodType)
@@ -222,7 +222,7 @@ public class UserService {
                 .collect(Collectors.toList());
         userFoodTypeRepository.saveAll(foodTypes);
 
-        userIngredientRepository.deleteByUserId(user.getUserid());
+        userIngredientRepository.deleteByUserId(user.getUserId());
 
         User finduser = userRepository.findOneByUserName(user.getUsername());
         userDTO = UserUpdateDTO.toUserDTO(finduser);

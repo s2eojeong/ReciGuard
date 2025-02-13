@@ -21,7 +21,7 @@ public class UserPrincipal implements UserDetails {
     // 엔티티(User)를 기반으로 UserPrincipal 생성
     public static UserPrincipal create(User user) {
         return new UserPrincipal(
-                user.getUserid(),
+                user.getUserId(),
                 user.getUsername(),
                 user.getPassword(),
                 Collections.emptyList() // 권한을 따로 설정하지 않을 경우

@@ -26,4 +26,17 @@ public class RecipeStats {
 
     @Column(name = "scrap_count")
     private int scrapCount;
+
+    // 뷰 카운트 증가 메서드
+    public void incrementViewCount() {
+        this.viewCount++;
+    }
+
+    // 스크랩 카운트 업데이트 메서드 (음수x)
+    public void updateScrapCount(int increment) {
+        if (this.scrapCount + increment < 0) {
+            throw new IllegalArgumentException("Scrap count는 음수가 될 수 없습니다.");
+        }
+        this.scrapCount += increment;
+    }
 }

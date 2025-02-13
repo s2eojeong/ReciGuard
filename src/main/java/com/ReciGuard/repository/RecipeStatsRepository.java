@@ -13,24 +13,6 @@ import java.util.Optional;
 @Repository
 public interface RecipeStatsRepository extends JpaRepository<RecipeStats, Long> {
 
-    // View count 증가
-    @Modifying
-    @Query("""
-        UPDATE RecipeStats rs
-        SET rs.viewCount = rs.viewCount + 1
-        WHERE rs.recipe.id = :recipeId
-    """)
-    void updateViewCount(@Param("recipeId") Long recipeId);
-
-    // Scrap count 증가 또는 감소
-    @Modifying
-    @Query("""
-        UPDATE RecipeStats rs
-        SET rs.scrapCount = rs.scrapCount + :increment
-        WHERE rs.recipe.id = :recipeId AND rs.scrapCount + :increment >= 0
-    """)
-    void updateScrapCount(@Param("recipeId") Long recipeId, @Param("increment") int increment);
-
     // 레시피 stats 정보 찾기
-    Optional<RecipeStats> findByRecipeId(Long recipeId);
+    Optional<RecipeStats> findByRecipe_Id(Long recipeId);
 }

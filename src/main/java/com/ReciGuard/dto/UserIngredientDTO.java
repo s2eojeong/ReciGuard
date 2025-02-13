@@ -26,7 +26,7 @@ public class UserIngredientDTO {
     public static UserIngredientDTO fromEntity(UserIngredient userIngredient) {
         return UserIngredientDTO.builder()
                 .id(userIngredient.getId())
-                .userId(userIngredient.getUser().getUserid())
+                .userId(userIngredient.getUser().getUserId())
                 .ingredientName(userIngredient.getIngredient().getIngredient()) // Ingredient의 이름을 포함
                 .build();
     }

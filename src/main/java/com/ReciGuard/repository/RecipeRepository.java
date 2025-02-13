@@ -17,14 +17,6 @@ import java.util.Optional;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
-    // 오늘의 추천 레시피
-    @Query("""
-        SELECT r
-        FROM Recipe r
-        WHERE r.id = :recipeId
-    """)
-    Recipe findTodayRecipe(@Param("recipeId") Long recipeId);
-
     // 전체 레시피 리스트 -> 필터링 후
     @Query("""
         SELECT DISTINCT r
@@ -107,18 +99,8 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     """)
     List<Recipe> findQueryFilteredRecipes(@Param("userId") Long userId, @Param("query") String query);
 
-    // 특정 레시피 상세 정보
-    @Query("""
-        SELECT DISTINCT r
-        FROM Recipe r
-        LEFT JOIN FETCH r.nutrition n
-        WHERE r.id = :id
-    """)
-    Optional<Recipe> findRecipeById(@Param("id") Long id);
-
     // 특정 사용자가 등록한 레시피 조회 (userId 사용)
-    @Query("SELECT r FROM Recipe r WHERE r.user.id = :userId")
-    List<Recipe> findAllByUserId(@Param("userId") Long userId);
+    List<Recipe> findAllByUser_UserId(Long userId);
 
     // 사용자가 작성한 나만의 레시피 조회
     @Query("SELECT r FROM Recipe r WHERE r.id = :recipeId AND r.user.id = :userId")

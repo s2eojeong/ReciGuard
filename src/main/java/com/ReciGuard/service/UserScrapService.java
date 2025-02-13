@@ -43,7 +43,7 @@ public class UserScrapService {
     }
     public List<ScrapRecipeDTO> getScrappedRecipesByUser(Long userId) {
         // UserScrap 리스트 조회
-        List<UserScrap> userScraps = userScrapRepository.findAllByUser_Userid(userId);
+        List<UserScrap> userScraps = userScrapRepository.findAllByUser_UserId(userId);
 
         // DTO로 변환하여 반환
         return userScraps.stream()

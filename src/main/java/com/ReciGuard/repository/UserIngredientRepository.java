@@ -16,8 +16,8 @@ import java.util.Optional;
 public interface UserIngredientRepository extends JpaRepository<UserIngredient, Long> {
 
     //해당 user의 ingredient 정보를 모두 반환하는 코드
-    @Query("SELECT ui FROM UserIngredient ui WHERE ui.user.userid = :userId")
-    List<UserIngredient> findByUserId(@Param("userId")Long userId);
+    @Query("SELECT ui FROM UserIngredient ui WHERE ui.user.id = :userId")
+    List<UserIngredient> findByUserId(@Param("userId") Long userId);
 
 
     //해당 유저의 ingredient 정보가 있는지 확인하는 코드

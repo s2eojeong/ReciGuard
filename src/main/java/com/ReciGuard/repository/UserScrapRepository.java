@@ -28,5 +28,5 @@ public interface UserScrapRepository extends JpaRepository<UserScrap, Long> {
     """)
     void deleteUserScrap(@Param("userId") Long userId, @Param("recipeId") Long recipeId);
 
-    List<UserScrap> findAllByUser_Userid(Long userId); // 특정 user_id의 모든 스크랩 조회
+    List<UserScrap> findAllByUser_UserId(Long userId); // 특정 user_id의 모든 스크랩 조회
 }

@@ -32,7 +32,7 @@ public class CustomUserDetails implements UserDetails {
         return userEntity.getPassword();
     }
 
-    public Long getUserId() {return userEntity.getUserid();}
+    public Long getUserId() {return userEntity.getUserId();}
 
     @Override
     public String getUsername() {

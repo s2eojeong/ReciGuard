@@ -38,8 +38,8 @@ public class RecipeService {
     private final RecipeStatsRepository recipeStatsRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final UserScrapRepository userScrapRepository;
-    private final UserIngredientRepository userIngredientRepository;
     private final InstructionRepository instructionRepository;
+    private final NutritionRepository nutritionRepository;
     private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;
 
@@ -270,19 +270,18 @@ public class RecipeService {
     public RecipeDetailResponseDTO getRecipeDetail(Long recipeId, Long userId) {
 
         // 2. 기본 Recipe 정보 로드
-        Recipe recipe = recipeRepository.findRecipeById(recipeId)
+        Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("요청한 데이터를 찾을 수 없습니다."));
-
-        // 3. RecipeStats 로드 (viewCount와 scrapCount)
-        RecipeStats stats = recipeStatsRepository.findByRecipeId(recipeId)
+        // 3. Nutrition 정보 로드
+        Nutrition nutrition = nutritionRepository.findByRecipe_Id(recipeId)
+                .orElseThrow(() -> new EntityNotFoundException("요청한 데이터를 찾을 수 없습니다."));
+        // 4. RecipeStats 로드 (viewCount와 scrapCount)
+        RecipeStats stats = recipeStatsRepository.findByRecipe_Id(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("RecipeStats 데이터를 찾을 수 없습니다."));
 
-        // 4. Instructions와 RecipeIngredients 로드
-        List<Instruction> instructions = instructionRepository.findInstructionsByRecipeId(recipeId);
-        List<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findRecipeIngredientsByRecipeId(recipeId);
-
-        // 5. Nutrition 정보 가져오기 (null 가능)
-        Nutrition nutrition = recipe.getNutrition();
+        // 5. Instructions와 RecipeIngredients 로드
+        List<Instruction> instructions = instructionRepository.findByRecipe_Id(recipeId);
+        List<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findByRecipe_Id(recipeId);
 
         // 6. Ingredients 변환
         List<IngredientResponseDTO> ingredients = recipeIngredients.stream()
@@ -312,7 +311,7 @@ public class RecipeService {
         return new RecipeDetailResponseDTO(
                 recipe.getImagePath(),
                 recipe.getRecipeName(),
-                recipe.getUser() != null ? recipe.getUser().getUserid() : null,
+                recipe.getUser() != null ? recipe.getUser().getUserId() : null,
                 recipe.getServing(),
                 recipe.getCuisine(),
                 recipe.getFoodType(),
@@ -359,7 +358,7 @@ public class RecipeService {
 
         // 3. userId로 User 엔티티 연관관계 설정
         User user = new User();
-        user.setUserid(userId);
+        user.setUserId(userId);
         recipe.setUser(user);
 
         // 4. Ingredients 저장
@@ -471,7 +470,7 @@ public class RecipeService {
 
     public List<RecipeListResponseDTO> findMyRecipes(Long userId) { // 리스트로 반환 (간단 조회)
         // 해당 사용자의 ID로 등록한 레시피 조회 및 DTO로 변환
-        return recipeRepository.findAllByUserId(userId).stream()
+        return recipeRepository.findAllByUser_UserId(userId).stream()
                 .map(recipe -> {
                     boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
                     return new RecipeListResponseDTO(
