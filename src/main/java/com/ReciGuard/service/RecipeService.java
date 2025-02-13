@@ -40,6 +40,7 @@ public class RecipeService {
     private final UserScrapRepository userScrapRepository;
     private final InstructionRepository instructionRepository;
     private final NutritionRepository nutritionRepository;
+    private final UserIngredientRepository userIngredientRepository;
     private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;
 
@@ -122,7 +123,16 @@ public class RecipeService {
 
     // 전체 레시피 리스트 -> 필터링 후
     public List<RecipeListResponseDTO> getAllFilteredRecipes(Long userId) {
-        List<Recipe> recipes = recipeRepository.findAllFilteredRecipes(userId);
+
+        // 사용자 알레르기 재료명 목록 가져오기
+        List<String> allergyIngredient = userIngredientRepository.findAllergyIngredientsByUserId(userId);
+
+        String allergyIngredients = allergyIngredient.stream()
+                .map(ingredient -> "+" + ingredient)
+                .collect(Collectors.joining(" ")); // "+계란 +우유" 형태로 변환
+
+        // 필터링된 레시피 가져오기
+        List<Recipe> recipes = recipeRepository.findAllFilteredRecipes(userId, allergyIngredients);
 
         if (recipes.isEmpty()) {
             throw new EntityNotFoundException("조건에 맞는 레시피가 없습니다.");

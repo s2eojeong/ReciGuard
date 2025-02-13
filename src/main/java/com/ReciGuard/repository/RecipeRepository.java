@@ -18,25 +18,23 @@ import java.util.Optional;
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     // 전체 레시피 리스트 -> 필터링 후
-    @Query("""
-        SELECT DISTINCT r
-        FROM Recipe r
+    @Query(value = """
+        SELECT r.*
+        FROM recipe r
         WHERE NOT EXISTS (
-            SELECT 1
-            FROM RecipeIngredient ri
-            JOIN Ingredient i ON ri.ingredient.id = i.id
-            WHERE ri.recipe.id = r.id
-            AND EXISTS (
-                SELECT 1
-                FROM UserIngredient ui
-                JOIN Ingredient ing ON ui.ingredient.id = ing.id
-                WHERE ui.user.id = :userId
-                AND (i.id = ing.id
-                     OR i.ingredient LIKE CONCAT('%', ing.ingredient, '%'))
-            )
-        )
-    """)
-    List<Recipe> findAllFilteredRecipes(@Param("userId") Long userId);
+                 SELECT 1
+                 FROM recipe_ingredient ri
+                 JOIN ingredient i ON ri.ingredient_id = i.ingredient_id
+                 JOIN user_ingredient ui ON ui.user_id = :userId
+                 JOIN ingredient ing ON ui.ingredient_id = ing.ingredient_id
+                 WHERE ri.recipe_id = r.recipe_id
+                  AND (
+                      i.ingredient_id = ing.ingredient_id
+                      OR MATCH(i.ingredient) AGAINST(:allergyIngredients IN BOOLEAN MODE)
+                  )
+           )
+    """, nativeQuery = true)
+    List<Recipe> findAllFilteredRecipes(@Param("userId") Long userId, @Param("allergyIngredients") String allergyIngredients);
 
     // cuisine 별로 레시피 리스트 검색
     List<Recipe> findByCuisine(String cuisine);

@@ -25188,6 +25188,9 @@ INSERT INTO user_scrap (user_id, recipe_id, created_at) VALUES
     (122, 781, NOW()),
     (105, 621, NOW());
 
+ALTER TABLE recipe ADD FULLTEXT INDEX ft_recipe_name (recipe_name) WITH PARSER ngram;
+ALTER TABLE ingredient ADD FULLTEXT INDEX ft_ingredient_name (ingredient) WITH PARSER ngram;
+
 
 
 
