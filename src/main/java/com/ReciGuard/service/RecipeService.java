@@ -279,22 +279,15 @@ public class RecipeService {
     // 레시피 상세 검색
     public RecipeDetailResponseDTO getRecipeDetail(Long recipeId, Long userId) {
 
-        // 2. 기본 Recipe 정보 로드
+        long startTime = System.nanoTime();
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("요청한 데이터를 찾을 수 없습니다."));
-        // 3. Nutrition 정보 로드
-        Nutrition nutrition = nutritionRepository.findByRecipe_Id(recipeId)
-                .orElseThrow(() -> new EntityNotFoundException("요청한 데이터를 찾을 수 없습니다."));
-        // 4. RecipeStats 로드 (viewCount와 scrapCount)
-        RecipeStats stats = recipeStatsRepository.findByRecipe_Id(recipeId)
-                .orElseThrow(() -> new EntityNotFoundException("RecipeStats 데이터를 찾을 수 없습니다."));
-
-        // 5. Instructions와 RecipeIngredients 로드
-        List<Instruction> instructions = instructionRepository.findByRecipe_Id(recipeId);
-        List<RecipeIngredient> recipeIngredients = recipeIngredientRepository.findByRecipe_Id(recipeId);
+        long endTime = System.nanoTime();
+        long executionTimeMs = (endTime - startTime) / 1_000_000; // ns → ms 변환
+        log.info("쿼리 실행 시간: {} ms", executionTimeMs);
 
         // 6. Ingredients 변환
-        List<IngredientResponseDTO> ingredients = recipeIngredients.stream()
+        List<IngredientResponseDTO> ingredients = recipe.getRecipeIngredients().stream()
                 .map(recipeIngredient -> new IngredientResponseDTO(
                         recipeIngredient.getIngredient().getIngredient(),
                         recipeIngredient.getQuantity()
@@ -302,7 +295,7 @@ public class RecipeService {
                 .collect(Collectors.toList());
 
         // 7. Instructions 변환
-        List<InstructionResponseDTO> instructionDTOs = instructions.stream()
+        List<InstructionResponseDTO> instructionDTOs = recipe.getInstructions().stream()
                 .map(instruction -> new InstructionResponseDTO(
                         instruction.getInstructionId(),
                         instruction.getInstructionImage(),
@@ -310,9 +303,9 @@ public class RecipeService {
                 ))
                 .collect(Collectors.toList());
 
-        // 8. AI 모델에서 유사 알레르기 유발 재료 가져오기
-        SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
-        List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
+//        // 8. AI 모델에서 유사 알레르기 유발 재료 가져오기
+//        SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
+//        List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
 
         // isScrapped 값 확인
         boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
@@ -326,17 +319,16 @@ public class RecipeService {
                 recipe.getCuisine(),
                 recipe.getFoodType(),
                 recipe.getCookingStyle(),
-                nutrition != null ? (int) nutrition.getCalories() : 0,
-                nutrition != null ? (int) nutrition.getSodium() : 0,
-                nutrition != null ? (int) nutrition.getCarbohydrate() : 0,
-                nutrition != null ? (int) nutrition.getFat() : 0,
-                nutrition != null ? (int) nutrition.getProtein() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getCalories() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getSodium() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getCarbohydrate() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getFat() : 0,
+                recipe.getNutrition() != null ? (int) recipe.getNutrition().getProtein() : 0,
                 scrapped,
-                stats != null ? stats.getScrapCount() : 0,
-                stats != null ? stats.getViewCount() : 0,
+                recipe.getRecipeStats() != null ? recipe.getRecipeStats().getScrapCount() : 0,
+                recipe.getRecipeStats() != null ? recipe.getRecipeStats().getViewCount() : 0,
                 ingredients,
-                instructionDTOs,
-                similarAllergyIngredients
+                instructionDTOs
         );
     }
 

@@ -19,7 +19,7 @@ public class RecipeStatsService {
     public void increaseViewCount(Long recipeId) {
         RecipeStats stats = recipeStatsRepository.findByRecipe_Id(recipeId)
                 .orElseThrow(() -> new EntityNotFoundException("RecipeStats not found for recipeId: " + recipeId));
-        stats.incrementViewCount();
+        stats.increaseViewCount();
         // recipeStatsRepository.save(stats); -> 필요 x
         // 영속성 컨텍스트 내의 엔티티는 트랜잭션 커밋 시 자동으로 flush 되기 때문
     }

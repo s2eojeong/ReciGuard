@@ -28,7 +28,7 @@ public class RecipeStats {
     private int scrapCount;
 
     // 뷰 카운트 증가 메서드
-    public void incrementViewCount() {
+    public void increaseViewCount() {
         this.viewCount++;
     }
 

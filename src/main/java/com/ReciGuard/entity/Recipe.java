@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
 
@@ -35,12 +36,14 @@ public class Recipe {
     private String cookingStyle;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @BatchSize(size = 10)
     private List<Instruction> instructions;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @BatchSize(size = 10)
     private List<RecipeIngredient> recipeIngredients;
 
-    @OneToOne(mappedBy = "recipe",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "recipe",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Nutrition nutrition;
 
     @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
