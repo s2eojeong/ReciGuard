@@ -30,7 +30,7 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
                  WHERE ri.recipe_id = r.recipe_id
                   AND (
                       i.ingredient_id = ing.ingredient_id
-                      OR MATCH(i.ingredient) AGAINST(:allergyIngredients IN BOOLEAN MODE)
+                      OR MATCH(i.ingredient) AGAINST(:allergyIngredients IN NATURAL LANGUAGE MODE)
                   )
            )
     """, nativeQuery = true)

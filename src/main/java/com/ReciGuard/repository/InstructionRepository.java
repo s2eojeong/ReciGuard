@@ -15,8 +15,4 @@ public interface InstructionRepository extends JpaRepository<Instruction, Long> 
         WHERE i.recipe.id = :recipeId
     """)
     Optional<Integer> findMaxInstructionIdByRecipeId(@Param("recipeId") Long recipeId);
-
-    // 레시피의 instruction 정보 불러오기
-    List<Instruction> findByRecipe_Id(Long recipeId);
-
 }

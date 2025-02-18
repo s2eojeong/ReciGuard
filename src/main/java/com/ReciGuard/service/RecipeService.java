@@ -35,11 +35,9 @@ public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final IngredientRepository ingredientRepository;
     private final UserService userService;
-    private final RecipeStatsRepository recipeStatsRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final UserScrapRepository userScrapRepository;
     private final InstructionRepository instructionRepository;
-    private final NutritionRepository nutritionRepository;
     private final UserIngredientRepository userIngredientRepository;
     private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;
@@ -128,8 +126,8 @@ public class RecipeService {
         List<String> allergyIngredient = userIngredientRepository.findAllergyIngredientsByUserId(userId);
 
         String allergyIngredients = allergyIngredient.stream()
-                .map(ingredient -> "+" + ingredient)
-                .collect(Collectors.joining(" ")); // "+계란 +우유" 형태로 변환
+                .map(String::trim)
+                .collect(Collectors.joining(" ")); // "계란 우유" 형태로 변환
 
         // 필터링된 레시피 가져오기
         List<Recipe> recipes = recipeRepository.findAllFilteredRecipes(userId, allergyIngredients);
