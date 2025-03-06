@@ -148,7 +148,7 @@ public class RecipeController {
     }
 
     // 나만의 레시피 수정
-    @PostMapping("/myrecipe/{recipeId}/edit")
+    @PatchMapping("/myrecipe/{recipeId}/edit")
     public ResponseEntity<String> updateMyRecipe(
             @PathVariable Long recipeId,
             @RequestPart("recipeForm") String recipeFormJson,
