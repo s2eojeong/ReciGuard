@@ -33,8 +33,9 @@ import java.util.stream.Collectors;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final RecipeStatsRepository recipeStatsRepository;
     private final IngredientRepository ingredientRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final UserScrapRepository userScrapRepository;
     private final InstructionRepository instructionRepository;
@@ -333,57 +334,50 @@ public class RecipeService {
     @Transactional
     public void saveMyRecipe(MyRecipeForm recipeForm, MultipartFile recipeImage, Map<String, MultipartFile> instructionImageFiles, HttpServletRequest request) {
 
-        // 1. 현재 인증된 사용자의 username 가져오기
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long userId = userService.findUserIdByUsername(username);
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username:" + username));
 
-        // 2. Recipe 엔티티 생성 및 설정
-        Recipe recipe = new Recipe();
-
-        recipe.setRecipeName(recipeForm.getRecipeName());
-        // 레시피 사진 업로드 (사용자가 업로드한 경우만!!)
+        String uploadedRecipeImage = null;
         if (recipeImage != null && !recipeImage.isEmpty()) {
-            String uploadedRecipeImage = s3Uploader.saveFile(recipeImage);
-            recipe.setImagePath(uploadedRecipeImage); // 단일 사진 저장
+            uploadedRecipeImage = s3Uploader.saveFile(recipeImage);
             log.info("Received recipeImage: {}, size: {}", recipeImage.getOriginalFilename(), recipeImage.getSize());
         } else {
-            recipe.setImagePath(null); // 사진이 없으면 null 처리
             log.info("No recipeImage provided.");
         }
 
-        recipe.setServing(recipeForm.getServing());
-        recipe.setCuisine(recipeForm.getCuisine());
-        recipe.setFoodType(recipeForm.getFoodType());
-        recipe.setCookingStyle(recipeForm.getCookingStyle());
+        Recipe recipe = Recipe.builder()
+                .user(user)
+                .recipeName(recipeForm.getRecipeName())
+                .imagePath(uploadedRecipeImage)
+                .serving(recipeForm.getServing())
+                .cuisine(recipeForm.getCuisine())
+                .foodType(recipeForm.getFoodType())
+                .cookingStyle(recipeForm.getCookingStyle())
+                .build();
+        recipeRepository.save(recipe);
 
-        // 3. userId로 User 엔티티 연관관계 설정
-        User user = new User();
-        user.setUserId(userId);
-        recipe.setUser(user);
-
-        // 4. Ingredients 저장
+        //Ingredients 저장
         List<RecipeIngredient> ingredients = recipeForm.getIngredients().stream()
                 .map(ingredientDto -> {
-                    RecipeIngredient recipeIngredient = new RecipeIngredient();
-
-                    // Ingredient 조회
+                    // Ingredient 조회 또는 생성
                     Ingredient ingredient = ingredientRepository.findByIngredient(ingredientDto.getIngredient());
                     if (ingredient == null) {
-                        // 재료가 없으면 새로 추가
-                        ingredient = new Ingredient();
-                        ingredient.setIngredient(ingredientDto.getIngredient());
-                        ingredient = ingredientRepository.save(ingredient);
+                        Ingredient newIngredient = Ingredient.builder()
+                                .ingredient(ingredientDto.getIngredient())
+                                .build();
+                        ingredient = ingredientRepository.save(newIngredient);
                     }
-                    // RecipeIngredient 설정
-                    recipeIngredient.setIngredient(ingredient);
-                    recipeIngredient.setQuantity(ingredientDto.getQuantity());
-                    recipeIngredient.setRecipe(recipe);
-                    return recipeIngredient;
+                    // RecipeIngredient 생성
+                    return RecipeIngredient.builder()
+                            .ingredient(ingredient)
+                            .quantity(ingredientDto.getQuantity())
+                            .recipe(recipe)
+                            .build();
                 })
-                .collect(Collectors.toList());
-        recipe.setRecipeIngredients(ingredients);
+                .toList();
 
-        // 5. Instructions 저장
+        //Instructions 저장
         if (request instanceof MultipartHttpServletRequest multipartRequest) {
             Map<String, MultipartFile> parsedInstructionFiles = new HashMap<>();
             multipartRequest.getFileMap().forEach((key, value) -> {
@@ -393,7 +387,6 @@ public class RecipeService {
             });
             instructionImageFiles = parsedInstructionFiles;
         }
-
         // 파싱된 파일 키 확인
         log.info("Parsed file keys: {}", instructionImageFiles != null ? instructionImageFiles.keySet() : "No files provided");
 
@@ -402,69 +395,60 @@ public class RecipeService {
                 instructionRepository.findMaxInstructionIdByRecipeId(recipe.getId()).orElse(0) + 1
         );
 
-        // 여기서부터 찐 Instructions 저장!!
         Map<String, MultipartFile> finalInstructionImageFiles = instructionImageFiles;
         List<Instruction> instructions = recipeForm.getInstructions().stream()
                 .map(instructionDto -> {
-                    Instruction instruction = new Instruction();
-                    instruction.setInstruction(instructionDto.getInstruction());
-
-                    // instruction_id 설정
-                    instruction.setInstructionId(instructionCounter.getAndIncrement());
-
+                    int currentInstructionId = instructionCounter.getAndIncrement(); // instruction_id 설정
                     // 현재 처리 중인 Instruction ID 확인
-                    log.info("Processing instruction ID: {}", instruction.getInstructionId());
+                    log.info("Processing instruction ID: {}", currentInstructionId);
 
-                    // instructionImageFiles로부터 파일을 매핑하거나 null 처리
-                    if (finalInstructionImageFiles != null) {
-                        String matchingKey = finalInstructionImageFiles.keySet().stream()
-                                .filter(key -> key.equals("instructionImageFiles[" + instruction.getInstructionId() + "]"))
-                                .findFirst()
-                                .orElse(null);
+                    String matchingKey = finalInstructionImageFiles != null
+                            ? finalInstructionImageFiles.keySet().stream()
+                            .filter(key -> key.equals("instructionImageFiles[" + currentInstructionId + "]"))
+                            .findFirst()
+                            .orElse(null)
+                            : null;
 
-                        if (matchingKey != null) {
-                            log.info("Found matching key for instruction {}: {}", instruction.getInstructionId(), matchingKey);
-                            MultipartFile file = finalInstructionImageFiles.get(matchingKey);
+                    String uploadedUrl = null;
+                    if (matchingKey != null) {
+                        log.info("Found matching key for instruction {}: {}", currentInstructionId, matchingKey);
+                        MultipartFile file = finalInstructionImageFiles.get(matchingKey);
 
-                            // 파일이 있으면 업로드, 없으면 null로 처리
-                            if (file != null && !file.isEmpty()) {
-                                try {
-                                    String uploadedUrl = s3Uploader.saveFile(file); // S3에 단일 파일 저장
-                                    instruction.setInstructionImage(uploadedUrl); // URL 설정
-                                    log.info("Uploaded image for instruction {}: {}", instruction.getInstructionId(), uploadedUrl);
-                                } catch (Exception e) {
-                                    log.error("Failed to upload image for instruction {}: {}", instruction.getInstructionId(), e.getMessage());
-                                    instruction.setInstructionImage(null); // 업로드 실패 시 null
-                                }
-                            } else {
-                                log.info("No file provided for instruction {}", instruction.getInstructionId());
-                                instruction.setInstructionImage(null); // 사진이 없으면 null로 처리
+                        // 파일이 있으면 업로드
+                        if (file != null && !file.isEmpty()) {
+                            try {
+                                uploadedUrl = s3Uploader.saveFile(file);
+                                log.info("Uploaded image for instruction {}: {}", currentInstructionId, uploadedUrl);
+                            } catch (Exception e) {
+                                log.error("Failed to upload image for instruction {}: {}", currentInstructionId, e.getMessage());
+                                uploadedUrl = null; // 업로드 실패 시 null 처리
                             }
                         } else {
-                            log.info("No matching file found for instruction {}", instruction.getInstructionId());
-                            instruction.setInstructionImage(null); // 사진이 없으면 null로 처리
+                            log.info("No file provided for instruction {}", currentInstructionId);
                         }
                     } else {
-                        log.info("No instruction image files provided");
-                        instruction.setInstructionImage(null); // 사진이 없으면 null로 처리
+                        log.info("No matching file found for instruction {}", currentInstructionId);
                     }
-                    instruction.setRecipe(recipe);
 
-                    return instruction;
+                    return Instruction.builder()
+                            .instructionId(currentInstructionId)
+                            .instruction(instructionDto.getInstruction())
+                            .instructionImage(uploadedUrl)
+                            .recipe(recipe)
+                            .build();
                 })
-                .collect(Collectors.toList());
-        recipe.setInstructions(instructions);
-        recipeRepository.save(recipe);
+                .toList();
 
+        RecipeStats stats = RecipeStats.builder()
+                .scrapCount(0)
+                .viewCount(0)
+                .recipe(recipe)
+                .build();
 
-        // 6. RecipeStats 기본값 생성
-        RecipeStats stats = new RecipeStats();
-        stats.setScrapCount(0);
-        stats.setViewCount(0);
-        stats.setRecipe(recipe);
-        recipe.setRecipeStats(stats);
+        recipeIngredientRepository.saveAll(ingredients);
+        instructionRepository.saveAll(instructions);
+        recipeStatsRepository.save(stats);
 
-        // 7. Recipe 저장
         recipeRepository.save(recipe);
     }
 

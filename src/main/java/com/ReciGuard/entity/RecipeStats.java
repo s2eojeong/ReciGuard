@@ -2,15 +2,15 @@ package com.ReciGuard.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
 @Entity
 @Getter @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class RecipeStats {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stats_id")

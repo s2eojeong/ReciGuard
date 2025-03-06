@@ -125,39 +125,17 @@ public class RecipeController {
             @RequestPart(value = "instructionImageFiles", required = false) Map<String, MultipartFile> instructionImageFiles,
             HttpServletRequest request) {
 
-        // instructionImageFiles 확인
-        log.info("Received instructionImageFiles: {}", instructionImageFiles);
-
-        // 로그 추가: 각 파일 정보 확인
-        if (instructionImageFiles != null) {
-            instructionImageFiles.forEach((key, file) -> log.info("Key: {}, File Name: {}", key, file.getOriginalFilename()));
-        }
-
-        // instructionImageFiles가 null일 경우 빈 Map으로 초기화
-        if (instructionImageFiles == null) {
-            instructionImageFiles = new HashMap<>();
-        }
-
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
-        MyRecipeForm recipeForm;
         try {
-            recipeForm = objectMapper.readValue(recipeFormJson, MyRecipeForm.class);
+            MyRecipeForm recipeForm = objectMapper.readValue(recipeFormJson, MyRecipeForm.class);
+            recipeService.saveMyRecipe(recipeForm, recipeImage, instructionImageFiles, request);
+
+            return ResponseEntity.ok("레시피가 성공적으로 등록되었습니다.");
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Invalid JSON format: " + e.getMessage());
         }
-        log.info("Instruction Image Files: {}", instructionImageFiles);
-        instructionImageFiles.forEach((key, file) -> log.info("Key: {}, File Name: {}", key, file.getOriginalFilename()));
-
-        log.info("Received recipeForm: {}", recipeForm);
-        log.info("Received instructionImageFiles: {}", instructionImageFiles);
-
-        // Recipe 저장 서비스 호출
-        recipeService.saveMyRecipe(recipeForm, recipeImage, instructionImageFiles, request);
-
-        return ResponseEntity.ok("레시피가 성공적으로 등록되었습니다.");
     }
 
     // 나만의 레시피 수정 폼
@@ -180,17 +158,15 @@ public class RecipeController {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
 
         try {
-            // JSON 데이터를 객체로 변환
             MyRecipeFormEdit recipeForm = objectMapper.readValue(recipeFormJson, MyRecipeFormEdit.class);
 
             recipeService.updateMyRecipe(recipeId, recipeForm, recipeImage, instructionImageFiles, request);
 
             return ResponseEntity.ok("레시피가 수정되었습니다.");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("JSON 파싱 오류: " + e.getMessage());
+        } catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Invalid JSON format: " + e.getMessage());
         }
     }
 

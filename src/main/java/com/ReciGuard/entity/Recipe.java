@@ -2,18 +2,19 @@ package com.ReciGuard.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "recipe", indexes = @Index(name = "idx_recipe_cuisine", columnList = "cuisine"))
 public class Recipe {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recipe_id")
     private Long id;
@@ -36,12 +37,12 @@ public class Recipe {
     private String cookingStyle;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    @BatchSize(size = 10)
-    private List<Instruction> instructions;
+    @Builder.Default
+    private List<Instruction> instructions = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    @BatchSize(size = 10)
-    private List<RecipeIngredient> recipeIngredients;
+    @Builder.Default
+    private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToOne(mappedBy = "recipe",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Nutrition nutrition;
@@ -50,9 +51,10 @@ public class Recipe {
     private RecipeStats recipeStats;
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    private List<UserScrap> userScraps;
+    @Builder.Default
+    private List<UserScrap> userScraps = new ArrayList<>();
 
-    public Recipe(Long id) {
-        this.id = id;
+    public Recipe(Long recipeId) {
+        this.id=getId();
     }
 }

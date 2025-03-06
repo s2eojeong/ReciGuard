@@ -2,13 +2,13 @@ package com.ReciGuard.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "recipe_ingredient", indexes = @Index(name = "idx_recipe_ingredient_recipe_id", columnList = "recipe_id, ingredient_id"))
 public class RecipeIngredient {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
