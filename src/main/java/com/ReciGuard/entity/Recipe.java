@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Getter @Setter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "recipe", indexes = @Index(name = "idx_recipe_cuisine", columnList = "cuisine"))
@@ -30,17 +30,17 @@ public class Recipe {
     @Column(name = "recipe_name")
     private String recipeName;
 
-    private int serving;
+    private Integer serving;
 
     private String cuisine;
     private String foodType;
     private String cookingStyle;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Instruction> instructions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
@@ -50,11 +50,15 @@ public class Recipe {
     @OneToOne(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private RecipeStats recipeStats;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<UserScrap> userScraps = new ArrayList<>();
 
-    public Recipe(Long recipeId) {
-        this.id=getId();
+    public void modifyMyRecipe(String recipeName, Integer serving, String cuisine, String foodType, String cookingStyle) {
+        this.recipeName = recipeName;
+        this.serving = serving;
+        this.cuisine = cuisine;
+        this.foodType = foodType;
+        this.cookingStyle = cookingStyle;
     }
 }

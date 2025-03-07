@@ -82,9 +82,5 @@ public class User {
     public void modify(String password) {
         this.password = password;
     }
-
-    public User(Long userId) {
-        this.userId = userId;
-    }
 }
 

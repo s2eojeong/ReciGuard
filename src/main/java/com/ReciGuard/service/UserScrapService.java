@@ -28,24 +28,23 @@ public class UserScrapService {
             // 이미 스크랩된 상태 -> 스크랩 해제
             userScrapRepository.deleteUserScrap(userId, recipeId);
             recipeStatsService.updateScrapCount(recipeId, -1); // ScrapCount 감소
-            return false; // 스크랩 해제
+            return false;
         } else {
             // 스크랩되지 않은 상태 -> 스크랩 추가
-            UserScrap userScrap = new UserScrap();
+            UserScrap userScrap = UserScrap.builder()
+                    .user(User.builder().userId(userId).build())
+                    .recipe(Recipe.builder().id(recipeId).build())
+                    .build();
 
-            userScrap.setUser(new User(userId));
-            userScrap.setRecipe(new Recipe(recipeId));
             userScrapRepository.save(userScrap);
-
             recipeStatsService.updateScrapCount(recipeId, 1); // ScrapCount 증가
-            return true; // 스크랩 추가
+            return true;
         }
     }
     public List<ScrapRecipeDTO> getScrappedRecipesByUser(Long userId) {
         // UserScrap 리스트 조회
         List<UserScrap> userScraps = userScrapRepository.findAllByUser_UserId(userId);
 
-        // DTO로 변환하여 반환
         return userScraps.stream()
                 .map(scrap -> {
                     boolean scrapped = userScrapRepository.existsUserScrap(userId, scrap.getRecipe().getId());

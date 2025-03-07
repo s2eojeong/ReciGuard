@@ -6,7 +6,7 @@ import lombok.*;
 
 @Entity
 @Getter @Setter
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Instruction {
@@ -27,5 +27,4 @@ public class Instruction {
 
     @Lob
     private String  instruction;
-
 }

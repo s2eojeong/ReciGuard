@@ -3,6 +3,7 @@ package com.ReciGuard.service;
 import com.ReciGuard.dto.*;
 import com.ReciGuard.entity.*;
 import com.ReciGuard.repository.*;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class RecipeService {
     private final UserIngredientRepository userIngredientRepository;
     private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;
+    private final EntityManager entityManager;
 
     @Value("http://15.164.219.9:8000/recommend")
     private String recipeRecommendApiUrl;
@@ -358,6 +360,7 @@ public class RecipeService {
         recipeRepository.save(recipe);
 
         //Ingredients 저장
+        final Recipe finalRecipe = recipe;
         List<RecipeIngredient> ingredients = recipeForm.getIngredients().stream()
                 .map(ingredientDto -> {
                     // Ingredient 조회 또는 생성
@@ -372,7 +375,7 @@ public class RecipeService {
                     return RecipeIngredient.builder()
                             .ingredient(ingredient)
                             .quantity(ingredientDto.getQuantity())
-                            .recipe(recipe)
+                            .recipe(finalRecipe)
                             .build();
                 })
                 .toList();
@@ -434,7 +437,7 @@ public class RecipeService {
                             .instructionId(currentInstructionId)
                             .instruction(instructionDto.getInstruction())
                             .instructionImage(uploadedUrl)
-                            .recipe(recipe)
+                            .recipe(finalRecipe)
                             .build();
                 })
                 .toList();
@@ -474,15 +477,6 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findRecipeByUserId(recipeId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("권한이 없습니다."));
 
-        // 3. MyRecipeForm 생성 및 데이터 매핑
-        MyRecipeForm form = new MyRecipeForm();
-        form.setRecipeName(recipe.getRecipeName());
-        form.setImagePath(recipe.getImagePath());
-        form.setServing(recipe.getServing());
-        form.setCuisine(recipe.getCuisine());
-        form.setFoodType(recipe.getFoodType());
-        form.setCookingStyle(recipe.getCookingStyle());
-
         // 4. 재료 정보 매핑
         List<IngredientResponseDTO> ingredientDTOs = recipe.getRecipeIngredients().stream()
                 .map(ingredient -> new IngredientResponseDTO(
@@ -490,7 +484,6 @@ public class RecipeService {
                         ingredient.getQuantity()
                 ))
                 .collect(Collectors.toList());
-        form.setIngredients(ingredientDTOs);
 
         // 5. 조리 단계 정보 매핑
         List<InstructionResponseDTO> instructionDTOs = recipe.getInstructions().stream()
@@ -500,28 +493,35 @@ public class RecipeService {
                         instruction.getInstruction()
                         ))
                 .collect(Collectors.toList());
-        form.setInstructions(instructionDTOs);
-        return form;
+
+        return MyRecipeForm.builder()
+                .recipeName(recipe.getRecipeName())
+                .imagePath(recipe.getImagePath())
+                .serving(recipe.getServing())
+                .cuisine(recipe.getCuisine())
+                .foodType(recipe.getFoodType())
+                .cookingStyle(recipe.getCookingStyle())
+                .ingredients(ingredientDTOs)
+                .instructions(instructionDTOs)
+                .build();
     }
 
     @Transactional
-    public void updateMyRecipe(
-            Long recipeId,
-            MyRecipeFormEdit recipeForm,
-            MultipartFile recipeImage,
-            Map<String, MultipartFile> instructionImageFiles,
-            HttpServletRequest request) {
+    public void updateMyRecipe(Long recipeId, MyRecipeFormEdit recipeForm, MultipartFile recipeImage,
+                               Map<String, MultipartFile> instructionImageFiles, HttpServletRequest request) {
 
         // 1. 레시피 ID로 영속 상태의 Recipe 엔티티 조회
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("레시피를 찾을 수 없습니다."));
 
         // 2. 레시피 정보 수정
-        recipe.setRecipeName(recipeForm.getRecipeName());
-        recipe.setServing(recipeForm.getServing());
-        recipe.setCuisine(recipeForm.getCuisine());
-        recipe.setFoodType(recipeForm.getFoodType());
-        recipe.setCookingStyle(recipeForm.getCookingStyle());
+        recipe.modifyMyRecipe(
+                recipeForm.getRecipeName(),
+                recipeForm.getServing(),
+                recipeForm.getCuisine(),
+                recipeForm.getFoodType(),
+                recipeForm.getCookingStyle()
+        );
 
         // 3. 레시피 메인 이미지 처리
         if (recipeForm.isImageRemoved() && recipe.getImagePath() != null) {
@@ -576,11 +576,11 @@ public class RecipeService {
                         return true; // 유지
                     })
                     .collect(Collectors.toMap(
-                            IngredientResponseDTO::getIngredient,
-                            IngredientResponseDTO::getQuantity
+                            IngredientRequestDTO::getIngredient,
+                            IngredientRequestDTO::getQuantity
                     ));
 
-            // 삭제할 재료를 명시적으로 관리
+            // 삭제할 재료 관리
             List<RecipeIngredient> ingredientsToRemove = new ArrayList<>();
             for (RecipeIngredient existingIngredient : existingIngredients) {
                 String formQuantity = formIngredientMap.get(existingIngredient.getIngredient().getIngredient());
@@ -619,6 +619,7 @@ public class RecipeService {
             });
         }
 
+        // 5. 조리 과정 수정
         if (request instanceof MultipartHttpServletRequest multipartRequest) {
             Map<String, MultipartFile> parsedInstructionFiles = new HashMap<>();
             multipartRequest.getFileMap().forEach((key, value) -> {
@@ -628,8 +629,6 @@ public class RecipeService {
             });
             instructionImageFiles = parsedInstructionFiles;
         }
-
-        // 5. 조리 과정 수정
         if (recipeForm.getInstructions() != null) {
             List<Instruction> existingInstructions = recipe.getInstructions();
 

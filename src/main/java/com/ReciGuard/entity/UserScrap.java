@@ -1,15 +1,15 @@
 package com.ReciGuard.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "user_scrap")
 public class UserScrap {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

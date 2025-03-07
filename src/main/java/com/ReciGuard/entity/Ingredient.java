@@ -18,7 +18,6 @@ public class Ingredient {
     private Long id;
 
     @OneToMany(mappedBy = "ingredient", fetch = FetchType.LAZY)
-    @BatchSize(size = 10)
     @JsonIgnore
     private List<RecipeIngredient> recipeIngredient;
 
