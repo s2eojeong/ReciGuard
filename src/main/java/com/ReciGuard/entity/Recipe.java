@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter
+@Getter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -54,9 +54,10 @@ public class Recipe {
     @Builder.Default
     private List<UserScrap> userScraps = new ArrayList<>();
 
-    public void modifyMyRecipe(String recipeName, Integer serving, String cuisine, String foodType, String cookingStyle) {
-        this.recipeName = recipeName;
+    public void modifyMyRecipe(String imagePath, Integer serving, String recipeName, String cuisine, String foodType, String cookingStyle) {
+        this.imagePath = imagePath;
         this.serving = serving;
+        this.recipeName = recipeName;
         this.cuisine = cuisine;
         this.foodType = foodType;
         this.cookingStyle = cookingStyle;

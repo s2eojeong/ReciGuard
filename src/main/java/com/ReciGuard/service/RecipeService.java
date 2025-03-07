@@ -43,7 +43,7 @@ public class RecipeService {
     private final UserIngredientRepository userIngredientRepository;
     private final S3Uploader s3Uploader;
     private final RestTemplate restTemplate;
-    private final EntityManager entityManager;
+    private final NutritionRepository nutritionRepository;
 
     @Value("http://15.164.219.9:8000/recommend")
     private String recipeRecommendApiUrl;
@@ -304,9 +304,9 @@ public class RecipeService {
                 ))
                 .collect(Collectors.toList());
 
-//        // 8. AI 모델에서 유사 알레르기 유발 재료 가져오기
-//        SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
-//        List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
+        // 8. AI 모델에서 유사 알레르기 유발 재료 가져오기
+        SimilarAllergyIngredientDTO similarAllergyIngredientsDTO = getSimilarAllergyIngredients(recipe.getId(), userId);
+        List<String> similarAllergyIngredients = similarAllergyIngredientsDTO.getSimilarIngredient();
 
         // isScrapped 값 확인
         boolean scrapped = userScrapRepository.existsUserScrap(userId, recipe.getId());
@@ -329,7 +329,8 @@ public class RecipeService {
                 recipe.getRecipeStats() != null ? recipe.getRecipeStats().getScrapCount() : 0,
                 recipe.getRecipeStats() != null ? recipe.getRecipeStats().getViewCount() : 0,
                 ingredients,
-                instructionDTOs
+                instructionDTOs,
+                similarAllergyIngredients
         );
     }
 
@@ -442,6 +443,15 @@ public class RecipeService {
                 })
                 .toList();
 
+        Nutrition nutrition = Nutrition.builder()
+                .fat(0)
+                .calories(0)
+                .carbohydrate(0)
+                .protein(0)
+                .sodium(0)
+                .recipe(recipe)
+                .build();
+
         RecipeStats stats = RecipeStats.builder()
                 .scrapCount(0)
                 .viewCount(0)
@@ -450,6 +460,7 @@ public class RecipeService {
 
         recipeIngredientRepository.saveAll(ingredients);
         instructionRepository.saveAll(instructions);
+        nutritionRepository.save(nutrition);
         recipeStatsRepository.save(stats);
 
         recipeRepository.save(recipe);
@@ -514,51 +525,36 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new IllegalArgumentException("레시피를 찾을 수 없습니다."));
 
-        // 2. 레시피 정보 수정
+        // 2. 레시피 메인 이미지 처리
+        String uploadedImagePath = null;
+        if (recipeForm.isImageRemoved() && recipe.getImagePath() != null) {
+            s3Uploader.deleteFile(recipe.getImagePath()); // 기존 이미지 삭제
+        } else if (recipeImage != null && !recipeImage.isEmpty()) {
+            try {
+                // 새 이미지와 기존 이미지 비교 후 업데이트
+                String newImageHash = s3Uploader.calculateFileHash(recipeImage);
+                String existingImageHash = recipe.getImagePath() != null ? calculateFileHashFromS3(recipe.getImagePath()) : null;
+
+                if (!newImageHash.equals(existingImageHash)) {
+                    if (recipe.getImagePath() != null) {
+                        s3Uploader.deleteFile(recipe.getImagePath()); // 기존 이미지 삭제
+                    }
+                    uploadedImagePath = s3Uploader.saveFile(recipeImage);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("update failed : ", e);
+            }
+        }
+
+        // 3. 레시피 정보 수정
         recipe.modifyMyRecipe(
+                uploadedImagePath,
+                recipe.getServing(),
                 recipeForm.getRecipeName(),
-                recipeForm.getServing(),
                 recipeForm.getCuisine(),
                 recipeForm.getFoodType(),
                 recipeForm.getCookingStyle()
         );
-
-        // 3. 레시피 메인 이미지 처리
-        if (recipeForm.isImageRemoved() && recipe.getImagePath() != null) {
-            log.info("Removing existing recipe image for recipeId: {}", recipeId);
-            s3Uploader.deleteFile(recipe.getImagePath()); // 기존 이미지 삭제
-            recipe.setImagePath(null); // 이미지 경로 제거
-        } else if (recipeImage != null && !recipeImage.isEmpty()) {
-            try {
-                // 새 이미지 해시값 계산
-                String newImageHash = s3Uploader.calculateFileHash(recipeImage);
-
-                // 기존 이미지 해시값 계산
-                String existingImageHash = null;
-                if (recipe.getImagePath() != null) {
-                    existingImageHash = calculateFileHashFromS3(recipe.getImagePath());
-                }
-                // 새 이미지와 기존 이미지 비교
-                if (!newImageHash.equals(existingImageHash)) {
-                    log.info("New recipe image is different from existing image. Proceeding with upload.");
-
-                    // 기존 이미지 삭제
-                    if (recipe.getImagePath() != null) {
-                        log.info("Deleting existing recipe image: {}", recipe.getImagePath());
-                        s3Uploader.deleteFile(recipe.getImagePath());
-                    }
-                    // 새 이미지 업로드 및 경로 저장
-                    String uploadedImagePath = s3Uploader.saveFile(recipeImage);
-                    recipe.setImagePath(uploadedImagePath);
-                    log.info("Uploaded new recipe image: {}", uploadedImagePath);
-                } else {
-                    log.info("New recipe image is identical to existing image. No changes made.");
-                }
-            } catch (Exception e) {
-                log.error("Failed to handle recipe image: {}", e.getMessage());
-                throw new RuntimeException("Failed to handle recipe image", e);
-            }
-        }
 
         // 4. 재료 수정
         if (recipeForm.getIngredients() != null) {
